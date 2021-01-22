@@ -3,17 +3,18 @@ package org.name.tool.core.analysis;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.FieldDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.symbolsolver.utils.SymbolSolverCollectionStrategy;
 import com.github.javaparser.utils.ProjectRoot;
 import com.github.javaparser.utils.SourceRoot;
+import org.name.tool.core.analysis.results.ClassifiedAnalyzerResults;
+import org.name.tool.core.analysis.results.ProjectAnalyzerResults;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProjectAnalyzer {
     private final ProjectRoot projectRoot;
@@ -22,9 +23,9 @@ public class ProjectAnalyzer {
         projectRoot = new SymbolSolverCollectionStrategy().collect(projectAbsolutePath);
     }
 
-    public HashMap<ClassOrInterfaceDeclaration, HashMap<FieldDeclaration, MethodDeclaration>> analyze() {
+    public ProjectAnalyzerResults analyze() {
         // A SourceRoot is a subdirectory of ProjectRoot containing a root package structure (e.g., src/main/java, src/test/java)
-        HashMap<ClassOrInterfaceDeclaration, HashMap<FieldDeclaration, MethodDeclaration>> projectMap = new HashMap<>();
+        ProjectAnalyzerResults projectResults = new ProjectAnalyzerResults();
         for (SourceRoot sourceRoot : projectRoot.getSourceRoots()) {
             try {
                 List<ParseResult<CompilationUnit>> parseResults = sourceRoot.tryToParse();
@@ -39,8 +40,8 @@ public class ProjectAnalyzer {
                                 ClassOrInterfaceDeclaration classOrInterfaceDeclaration = typeDeclaration.asClassOrInterfaceDeclaration();
                                 if (!classOrInterfaceDeclaration.isInterface()) {
                                     ClassifiedAnalyzer classifiedAnalyzer = new ClassifiedAnalyzer(classOrInterfaceDeclaration);
-                                    HashMap<FieldDeclaration, MethodDeclaration> classMap = classifiedAnalyzer.analyze();
-                                    projectMap.put(classOrInterfaceDeclaration, classMap);
+                                    ClassifiedAnalyzerResults classResults = classifiedAnalyzer.analyze();
+                                    projectResults.add(classResults);
                                 }
                             }
                         }
@@ -50,6 +51,6 @@ public class ProjectAnalyzer {
                 e.printStackTrace();
             }
         }
-        return projectMap;
+        return projectResults;
     }
 }

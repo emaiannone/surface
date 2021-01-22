@@ -1,5 +1,7 @@
 package org.name.tool.core.metrics.ca;
 
+import org.name.tool.core.analysis.results.ClassifiedAnalyzerResults;
+
 public class ClassifiedAttributesCached implements ClassifiedAttributes {
     private final ClassifiedAttributesImpl classifiedAttributes;
     private Double cachedValue;
@@ -10,9 +12,9 @@ public class ClassifiedAttributesCached implements ClassifiedAttributes {
     }
 
     @Override
-    public double compute() {
+    public double compute(ClassifiedAnalyzerResults classMap) {
         if (cachedValue == null) {
-            cachedValue = classifiedAttributes.compute();
+            cachedValue = classifiedAttributes.compute(classMap);
         }
         return cachedValue;
     }
