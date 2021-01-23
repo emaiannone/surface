@@ -1,8 +1,8 @@
 package org.name.tool.core.analysis.results;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.VariableDeclarator;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -44,7 +44,7 @@ public class ProjectAnalyzerResults implements Iterable<ClassifiedAnalyzerResult
                 .collect(Collectors.toSet());
     }
 
-    public Set<FieldDeclaration> getClassifiedAttributes() {
+    public Set<VariableDeclarator> getClassifiedAttributes() {
         return results
                 .stream()
                 .map(ClassifiedAnalyzerResults::getClassifiedAttributes)
