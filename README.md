@@ -1,9 +1,9 @@
 # Intra-class
 
 ## Basic
-- CA (Classified Attributes) - Number of <<classified>> attributes of a class. <<classified>> is computed through heuristics (pattern matching, e.g. password, token, etc.)
-- ICA (Indirectly Classified Attributes) - Number of attributes of a class whose value is influenced (data-flow) by a <<classified>> attribute.
-- CM (Classified Methods) - Number of <<classified>> methods of a class. A method is <<classified>> if it uses (read/write) <<classified>> attributes and/or using heuristics (pattern matching, e.g., validatePassword, generateToken).
+- CA (Classified Attributes) - Number of **classified** attributes of a class. **classified** is computed through heuristics (pattern matching, e.g. password, token, etc.)
+- ICA (Indirectly Classified Attributes) - Number of attributes of a class whose value is influenced (data-flow) by a **classified** attribute.
+- CM (Classified Methods) - Number of **classified** methods of a class. A method is **classified** if it uses (read/write) **classified** attributes and/or using heuristics (pattern matching, e.g., validatePassword, generateToken).
   - CWM (Classified Write Method) - Number of CM that writes CA.
   - CRM (Classified Read Method) - Number of CM that reads CA.
 
@@ -22,7 +22,7 @@
 - CAAI (Classified Accessor-Attribute Interactions) - Ratio of sum of CRM per CA out of the product of all CRM and all CA
 
 # Inter-class
-- CC (Critical Classes) - Number of <<critical>> classes. Number of classes with at least one <<classified>> components (CA, ICA or CM)
+- CC (Critical Classes) - Number of **critical** classes. Number of classes with at least one **classified** components (CA, ICA or CM)
 - ICC (Indirect Critical Classes) - Given a CA, it is the number of classes (excluding its host) that indirectly uses it, such as with direct access or method calls.
 
 ## Coupling

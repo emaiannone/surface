@@ -6,11 +6,12 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ClassifiedAnalyzerResults {
+public class ClassifiedAnalyzerResults implements Iterable<Map.Entry<VariableDeclarator, Set<MethodDeclaration>>> {
 
     private final ClassOrInterfaceDeclaration classOrInterfaceDeclaration;
     private final Map<VariableDeclarator, Set<MethodDeclaration>> results;
@@ -18,6 +19,15 @@ public class ClassifiedAnalyzerResults {
     public ClassifiedAnalyzerResults(ClassOrInterfaceDeclaration classOrInterfaceDeclaration) {
         this.classOrInterfaceDeclaration = classOrInterfaceDeclaration;
         this.results = new HashMap<>();
+    }
+
+    @Override
+    public Iterator<Map.Entry<VariableDeclarator, Set<MethodDeclaration>>> iterator() {
+        return results.entrySet().iterator();
+    }
+
+    public void put(VariableDeclarator variableDeclarator, Set<MethodDeclaration> methodDeclarations) {
+        results.put(variableDeclarator, methodDeclarations);
     }
 
     public ClassOrInterfaceDeclaration getClassOrInterfaceDeclaration() {
@@ -35,11 +45,23 @@ public class ClassifiedAnalyzerResults {
         return results.keySet();
     }
 
-    public void put(VariableDeclarator variableDeclarator, Set<MethodDeclaration> methodDeclarations) {
-        results.put(variableDeclarator, methodDeclarations);
+    public Map<VariableDeclarator, Set<MethodDeclaration>> getResults() {
+        return new HashMap<>(results);
     }
 
     public Set<MethodDeclaration> getClassifiedMethods(VariableDeclarator variableDeclarator) {
         return results.get(variableDeclarator);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder("Class: " + classOrInterfaceDeclaration.getNameAsString());
+        for (Map.Entry<VariableDeclarator, Set<MethodDeclaration>> e : this) {
+            builder.append("\n");
+            builder.append(e.getKey().getNameAsString());
+            builder.append(" -> ");
+            builder.append(e.getValue().stream().map(m -> m.getSignature().toString()).collect(Collectors.toSet()));
+        }
+        return builder.toString();
     }
 }

@@ -3,6 +3,7 @@ package org.name.tool.core.analysis.results;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.utils.ProjectRoot;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -11,10 +12,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ProjectAnalyzerResults implements Iterable<ClassifiedAnalyzerResults> {
-
+    private final ProjectRoot projectRoot;
     private final Set<ClassifiedAnalyzerResults> results;
 
-    public ProjectAnalyzerResults() {
+    public ProjectAnalyzerResults(ProjectRoot projectRoot) {
+        this.projectRoot = projectRoot;
         this.results = new HashSet<>();
     }
 
@@ -25,6 +27,10 @@ public class ProjectAnalyzerResults implements Iterable<ClassifiedAnalyzerResult
 
     public void add(ClassifiedAnalyzerResults classResults) {
         results.add(classResults);
+    }
+
+    public ProjectRoot getProjectRoot() {
+        return projectRoot;
     }
 
     public ClassifiedAnalyzerResults getClassResults(ClassOrInterfaceDeclaration classOrInterfaceDeclaration) {
@@ -50,5 +56,17 @@ public class ProjectAnalyzerResults implements Iterable<ClassifiedAnalyzerResult
                 .map(ClassifiedAnalyzerResults::getClassifiedAttributes)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder("Project: " + projectRoot.getRoot().getFileName());
+        for (ClassifiedAnalyzerResults entries : this) {
+            if (entries.getResults().size() > 0) {
+                builder.append("\n");
+                builder.append(entries);
+            }
+        }
+        return builder.toString();
     }
 }
