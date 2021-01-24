@@ -1,5 +1,6 @@
 package org.name.tool.core.metrics;
 
+import org.name.tool.core.metrics.api.SecurityMetric;
 import org.name.tool.core.metrics.ca.ClassifiedAttributes;
 import org.name.tool.core.metrics.ca.ClassifiedAttributesCached;
 

@@ -1,21 +1,22 @@
 package org.name.tool.core.metrics.ca;
 
 import org.name.tool.core.analysis.results.ClassifiedAnalyzerResults;
+import org.name.tool.core.metrics.api.SecurityMetricResult;
 
 public class ClassifiedAttributesCached implements ClassifiedAttributes {
     private final ClassifiedAttributesImpl classifiedAttributes;
-    private Double cachedValue;
+    private SecurityMetricResult cachedResult;
 
     public ClassifiedAttributesCached() {
         this.classifiedAttributes = new ClassifiedAttributesImpl();
-        cachedValue = null;
+        this.cachedResult = null;
     }
 
     @Override
-    public double compute(ClassifiedAnalyzerResults classMap) {
-        if (cachedValue == null) {
-            cachedValue = classifiedAttributes.compute(classMap);
+    public SecurityMetricResult compute(ClassifiedAnalyzerResults classResults) {
+        if (cachedResult == null) {
+            cachedResult = classifiedAttributes.compute(classResults);
         }
-        return cachedValue;
+        return cachedResult;
     }
 }

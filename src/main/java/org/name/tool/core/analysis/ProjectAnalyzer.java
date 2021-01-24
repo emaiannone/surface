@@ -1,4 +1,4 @@
-package org.name.tool.core.analysis.analyzers;
+package org.name.tool.core.analysis;
 
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ast.CompilationUnit;

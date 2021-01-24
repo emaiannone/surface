@@ -1,12 +1,13 @@
 package org.name.tool.core.metrics.ca;
 
 import org.name.tool.core.analysis.results.ClassifiedAnalyzerResults;
+import org.name.tool.core.metrics.api.SecurityMetricResult;
 
 public class ClassifiedAttributesImpl implements ClassifiedAttributes {
 
     @Override
-    public double compute(ClassifiedAnalyzerResults classMap) {
-        System.out.println("Not implemented yet!");
-        return 0;
+    public SecurityMetricResult compute(ClassifiedAnalyzerResults classResults) {
+        double value = classResults.getClassifiedAttributes().size();
+        return new SecurityMetricResult(classResults, value, NAME);
     }
 }

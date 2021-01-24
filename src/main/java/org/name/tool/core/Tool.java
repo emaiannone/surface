@@ -1,9 +1,9 @@
 package org.name.tool.core;
 
-import org.name.tool.core.analysis.analyzers.ProjectAnalyzer;
+import org.name.tool.core.analysis.ProjectAnalyzer;
 import org.name.tool.core.analysis.results.ClassifiedAnalyzerResults;
 import org.name.tool.core.analysis.results.ProjectAnalyzerResults;
-import org.name.tool.core.metrics.SecurityMetric;
+import org.name.tool.core.metrics.api.SecurityMetric;
 import org.name.tool.core.metrics.SecurityMetricsFactory;
 
 import java.util.List;
