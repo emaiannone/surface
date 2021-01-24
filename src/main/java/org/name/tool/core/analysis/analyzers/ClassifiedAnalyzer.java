@@ -1,4 +1,4 @@
-package org.name.tool.core.analysis;
+package org.name.tool.core.analysis.analyzers;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;

@@ -1,6 +1,6 @@
 package org.name.tool.core;
 
-import org.name.tool.core.analysis.ProjectAnalyzer;
+import org.name.tool.core.analysis.analyzers.ProjectAnalyzer;
 import org.name.tool.core.analysis.results.ClassifiedAnalyzerResults;
 import org.name.tool.core.analysis.results.ProjectAnalyzerResults;
 import org.name.tool.core.metrics.SecurityMetric;
@@ -24,7 +24,7 @@ public class Tool {
         for (ClassifiedAnalyzerResults classResults : projectResults) {
             for (SecurityMetric metric : metrics) {
                 metric.compute(classResults);
-                //TODO Compose the list of MetricsResults (map of class,metric,value?)
+                //TODO Compose a list of MetricsResult (name, class, value)
             }
         }
 
