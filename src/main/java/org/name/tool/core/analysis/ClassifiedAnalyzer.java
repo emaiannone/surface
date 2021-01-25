@@ -45,18 +45,17 @@ public class ClassifiedAnalyzer {
      * if the analysis does not find any classified method, the results map will only contain the classified attributes (key).
      */
     public ClassifiedAnalyzerResults analyze() {
-        System.out.println("* Analyzing class: " + classDeclaration.getName());
+        System.out.println("** Analyzing class: " + classDeclaration.getName());
         ClassifiedAnalyzerResults results = new ClassifiedAnalyzerResults(classDeclaration);
         Set<VariableDeclarator> classifiedAttributes = getClassifiedAttributes(new HashSet<>(classDeclaration.getFields()));
-        System.out.println("** Classified Attributes: " + classifiedAttributes);
+        System.out.println("*** Classified Attributes: " + classifiedAttributes);
         if (classifiedAttributes.size() > 0) {
             for (VariableDeclarator attribute : classifiedAttributes) {
-                System.out.println("** Searching classified method of: " + attribute);
+                System.out.println("*** Searching classified method of: " + attribute);
                 Set<MethodDeclaration> classifiedMethods = getClassifiedMethods(attribute);
                 results.put(attribute, classifiedMethods);
             }
         }
-        //System.out.println("* " + results);
         return results;
     }
 
@@ -104,10 +103,10 @@ public class ClassifiedAnalyzer {
                 boolean classifiedUsedInNameExpr = isAttributeUsed(classifiedAttribute, usagesNameExpr);
                 boolean classifiedUsedInFieldAccess = isAttributeUsed(classifiedAttribute, usagesFieldAccess);
                 if (classifiedUsedInNameExpr || classifiedUsedInFieldAccess) {
-                    System.out.println("** Method " + method.getSignature().toString() + " has no usages.");
+                    System.out.println("*** Method " + method.getSignature().toString() + " has no usages.");
                     classifiedMethods.add(method);
                 } else {
-                    System.out.println("** Method " + method.getSignature().toString() + " has a usage.");
+                    System.out.println("*** Method " + method.getSignature().toString() + " has a usage.");
                 }
             }
         }

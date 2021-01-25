@@ -9,18 +9,18 @@ import org.name.tool.core.ToolInput;
 import org.name.tool.core.metrics.ca.ClassifiedAttributes;
 
 import java.nio.file.Paths;
-import java.util.Optional;
+import java.util.Arrays;
 
 public class CLIParser {
 
     // Current working directory as default
     private static final String DEFAULT_PROJECT = "";
-    // csv as default
-    private static final String DEFAULT_EXPORT = "csv";
     // List of default metrics
     private static final String[] DEFAULT_METRICS = new String[]{
             ClassifiedAttributes.CODE
     };
+    // csv as default
+    private static final String DEFAULT_EXPORT = "csv";
 
     public CLIParser() {
     }
@@ -30,9 +30,33 @@ public class CLIParser {
         Options options = CLIOptions.getInstance();
         CommandLineParser cliParser = new DefaultParser();
         CommandLine commandLine = cliParser.parse(options, args);
-        String project = Optional.ofNullable(commandLine.getOptionValue(CLIOptions.PROJECT)).orElse(DEFAULT_PROJECT);
-        String export = Optional.ofNullable(commandLine.getOptionValue(CLIOptions.EXPORT)).orElse(DEFAULT_EXPORT);
-        String[] metricsCodes = Optional.ofNullable(commandLine.getOptionValues(CLIOptions.METRICS)).orElse(DEFAULT_METRICS);
+
+        String project;
+        if (commandLine.hasOption(CLIOptions.PROJECT)) {
+            project = commandLine.getOptionValue(CLIOptions.PROJECT);
+            System.out.println("* Using " + project + " as project root.");
+        } else {
+            project = DEFAULT_PROJECT;
+            System.out.println("* No specified project root: going to use Current Working Directory.");
+        }
+
+        String[] metricsCodes;
+        if (commandLine.hasOption(CLIOptions.METRICS)) {
+            metricsCodes = commandLine.getOptionValues(CLIOptions.METRICS);
+            System.out.println("* Going to compute the following metrics: " + Arrays.toString(metricsCodes) + ".");
+        } else {
+            metricsCodes = DEFAULT_METRICS;
+            System.out.println("* No specified set of metrics: going to compute the following defaults: " + Arrays.toString(metricsCodes) + ".");
+        }
+
+        String export;
+        if (commandLine.hasOption(CLIOptions.EXPORT)) {
+            export = commandLine.getOptionValue(CLIOptions.EXPORT);
+            System.out.println("* Going to export as " + export + " file.");
+        } else {
+            export = DEFAULT_EXPORT;
+            System.out.println("* No specified export format: going to export as " + export + " file.");
+        }
         return new ToolInput(Paths.get(project).toAbsolutePath(), metricsCodes, export);
     }
 }

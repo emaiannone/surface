@@ -59,7 +59,6 @@ public class ProjectAnalyzer {
                 e.printStackTrace();
             }
         }
-        System.out.println("* " + projectResults);
         return projectResults;
     }
 }
