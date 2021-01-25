@@ -12,7 +12,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ClassifiedAnalyzerResults implements Iterable<Map.Entry<VariableDeclarator, Set<MethodDeclaration>>> {
-
     private final ClassOrInterfaceDeclaration classOrInterfaceDeclaration;
     private final Map<VariableDeclarator, Set<MethodDeclaration>> results;
 
@@ -28,6 +27,10 @@ public class ClassifiedAnalyzerResults implements Iterable<Map.Entry<VariableDec
 
     public void put(VariableDeclarator variableDeclarator, Set<MethodDeclaration> methodDeclarations) {
         results.put(variableDeclarator, methodDeclarations);
+    }
+
+    public String getClassName() {
+        return classOrInterfaceDeclaration.getNameAsString();
     }
 
     public ClassOrInterfaceDeclaration getClassOrInterfaceDeclaration() {
