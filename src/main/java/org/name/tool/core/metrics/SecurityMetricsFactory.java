@@ -12,16 +12,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SecurityMetricsFactory {
+    //TODO Move this metrics structure in a separate class
+    private final ClassifiedAttributes ca;
+    private final ClassifiedMethods cm;
+    private final ClassifiedInstanceVariablesAccessibilityCached civa;
+
     public SecurityMetricsFactory() {
+        // Create here all existing metrics and compose them
+        this.ca = new ClassifiedAttributesCached();
+        this.cm = new ClassifiedMethodsCached();
+        this.civa = new ClassifiedInstanceVariablesAccessibilityCached(ca);
     }
 
     public List<SecurityMetric> getSecurityMetrics(String[] metricsCodes) {
         List<SecurityMetric> securityMetrics = new ArrayList<>();
-        ClassifiedAttributes ca = new ClassifiedAttributesCached();
-        ClassifiedMethods cm = new ClassifiedMethodsCached();
         for (String metricCode : metricsCodes) {
-            // TODO IMPORTANT: Is there a smarted way to compose metrics? Maybe it is better to
-            //  prebuild the whole metrics structure and then, depending on the input, return the proper objects
             SecurityMetric securityMetric = null;
             switch (metricCode) {
                 case ClassifiedAttributes.CODE:
@@ -31,7 +36,7 @@ public class SecurityMetricsFactory {
                     securityMetric = cm;
                     break;
                 case ClassifiedInstanceVariablesAccessibility.CODE:
-                    securityMetric = new ClassifiedInstanceVariablesAccessibilityCached(ca);
+                    securityMetric = civa;
                     break;
                 // Add other metrics here
             }

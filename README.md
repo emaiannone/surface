@@ -11,7 +11,7 @@
     - [] CRM (Classified Read Method) - Number of CM that reads CA.
 
 ## Encapsulation
-- [] CIVA (Classified Instance Variables Accessibility) - Ratio of non-private non-static CA out of the total of CA.
+- [x] CIVA (Classified Instance Variables Accessibility) - Ratio of non-private non-static CA out of the total of CA.
 - [] CCVA (Classified Class Variables Accessibility) - Ratio of non-private static CA out of the total of CA.
 - [] CMA (Classified Method Accessibility) - Ratio of non-private CM out of the total of CM.
 - [] RP (Reflection Package) - true/false use of java.reflection

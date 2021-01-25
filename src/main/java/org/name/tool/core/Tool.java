@@ -26,6 +26,7 @@ public class Tool {
         System.out.println(projectResults);
 
         System.out.println("* Project Metrics Computation starting");
+        // TODO Make ProjectSecurityMetricsResults and ClassSecurityMetricsResults, similarly to Analysis results
         List<SecurityMetricResult> metricsResults = new ArrayList<>();
         for (ClassifiedAnalyzerResults classResults : projectResults) {
             List<SecurityMetric> metrics = new SecurityMetricsFactory().getSecurityMetrics(toolInput.getMetricsCodes());
