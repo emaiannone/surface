@@ -4,24 +4,29 @@ import org.name.tool.core.analysis.results.ClassifiedAnalyzerResults;
 
 public class SecurityMetricResult {
     private final ClassifiedAnalyzerResults classResults;
+    private final SecurityMetric metric;
     private final double value;
-    private final String name;
 
-    public SecurityMetricResult(ClassifiedAnalyzerResults classResults, double value, String name) {
+    public SecurityMetricResult(ClassifiedAnalyzerResults classResults, SecurityMetric metric, double value) {
         this.classResults = classResults;
+        this.metric = metric;
         this.value = value;
-        this.name = name;
     }
 
     public ClassifiedAnalyzerResults getClassResults() {
         return classResults;
     }
 
+    public SecurityMetric getMetric() {
+        return metric;
+    }
+
     public double getValue() {
         return value;
     }
 
-    public String getName() {
-        return name;
+    @Override
+    public String toString() {
+        return "(" + classResults.getClassName() + ", " + metric + ", " + value + ")";
     }
 }

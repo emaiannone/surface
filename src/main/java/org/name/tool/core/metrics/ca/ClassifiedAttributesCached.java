@@ -3,7 +3,7 @@ package org.name.tool.core.metrics.ca;
 import org.name.tool.core.analysis.results.ClassifiedAnalyzerResults;
 import org.name.tool.core.metrics.api.SecurityMetricResult;
 
-public class ClassifiedAttributesCached implements ClassifiedAttributes {
+public class ClassifiedAttributesCached extends ClassifiedAttributes {
     private final ClassifiedAttributesImpl classifiedAttributes;
     private SecurityMetricResult cachedResult;
 
@@ -18,10 +18,5 @@ public class ClassifiedAttributesCached implements ClassifiedAttributes {
             cachedResult = classifiedAttributes.compute(classResults);
         }
         return cachedResult;
-    }
-
-    @Override
-    public String getName() {
-        return classifiedAttributes.getName();
     }
 }
