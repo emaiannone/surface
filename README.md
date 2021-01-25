@@ -1,9 +1,9 @@
 # Intra-class
 
 ## Basic
-- [] CA (Classified Attributes) - Number of **classified** attributes of a class, computed through heuristics (pattern matching, e.g. password, token, etc.)
+- [x] CA (Classified Attributes) - Number of **classified** attributes of a class, computed through heuristics (pattern matching, e.g. password, token, etc.)
 - [] ICA (Indirectly Classified Attributes) - Number of attributes of a class whose value is influenced (data-flow) by a **classified** attribute.
-- [] CM (Classified Methods) - Number of **classified** methods of a class.
+- [x] CM (Classified Methods) - Number of **classified** methods of a class.
   - [x] A method is **classified** if it uses (read/write) **classified** attributes 
   - [] Using heuristics on its name (pattern matching, e.g., validatePassword, generateToken).
   - Distinction between: 

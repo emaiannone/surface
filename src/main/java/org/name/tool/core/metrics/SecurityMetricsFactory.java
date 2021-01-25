@@ -3,6 +3,8 @@ package org.name.tool.core.metrics;
 import org.name.tool.core.metrics.api.SecurityMetric;
 import org.name.tool.core.metrics.ca.ClassifiedAttributes;
 import org.name.tool.core.metrics.ca.ClassifiedAttributesCached;
+import org.name.tool.core.metrics.cm.ClassifiedMethods;
+import org.name.tool.core.metrics.cm.ClassifiedMethodsCached;
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,7 +28,9 @@ public class SecurityMetricsFactory {
         switch (metricCode) {
             case ClassifiedAttributes.CODE:
                 return new ClassifiedAttributesCached();
-            //TODO Add other Metrics
+            case ClassifiedMethods.CODE:
+                return new ClassifiedMethodsCached();
+            // Add other metrics here
             default:
                 return null;
         }
