@@ -1,6 +1,6 @@
 public class Test {
     private String name;
-    private String username;
+    public String username;
     private String password;
 
     public String getName() {
