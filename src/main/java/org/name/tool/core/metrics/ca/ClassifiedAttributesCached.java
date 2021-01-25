@@ -19,4 +19,9 @@ public class ClassifiedAttributesCached implements ClassifiedAttributes {
         }
         return cachedResult;
     }
+
+    @Override
+    public String getName() {
+        return classifiedAttributes.getName();
+    }
 }
