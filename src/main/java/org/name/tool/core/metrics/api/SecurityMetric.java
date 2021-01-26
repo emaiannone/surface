@@ -6,7 +6,7 @@ public abstract class SecurityMetric {
     private String name;
     private String code;
 
-    public abstract SecurityMetricResult compute(ClassifiedAnalyzerResults classResults);
+    public abstract SecurityMetricValue compute(ClassifiedAnalyzerResults classResults);
 
     protected void setName(String name) {
         this.name = name;

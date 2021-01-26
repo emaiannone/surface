@@ -1,13 +1,13 @@
 package org.name.tool.core.metrics.ca;
 
 import org.name.tool.core.analysis.results.ClassifiedAnalyzerResults;
-import org.name.tool.core.metrics.api.SecurityMetricResult;
+import org.name.tool.core.metrics.api.SecurityMetricValue;
 
 public class ClassifiedAttributesImpl extends ClassifiedAttributes {
 
     @Override
-    public SecurityMetricResult compute(ClassifiedAnalyzerResults classResults) {
+    public SecurityMetricValue compute(ClassifiedAnalyzerResults classResults) {
         double value = classResults.getClassifiedAttributes().size();
-        return new SecurityMetricResult(classResults, this, value);
+        return new SecurityMetricValue(this, value);
     }
 }

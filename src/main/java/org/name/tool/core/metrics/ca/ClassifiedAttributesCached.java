@@ -1,11 +1,11 @@
 package org.name.tool.core.metrics.ca;
 
 import org.name.tool.core.analysis.results.ClassifiedAnalyzerResults;
-import org.name.tool.core.metrics.api.SecurityMetricResult;
+import org.name.tool.core.metrics.api.SecurityMetricValue;
 
 public class ClassifiedAttributesCached extends ClassifiedAttributes {
     private final ClassifiedAttributesImpl classifiedAttributes;
-    private SecurityMetricResult cachedResult;
+    private SecurityMetricValue cachedResult;
 
     public ClassifiedAttributesCached() {
         this.classifiedAttributes = new ClassifiedAttributesImpl();
@@ -13,7 +13,7 @@ public class ClassifiedAttributesCached extends ClassifiedAttributes {
     }
 
     @Override
-    public SecurityMetricResult compute(ClassifiedAnalyzerResults classResults) {
+    public SecurityMetricValue compute(ClassifiedAnalyzerResults classResults) {
         if (cachedResult == null) {
             cachedResult = classifiedAttributes.compute(classResults);
         }
