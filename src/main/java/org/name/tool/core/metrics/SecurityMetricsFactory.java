@@ -12,16 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SecurityMetricsFactory {
-    //TODO Move this metrics structure in a separate class
-    private final ClassifiedAttributes ca;
-    private final ClassifiedMethods cm;
-    private final ClassifiedInstanceVariablesAccessibilityCached civa;
+    private final MetricsStructure metricsStructure;
 
     public SecurityMetricsFactory() {
-        // Create here all existing metrics and compose them
-        this.ca = new ClassifiedAttributesCached();
-        this.cm = new ClassifiedMethodsCached();
-        this.civa = new ClassifiedInstanceVariablesAccessibilityCached(ca);
+        this.metricsStructure = new MetricsStructure();
     }
 
     public List<SecurityMetric> getSecurityMetrics(String[] metricsCodes) {
@@ -30,13 +24,13 @@ public class SecurityMetricsFactory {
             SecurityMetric securityMetric = null;
             switch (metricCode) {
                 case ClassifiedAttributes.CODE:
-                    securityMetric = ca;
+                    securityMetric = metricsStructure.getCa();
                     break;
                 case ClassifiedMethods.CODE:
-                    securityMetric = cm;
+                    securityMetric = metricsStructure.getCm();
                     break;
                 case ClassifiedInstanceVariablesAccessibility.CODE:
-                    securityMetric = civa;
+                    securityMetric = metricsStructure.getCiva();
                     break;
                 // Add other metrics here
             }
@@ -45,5 +39,30 @@ public class SecurityMetricsFactory {
             }
         }
         return securityMetrics;
+    }
+
+    private static class MetricsStructure {
+        private final ClassifiedAttributes ca;
+        private final ClassifiedMethods cm;
+        private final ClassifiedInstanceVariablesAccessibilityCached civa;
+
+        public MetricsStructure() {
+            // Create here all existing metrics and compose them
+            this.ca = new ClassifiedAttributesCached();
+            this.cm = new ClassifiedMethodsCached();
+            this.civa = new ClassifiedInstanceVariablesAccessibilityCached(ca);
+        }
+
+        public ClassifiedAttributes getCa() {
+            return ca;
+        }
+
+        public ClassifiedMethods getCm() {
+            return cm;
+        }
+
+        public ClassifiedInstanceVariablesAccessibilityCached getCiva() {
+            return civa;
+        }
     }
 }
