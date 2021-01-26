@@ -1,9 +1,9 @@
 package org.name.tool.core;
 
 import org.name.tool.core.analysis.ProjectAnalyzer;
-import org.name.tool.core.analysis.results.ProjectAnalyzerResults;
 import org.name.tool.core.metrics.api.ProjectMetricsCalculator;
-import org.name.tool.core.metrics.api.results.ProjectMetricsResults;
+import org.name.tool.core.results.ProjectAnalyzerResults;
+import org.name.tool.core.results.ProjectMetricsResults;
 
 public class Tool {
     private final ToolInput toolInput;

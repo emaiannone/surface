@@ -1,4 +1,4 @@
-package org.name.tool.core.analysis.results;
+package org.name.tool.core.results;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;

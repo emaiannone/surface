@@ -1,7 +1,7 @@
 package org.name.tool.core.metrics.ca;
 
-import org.name.tool.core.analysis.results.ClassifiedAnalyzerResults;
-import org.name.tool.core.metrics.api.SecurityMetricValue;
+import org.name.tool.core.results.ClassifiedAnalyzerResults;
+import org.name.tool.core.results.SecurityMetricValue;
 
 public class ClassifiedAttributesCached extends ClassifiedAttributes {
     private final ClassifiedAttributesImpl classifiedAttributes;

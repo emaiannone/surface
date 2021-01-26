@@ -1,6 +1,7 @@
 package org.name.tool.core.metrics.api;
 
-import org.name.tool.core.analysis.results.ClassifiedAnalyzerResults;
+import org.name.tool.core.results.ClassifiedAnalyzerResults;
+import org.name.tool.core.results.SecurityMetricValue;
 
 public abstract class SecurityMetric {
     private String name;

@@ -1,7 +1,4 @@
-package org.name.tool.core.metrics.api.results;
-
-import org.name.tool.core.analysis.results.ClassifiedAnalyzerResults;
-import org.name.tool.core.metrics.api.SecurityMetricValue;
+package org.name.tool.core.results;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -42,7 +39,7 @@ public class ClassMetricsResults implements Iterable<SecurityMetricValue> {
         StringBuilder builder = new StringBuilder("Class: " + getClassName());
         for (SecurityMetricValue r : this) {
             builder.append("\n");
-            builder.append(r.getMetric().getCode());
+            builder.append(r.getMetricCode());
             builder.append(" = ");
             builder.append(r.getValue());
         }

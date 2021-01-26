@@ -1,7 +1,7 @@
 package org.name.tool.core.metrics.civa;
 
-import org.name.tool.core.analysis.results.ClassifiedAnalyzerResults;
-import org.name.tool.core.metrics.api.SecurityMetricValue;
+import org.name.tool.core.results.ClassifiedAnalyzerResults;
+import org.name.tool.core.results.SecurityMetricValue;
 import org.name.tool.core.metrics.ca.ClassifiedAttributes;
 
 public class ClassifiedInstanceVariablesAccessibilityCached extends ClassifiedInstanceVariablesAccessibility {

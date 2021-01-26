@@ -11,7 +11,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.resolution.Resolvable;
 import com.github.javaparser.resolution.UnsolvedSymbolException;
 import com.github.javaparser.resolution.declarations.ResolvedValueDeclaration;
-import org.name.tool.core.analysis.results.ClassifiedAnalyzerResults;
+import org.name.tool.core.results.ClassifiedAnalyzerResults;
 
 import java.util.Arrays;
 import java.util.HashSet;

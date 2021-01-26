@@ -1,4 +1,4 @@
-package org.name.tool.core.metrics.api.results;
+package org.name.tool.core.results;
 
 import com.github.javaparser.utils.ProjectRoot;
 

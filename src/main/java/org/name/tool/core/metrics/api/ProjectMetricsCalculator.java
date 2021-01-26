@@ -1,14 +1,14 @@
 package org.name.tool.core.metrics.api;
 
-import org.name.tool.core.analysis.results.ClassifiedAnalyzerResults;
-import org.name.tool.core.analysis.results.ProjectAnalyzerResults;
+import org.name.tool.core.results.ClassifiedAnalyzerResults;
+import org.name.tool.core.results.ProjectAnalyzerResults;
 import org.name.tool.core.metrics.SecurityMetricsFactory;
-import org.name.tool.core.metrics.api.results.ClassMetricsResults;
-import org.name.tool.core.metrics.api.results.ProjectMetricsResults;
+import org.name.tool.core.results.ClassMetricsResults;
+import org.name.tool.core.results.ProjectMetricsResults;
+import org.name.tool.core.results.SecurityMetricValue;
 
 import java.util.List;
 
-//TODO Move ALL *Results classes in a separate package, at the level of metrics and analysis?
 public class ProjectMetricsCalculator {
     private final ProjectAnalyzerResults projectAnalyzerResults;
 
