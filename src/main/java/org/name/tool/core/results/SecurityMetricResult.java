@@ -2,12 +2,12 @@ package org.name.tool.core.results;
 
 import java.io.Serializable;
 
-public class SecurityMetricValue<T extends Serializable> {
+public class SecurityMetricResult<T extends Serializable> {
     private final String metricName;
     private final String metricCode;
     private final T value;
 
-    public SecurityMetricValue(String metricName, String metricCode, T value) {
+    public SecurityMetricResult(String metricName, String metricCode, T value) {
         this.metricName = metricName;
         this.metricCode = metricCode;
         this.value = value;

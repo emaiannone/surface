@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class ClassMetricsResults implements Iterable<SecurityMetricValue<?>> {
+public class ClassMetricsResults implements Iterable<SecurityMetricResult<?>> {
     private final ClassifiedAnalyzerResults classResults;
-    private final List<SecurityMetricValue<?>> results;
+    private final List<SecurityMetricResult<?>> results;
 
     public ClassMetricsResults(ClassifiedAnalyzerResults classResults) {
         this.classResults = classResults;
@@ -14,12 +14,12 @@ public class ClassMetricsResults implements Iterable<SecurityMetricValue<?>> {
     }
 
     @Override
-    public Iterator<SecurityMetricValue<?>> iterator() {
+    public Iterator<SecurityMetricResult<?>> iterator() {
         return results.iterator();
     }
 
-    public void add(SecurityMetricValue<?> securityMetricValue) {
-        results.add(securityMetricValue);
+    public void add(SecurityMetricResult<?> securityMetricResult) {
+        results.add(securityMetricResult);
     }
 
     public String getClassName() {
@@ -30,14 +30,14 @@ public class ClassMetricsResults implements Iterable<SecurityMetricValue<?>> {
         return classResults;
     }
 
-    public List<SecurityMetricValue<?>> getResults() {
+    public List<SecurityMetricResult<?>> getResults() {
         return new ArrayList<>(results);
     }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder("Class: " + getClassName());
-        for (SecurityMetricValue<?> r : this) {
+        for (SecurityMetricResult<?> r : this) {
             builder.append("\n");
             builder.append(r.getMetricCode());
             builder.append(" = ");

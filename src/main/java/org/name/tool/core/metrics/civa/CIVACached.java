@@ -1,12 +1,12 @@
 package org.name.tool.core.metrics.civa;
 
 import org.name.tool.core.results.ClassifiedAnalyzerResults;
-import org.name.tool.core.results.SecurityMetricValue;
+import org.name.tool.core.results.SecurityMetricResult;
 import org.name.tool.core.metrics.ca.CA;
 
 public class CIVACached extends CIVA {
     private final CIVAImpl civa;
-    private SecurityMetricValue<Double> cachedResult;
+    private SecurityMetricResult<Double> cachedResult;
 
     public CIVACached(CA ca) {
         this.civa = new CIVAImpl(ca);
@@ -14,7 +14,7 @@ public class CIVACached extends CIVA {
     }
 
     @Override
-    public SecurityMetricValue<Double> compute(ClassifiedAnalyzerResults classResults) {
+    public SecurityMetricResult<Double> compute(ClassifiedAnalyzerResults classResults) {
         if (cachedResult == null) {
             cachedResult = civa.compute(classResults);
         }

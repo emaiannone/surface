@@ -5,7 +5,7 @@ import org.name.tool.core.results.ProjectAnalyzerResults;
 import org.name.tool.core.metrics.SecurityMetricsFactory;
 import org.name.tool.core.results.ClassMetricsResults;
 import org.name.tool.core.results.ProjectMetricsResults;
-import org.name.tool.core.results.SecurityMetricValue;
+import org.name.tool.core.results.SecurityMetricResult;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class ProjectMetricsCalculator {
             ClassMetricsResults classMetricsResults = new ClassMetricsResults(classResults);
             List<SecurityMetric<?>> metrics = new SecurityMetricsFactory().getSecurityMetrics(metricsCode);
             for (SecurityMetric<?> metric : metrics) {
-                SecurityMetricValue<?> metricResult = metric.compute(classResults);
+                SecurityMetricResult<?> metricResult = metric.compute(classResults);
                 classMetricsResults.add(metricResult);
             }
             projectMetricsResults.add(classMetricsResults);
