@@ -6,7 +6,7 @@ import org.name.tool.core.results.SecurityMetricValue;
 
 public class CMRCached extends CMR {
     private final CMRImpl cmr;
-    private SecurityMetricValue cachedResult;
+    private SecurityMetricValue<Double> cachedResult;
 
     public CMRCached(CM cm) {
         this.cmr = new CMRImpl(cm);
@@ -14,7 +14,7 @@ public class CMRCached extends CMR {
     }
 
     @Override
-    public SecurityMetricValue compute(ClassifiedAnalyzerResults classResults) {
+    public SecurityMetricValue<Double> compute(ClassifiedAnalyzerResults classResults) {
         if (cachedResult == null) {
             cachedResult = cmr.compute(classResults);
         }

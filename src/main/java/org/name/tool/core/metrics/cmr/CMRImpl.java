@@ -12,10 +12,10 @@ public class CMRImpl extends CMR {
     }
 
     @Override
-    public SecurityMetricValue compute(ClassifiedAnalyzerResults classResults) {
-        double cmValue = cm.compute(classResults).getValue();
-        double methods = classResults.getMethods().size();
-        double value = methods != 0.0 ? cmValue / methods : 0.0;
-        return new SecurityMetricValue(getName(), getCode(), value);
+    public SecurityMetricValue<Double> compute(ClassifiedAnalyzerResults classResults) {
+        int cmValue = cm.compute(classResults).getValue();
+        int methods = classResults.getMethods().size();
+        double value = methods != 0.0 ? (double) cmValue / methods : 0.0;
+        return new SecurityMetricValue<>(getName(), getCode(), value);
     }
 }

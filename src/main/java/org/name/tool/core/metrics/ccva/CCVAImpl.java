@@ -16,7 +16,7 @@ public class CCVAImpl extends CCVA {
     }
 
     @Override
-    public SecurityMetricValue compute(ClassifiedAnalyzerResults classResults) {
+    public SecurityMetricValue<Double> compute(ClassifiedAnalyzerResults classResults) {
         int nonPrivateStatic = 0;
         Set<VariableDeclarator> classifiedAttributes = classResults.getClassifiedAttributes();
         for (VariableDeclarator classifiedAttribute : classifiedAttributes) {
@@ -27,8 +27,8 @@ public class CCVAImpl extends CCVA {
                 }
             }
         }
-        double caValue = ca.compute(classResults).getValue();
-        double value = caValue != 0.0 ? nonPrivateStatic / caValue : 0.0;
-        return new SecurityMetricValue(getName(), getCode(), value);
+        int caValue = ca.compute(classResults).getValue();
+        double value = caValue != 0.0 ? (double) nonPrivateStatic / caValue : 0.0;
+        return new SecurityMetricValue<>(getName(), getCode(), value);
     }
 }

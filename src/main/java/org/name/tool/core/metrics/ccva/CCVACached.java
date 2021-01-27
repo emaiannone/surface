@@ -6,7 +6,7 @@ import org.name.tool.core.results.SecurityMetricValue;
 
 public class CCVACached extends CCVA {
     private final CCVAImpl ccva;
-    private SecurityMetricValue cachedResult;
+    private SecurityMetricValue<Double> cachedResult;
 
     public CCVACached(CA ca) {
         this.ccva = new CCVAImpl(ca);
@@ -14,7 +14,7 @@ public class CCVACached extends CCVA {
     }
 
     @Override
-    public SecurityMetricValue compute(ClassifiedAnalyzerResults classResults) {
+    public SecurityMetricValue<Double> compute(ClassifiedAnalyzerResults classResults) {
         if (cachedResult == null) {
             cachedResult = ccva.compute(classResults);
         }

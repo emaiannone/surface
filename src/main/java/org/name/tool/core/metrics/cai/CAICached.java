@@ -7,7 +7,7 @@ import org.name.tool.core.results.SecurityMetricValue;
 
 public class CAICached extends CAI {
     private final CAIImpl cai;
-    private SecurityMetricValue cachedResult;
+    private SecurityMetricValue<Double> cachedResult;
 
     public CAICached(CA ca, CM cm) {
         this.cai = new CAIImpl(ca, cm);
@@ -15,7 +15,7 @@ public class CAICached extends CAI {
     }
 
     @Override
-    public SecurityMetricValue compute(ClassifiedAnalyzerResults classResults) {
+    public SecurityMetricValue<Double> compute(ClassifiedAnalyzerResults classResults) {
         if (cachedResult == null) {
             cachedResult = cai.compute(classResults);
         }

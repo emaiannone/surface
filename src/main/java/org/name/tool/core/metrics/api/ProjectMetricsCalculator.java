@@ -14,15 +14,15 @@ public class ProjectMetricsCalculator {
 
     public ProjectMetricsCalculator(ProjectAnalyzerResults projectAnalyzerResults) {
         this.projectAnalyzerResults = projectAnalyzerResults;
-    }
+     }
 
     public ProjectMetricsResults calculate(String[] metricsCode) {
         ProjectMetricsResults projectMetricsResults = new ProjectMetricsResults(projectAnalyzerResults.getProjectRoot());
         for (ClassifiedAnalyzerResults classResults : projectAnalyzerResults) {
             ClassMetricsResults classMetricsResults = new ClassMetricsResults(classResults);
-            List<SecurityMetric> metrics = new SecurityMetricsFactory().getSecurityMetrics(metricsCode);
-            for (SecurityMetric metric : metrics) {
-                SecurityMetricValue metricResult = metric.compute(classResults);
+            List<SecurityMetric<?>> metrics = new SecurityMetricsFactory().getSecurityMetrics(metricsCode);
+            for (SecurityMetric<?> metric : metrics) {
+                SecurityMetricValue<?> metricResult = metric.compute(classResults);
                 classMetricsResults.add(metricResult);
             }
             projectMetricsResults.add(classMetricsResults);

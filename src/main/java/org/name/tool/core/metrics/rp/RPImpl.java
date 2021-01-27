@@ -6,8 +6,8 @@ import org.name.tool.core.results.SecurityMetricValue;
 public class RPImpl extends RP {
 
     @Override
-    public SecurityMetricValue compute(ClassifiedAnalyzerResults classResults) {
-        double value = classResults.isUsingReflection() ? 1 : 0;
-        return new SecurityMetricValue(getName(), getCode(), value);
+    public SecurityMetricValue<Boolean> compute(ClassifiedAnalyzerResults classResults) {
+        boolean value = classResults.isUsingReflection();
+        return new SecurityMetricValue<>(getName(), getCode(), value);
     }
 }

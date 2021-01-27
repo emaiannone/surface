@@ -16,13 +16,13 @@ public class CAIImpl extends CAI {
     }
 
     @Override
-    public SecurityMetricValue compute(ClassifiedAnalyzerResults classResults) {
+    public SecurityMetricValue<Double> compute(ClassifiedAnalyzerResults classResults) {
         double actualInteractions = 0;
         for (VariableDeclarator attr : classResults.getClassifiedAttributes()) {
             actualInteractions += classResults.getClassifiedMethods(attr).size();
         }
         double possibleInteractions = ca.compute(classResults).getValue() * cm.compute(classResults).getValue();
         double value = possibleInteractions != 0.0 ? actualInteractions / possibleInteractions : 0.0;
-        return new SecurityMetricValue(getName(), getCode(), value);
+        return new SecurityMetricValue<>(getName(), getCode(), value);
     }
 }

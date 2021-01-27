@@ -5,7 +5,7 @@ import org.name.tool.core.results.SecurityMetricValue;
 
 public class CMCached extends CM {
     private final CMImpl classifiedMethods;
-    private SecurityMetricValue cachedResult;
+    private SecurityMetricValue<Integer> cachedResult;
 
     public CMCached() {
         this.classifiedMethods = new CMImpl();
@@ -13,7 +13,7 @@ public class CMCached extends CM {
     }
 
     @Override
-    public SecurityMetricValue compute(ClassifiedAnalyzerResults classResults) {
+    public SecurityMetricValue<Integer> compute(ClassifiedAnalyzerResults classResults) {
         if (cachedResult == null) {
             cachedResult = classifiedMethods.compute(classResults);
         }

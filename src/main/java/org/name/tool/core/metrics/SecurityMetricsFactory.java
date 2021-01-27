@@ -28,10 +28,10 @@ public class SecurityMetricsFactory {
         this.metricsStructure = new MetricsStructure();
     }
 
-    public List<SecurityMetric> getSecurityMetrics(String[] metricsCodes) {
-        List<SecurityMetric> securityMetrics = new ArrayList<>();
+    public List<SecurityMetric<?>> getSecurityMetrics(String[] metricsCodes) {
+        List<SecurityMetric<?>> securityMetrics = new ArrayList<>();
         for (String metricCode : metricsCodes) {
-            SecurityMetric securityMetric = null;
+            SecurityMetric<?> securityMetric = null;
             switch (metricCode) {
                 case CA.CODE:
                     securityMetric = metricsStructure.getCa();

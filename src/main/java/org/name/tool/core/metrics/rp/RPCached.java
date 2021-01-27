@@ -5,7 +5,7 @@ import org.name.tool.core.results.SecurityMetricValue;
 
 public class RPCached extends RP {
     private final RPImpl rp;
-    private SecurityMetricValue cachedResult;
+    private SecurityMetricValue<Boolean> cachedResult;
 
     public RPCached() {
         this.rp = new RPImpl();
@@ -13,7 +13,7 @@ public class RPCached extends RP {
     }
 
     @Override
-    public SecurityMetricValue compute(ClassifiedAnalyzerResults classResults) {
+    public SecurityMetricValue<Boolean> compute(ClassifiedAnalyzerResults classResults) {
         if (cachedResult == null) {
             cachedResult = rp.compute(classResults);
         }

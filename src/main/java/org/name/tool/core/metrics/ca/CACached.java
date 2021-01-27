@@ -5,7 +5,7 @@ import org.name.tool.core.results.SecurityMetricValue;
 
 public class CACached extends CA {
     private final CAImpl classifiedAttributes;
-    private SecurityMetricValue cachedResult;
+    private SecurityMetricValue<Integer> cachedResult;
 
     public CACached() {
         this.classifiedAttributes = new CAImpl();
@@ -13,7 +13,7 @@ public class CACached extends CA {
     }
 
     @Override
-    public SecurityMetricValue compute(ClassifiedAnalyzerResults classResults) {
+    public SecurityMetricValue<Integer> compute(ClassifiedAnalyzerResults classResults) {
         if (cachedResult == null) {
             cachedResult = classifiedAttributes.compute(classResults);
         }

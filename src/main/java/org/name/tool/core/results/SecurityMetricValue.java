@@ -1,11 +1,13 @@
 package org.name.tool.core.results;
 
-public class SecurityMetricValue {
+import java.io.Serializable;
+
+public class SecurityMetricValue<T extends Serializable> {
     private final String metricName;
     private final String metricCode;
-    private final double value;
+    private final T value;
 
-    public SecurityMetricValue(String metricName, String metricCode, double value) {
+    public SecurityMetricValue(String metricName, String metricCode, T value) {
         this.metricName = metricName;
         this.metricCode = metricCode;
         this.value = value;
@@ -19,7 +21,7 @@ public class SecurityMetricValue {
         return metricCode;
     }
 
-    public double getValue() {
+    public T getValue() {
         return value;
     }
 

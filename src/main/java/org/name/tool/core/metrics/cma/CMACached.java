@@ -6,7 +6,7 @@ import org.name.tool.core.results.SecurityMetricValue;
 
 public class CMACached extends CMA {
     private final CMAImpl cma;
-    private SecurityMetricValue cachedResult;
+    private SecurityMetricValue<Double> cachedResult;
 
     public CMACached(CM cm) {
         this.cma = new CMAImpl(cm);
@@ -14,7 +14,7 @@ public class CMACached extends CMA {
     }
 
     @Override
-    public SecurityMetricValue compute(ClassifiedAnalyzerResults classResults) {
+    public SecurityMetricValue<Double> compute(ClassifiedAnalyzerResults classResults) {
         if (cachedResult == null) {
             cachedResult = cma.compute(classResults);
         }

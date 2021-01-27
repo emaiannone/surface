@@ -6,8 +6,8 @@ import org.name.tool.core.results.SecurityMetricValue;
 public class CAImpl extends CA {
 
     @Override
-    public SecurityMetricValue compute(ClassifiedAnalyzerResults classResults) {
-        double value = classResults.getClassifiedAttributes().size();
-        return new SecurityMetricValue(getName(), getCode(), value);
+    public SecurityMetricValue<Integer> compute(ClassifiedAnalyzerResults classResults) {
+        int value = classResults.getClassifiedAttributes().size();
+        return new SecurityMetricValue<>(getName(), getCode(), value);
     }
 }
