@@ -17,7 +17,7 @@ public class CMAImpl extends CMA {
     @Override
     public SecurityMetricValue compute(ClassifiedAnalyzerResults classResults) {
         Set<MethodDeclaration> classifiedMethods = classResults.getClassifiedMethods();
-        int nonPrivate = (int) classifiedMethods.stream().filter(ca -> !ca.isPrivate()).count();
+        double nonPrivate = classifiedMethods.stream().filter(ca -> !ca.isPrivate()).count();
         double cmValue = cm.compute(classResults).getValue();
         double value = cmValue != 0.0 ? nonPrivate / cmValue : 0.0;
         return new SecurityMetricValue(getName(), getCode(), value);
