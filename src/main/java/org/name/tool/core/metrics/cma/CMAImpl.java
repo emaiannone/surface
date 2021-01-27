@@ -1,9 +1,6 @@
 package org.name.tool.core.metrics.cma;
 
-import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.VariableDeclarator;
-import com.github.javaparser.ast.nodeTypes.modifiers.NodeWithPrivateModifier;
 import org.name.tool.core.metrics.cm.CM;
 import org.name.tool.core.results.ClassifiedAnalyzerResults;
 import org.name.tool.core.results.SecurityMetricValue;
@@ -19,7 +16,6 @@ public class CMAImpl extends CMA {
 
     @Override
     public SecurityMetricValue compute(ClassifiedAnalyzerResults classResults) {
-        //TODO Implement
         Set<MethodDeclaration> classifiedMethods = classResults.getClassifiedMethods();
         int nonPrivate = (int) classifiedMethods.stream().filter(ca -> !ca.isPrivate()).count();
         double cmValue = cm.compute(classResults).getValue();
