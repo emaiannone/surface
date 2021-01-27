@@ -6,6 +6,7 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -47,6 +48,10 @@ public class ClassifiedAnalyzerResults implements Iterable<Map.Entry<VariableDec
                 .stream()
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
+    }
+
+    public Set<MethodDeclaration> getMethods() {
+        return new HashSet<>(classOrInterfaceDeclaration.getMethods());
     }
 
     public Set<VariableDeclarator> getClassifiedAttributes() {

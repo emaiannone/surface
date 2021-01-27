@@ -17,7 +17,7 @@
 - [x] RP (Reflection Package) - true/false use of java.reflection
 
 ## Cohesion
-- [] CMR (CM Ratio) - Ratio of CM out of number of total methods
+- [x] CMR (CM Ratio) - Ratio of CM out of number of total methods
   - [] CWMR (CWM Ratio) - Ratio of CWM out of total CM
   - [] CRMR (CRM Ratio) - Ratio of CRM out of total CM
 - [] CAI (Classified Attribute Interactions) - Ratio of sum of CM per CA out of the product of all CM and all CA
