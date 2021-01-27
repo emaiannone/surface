@@ -1,7 +1,8 @@
 public class Test {
-    private String name;
-    public String username;
+    private String username;
     private String password;
+    protected String name;
+    protected static String privateData = "c";
 
     public String getName() {
         return name;

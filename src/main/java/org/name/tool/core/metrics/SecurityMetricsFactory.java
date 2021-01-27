@@ -3,6 +3,8 @@ package org.name.tool.core.metrics;
 import org.name.tool.core.metrics.api.SecurityMetric;
 import org.name.tool.core.metrics.ca.ClassifiedAttributes;
 import org.name.tool.core.metrics.ca.ClassifiedAttributesCached;
+import org.name.tool.core.metrics.ccva.ClassifiedClassVariablesAccessibility;
+import org.name.tool.core.metrics.ccva.ClassifiedClassVariablesAccessibilityCached;
 import org.name.tool.core.metrics.civa.ClassifiedInstanceVariablesAccessibility;
 import org.name.tool.core.metrics.civa.ClassifiedInstanceVariablesAccessibilityCached;
 import org.name.tool.core.metrics.cm.ClassifiedMethods;
@@ -32,6 +34,9 @@ public class SecurityMetricsFactory {
                 case ClassifiedInstanceVariablesAccessibility.CODE:
                     securityMetric = metricsStructure.getCiva();
                     break;
+                case ClassifiedClassVariablesAccessibility.CODE:
+                    securityMetric = metricsStructure.getCcva();
+                    break;
                 // Add other metrics here
             }
             if (securityMetric != null) {
@@ -44,13 +49,15 @@ public class SecurityMetricsFactory {
     private static class MetricsStructure {
         private final ClassifiedAttributes ca;
         private final ClassifiedMethods cm;
-        private final ClassifiedInstanceVariablesAccessibilityCached civa;
+        private final ClassifiedInstanceVariablesAccessibility civa;
+        private final ClassifiedClassVariablesAccessibility ccva;
 
         public MetricsStructure() {
             // Create here all existing metrics and compose them
             this.ca = new ClassifiedAttributesCached();
             this.cm = new ClassifiedMethodsCached();
             this.civa = new ClassifiedInstanceVariablesAccessibilityCached(ca);
+            this.ccva = new ClassifiedClassVariablesAccessibilityCached(ca);
         }
 
         public ClassifiedAttributes getCa() {
@@ -61,8 +68,12 @@ public class SecurityMetricsFactory {
             return cm;
         }
 
-        public ClassifiedInstanceVariablesAccessibilityCached getCiva() {
+        public ClassifiedInstanceVariablesAccessibility getCiva() {
             return civa;
+        }
+
+        public ClassifiedClassVariablesAccessibility getCcva() {
+            return ccva;
         }
     }
 }
