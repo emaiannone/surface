@@ -6,8 +6,8 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.name.tool.core.ToolInput;
-import org.name.tool.core.metrics.ca.ClassifiedAttributes;
-import org.name.tool.core.metrics.cm.ClassifiedMethods;
+import org.name.tool.core.metrics.ca.CA;
+import org.name.tool.core.metrics.cm.CM;
 
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -19,8 +19,8 @@ public class CLIParser {
     // List of default metrics
     // FIXME: 25/01/21 Is this this strong coupling necessary?
     private static final String[] DEFAULT_METRICS = new String[]{
-            ClassifiedAttributes.CODE,
-            ClassifiedMethods.CODE
+            CA.CODE,
+            CM.CODE
     };
     // csv as default
     private static final String DEFAULT_EXPORT = "csv";

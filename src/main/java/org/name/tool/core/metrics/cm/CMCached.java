@@ -1,21 +1,21 @@
-package org.name.tool.core.metrics.ca;
+package org.name.tool.core.metrics.cm;
 
 import org.name.tool.core.results.ClassifiedAnalyzerResults;
 import org.name.tool.core.results.SecurityMetricValue;
 
-public class ClassifiedAttributesCached extends ClassifiedAttributes {
-    private final ClassifiedAttributesImpl classifiedAttributes;
+public class CMCached extends CM {
+    private final CMImpl classifiedMethods;
     private SecurityMetricValue cachedResult;
 
-    public ClassifiedAttributesCached() {
-        this.classifiedAttributes = new ClassifiedAttributesImpl();
+    public CMCached() {
+        this.classifiedMethods = new CMImpl();
         this.cachedResult = null;
     }
 
     @Override
     public SecurityMetricValue compute(ClassifiedAnalyzerResults classResults) {
         if (cachedResult == null) {
-            cachedResult = classifiedAttributes.compute(classResults);
+            cachedResult = classifiedMethods.compute(classResults);
         }
         return cachedResult;
     }

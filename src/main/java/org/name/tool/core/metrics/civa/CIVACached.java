@@ -2,14 +2,14 @@ package org.name.tool.core.metrics.civa;
 
 import org.name.tool.core.results.ClassifiedAnalyzerResults;
 import org.name.tool.core.results.SecurityMetricValue;
-import org.name.tool.core.metrics.ca.ClassifiedAttributes;
+import org.name.tool.core.metrics.ca.CA;
 
-public class ClassifiedInstanceVariablesAccessibilityCached extends ClassifiedInstanceVariablesAccessibility {
-    private final ClassifiedInstanceVariablesAccessibilityImpl civa;
+public class CIVACached extends CIVA {
+    private final CIVAImpl civa;
     private SecurityMetricValue cachedResult;
 
-    public ClassifiedInstanceVariablesAccessibilityCached(ClassifiedAttributes ca) {
-        this.civa = new ClassifiedInstanceVariablesAccessibilityImpl(ca);
+    public CIVACached(CA ca) {
+        this.civa = new CIVAImpl(ca);
         this.cachedResult = null;
     }
 

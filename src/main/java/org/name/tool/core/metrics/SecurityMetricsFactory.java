@@ -1,14 +1,14 @@
 package org.name.tool.core.metrics;
 
 import org.name.tool.core.metrics.api.SecurityMetric;
-import org.name.tool.core.metrics.ca.ClassifiedAttributes;
-import org.name.tool.core.metrics.ca.ClassifiedAttributesCached;
-import org.name.tool.core.metrics.ccva.ClassifiedClassVariablesAccessibility;
-import org.name.tool.core.metrics.ccva.ClassifiedClassVariablesAccessibilityCached;
-import org.name.tool.core.metrics.civa.ClassifiedInstanceVariablesAccessibility;
-import org.name.tool.core.metrics.civa.ClassifiedInstanceVariablesAccessibilityCached;
-import org.name.tool.core.metrics.cm.ClassifiedMethods;
-import org.name.tool.core.metrics.cm.ClassifiedMethodsCached;
+import org.name.tool.core.metrics.ca.CA;
+import org.name.tool.core.metrics.ca.CACached;
+import org.name.tool.core.metrics.ccva.CCVA;
+import org.name.tool.core.metrics.ccva.CCVACached;
+import org.name.tool.core.metrics.civa.CIVA;
+import org.name.tool.core.metrics.civa.CIVACached;
+import org.name.tool.core.metrics.cm.CM;
+import org.name.tool.core.metrics.cm.CMCached;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,16 +25,16 @@ public class SecurityMetricsFactory {
         for (String metricCode : metricsCodes) {
             SecurityMetric securityMetric = null;
             switch (metricCode) {
-                case ClassifiedAttributes.CODE:
+                case CA.CODE:
                     securityMetric = metricsStructure.getCa();
                     break;
-                case ClassifiedMethods.CODE:
+                case CM.CODE:
                     securityMetric = metricsStructure.getCm();
                     break;
-                case ClassifiedInstanceVariablesAccessibility.CODE:
+                case CIVA.CODE:
                     securityMetric = metricsStructure.getCiva();
                     break;
-                case ClassifiedClassVariablesAccessibility.CODE:
+                case CCVA.CODE:
                     securityMetric = metricsStructure.getCcva();
                     break;
                 // Add other metrics here
@@ -47,32 +47,32 @@ public class SecurityMetricsFactory {
     }
 
     private static class MetricsStructure {
-        private final ClassifiedAttributes ca;
-        private final ClassifiedMethods cm;
-        private final ClassifiedInstanceVariablesAccessibility civa;
-        private final ClassifiedClassVariablesAccessibility ccva;
+        private final CA ca;
+        private final CM cm;
+        private final CIVA civa;
+        private final CCVA ccva;
 
         public MetricsStructure() {
             // Create here all existing metrics and compose them
-            this.ca = new ClassifiedAttributesCached();
-            this.cm = new ClassifiedMethodsCached();
-            this.civa = new ClassifiedInstanceVariablesAccessibilityCached(ca);
-            this.ccva = new ClassifiedClassVariablesAccessibilityCached(ca);
+            this.ca = new CACached();
+            this.cm = new CMCached();
+            this.civa = new CIVACached(ca);
+            this.ccva = new CCVACached(ca);
         }
 
-        public ClassifiedAttributes getCa() {
+        public CA getCa() {
             return ca;
         }
 
-        public ClassifiedMethods getCm() {
+        public CM getCm() {
             return cm;
         }
 
-        public ClassifiedInstanceVariablesAccessibility getCiva() {
+        public CIVA getCiva() {
             return civa;
         }
 
-        public ClassifiedClassVariablesAccessibility getCcva() {
+        public CCVA getCcva() {
             return ccva;
         }
     }

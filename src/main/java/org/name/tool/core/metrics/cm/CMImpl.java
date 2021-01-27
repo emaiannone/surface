@@ -3,7 +3,7 @@ package org.name.tool.core.metrics.cm;
 import org.name.tool.core.results.ClassifiedAnalyzerResults;
 import org.name.tool.core.results.SecurityMetricValue;
 
-public class ClassifiedMethodsImpl extends ClassifiedMethods {
+public class CMImpl extends CM {
 
     @Override
     public SecurityMetricValue compute(ClassifiedAnalyzerResults classResults) {
