@@ -19,7 +19,8 @@ public class ClassifiedPatterns {
             patterns = new ArrayList<>();
             while (scanner.hasNext()) {
                 String line = scanner.nextLine();
-                Pattern pattern = Pattern.compile(line, Pattern.CASE_INSENSITIVE);
+                String regex = ".*" + line + ".*";
+                Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
                 patterns.add(pattern);
             }
         } catch (FileNotFoundException e) {

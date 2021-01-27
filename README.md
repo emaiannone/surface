@@ -47,3 +47,6 @@
 - [] How many times should we count a method that both read and writes?
 - [] Classified methods and critical classes are boolean concepts. Should we give them a ratio?
 - [] The papers talk about other measures that we are ignoring for not. What to do with them?
+
+# Keywords
+- name and code regex seems to be useless
