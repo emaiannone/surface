@@ -20,9 +20,9 @@
 - [x] CMR (CM Ratio) - Ratio of CM out of number of total methods
   - [ ] CWMR (CWM Ratio) - Ratio of CWM out of total CM
   - [ ] CRMR (CRM Ratio) - Ratio of CRM out of total CM
-- [ ] CAI (Classified Attribute Interactions) - Ratio of sum of CM per CA out of the product of all CM and all CA
-- [ ] CMAI (Classified Mutator-Attribute Interactions) - Ratio of sum of CWM per CA out of the product of all CWM and all CA
-- [ ] CAAI (Classified Accessor-Attribute Interactions) - Ratio of sum of CRM per CA out of the product of all CRM and all CA
+- [x] CAI (Classified Attribute Interactions) - Ratio of sum of CM per CA out of the product of all CM and all CA <img src="https://render.githubusercontent.com/render/math?math=\frac{\sum_{a \in CA} |CM(a)|}{|CM| \cdot |CA|}">
+  - [ ] CMAI (Classified Mutator-Attribute Interactions) - Ratio of sum of CWM per CA out of the product of all CWM and all CA
+  - [ ] CAAI (Classified Accessor-Attribute Interactions) - Ratio of sum of CRM per CA out of the product of all CRM and all CA
 
 # Inter-class
 - [ ] CC (Critical Classes) - Number of **critical** classes. Number of classes with at least one **classified** components (CA, ICA or CM)

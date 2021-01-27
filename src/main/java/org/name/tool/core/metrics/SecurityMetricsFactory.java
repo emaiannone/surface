@@ -3,6 +3,8 @@ package org.name.tool.core.metrics;
 import org.name.tool.core.metrics.api.SecurityMetric;
 import org.name.tool.core.metrics.ca.CA;
 import org.name.tool.core.metrics.ca.CACached;
+import org.name.tool.core.metrics.cai.CAI;
+import org.name.tool.core.metrics.cai.CAICached;
 import org.name.tool.core.metrics.ccva.CCVA;
 import org.name.tool.core.metrics.ccva.CCVACached;
 import org.name.tool.core.metrics.civa.CIVA;
@@ -52,6 +54,9 @@ public class SecurityMetricsFactory {
                 case CMR.CODE:
                     securityMetric = metricsStructure.getCmr();
                     break;
+                case CAI.CODE:
+                    securityMetric = metricsStructure.getCai();
+                    break;
                 // Add other metrics here
             }
             if (securityMetric != null) {
@@ -69,6 +74,7 @@ public class SecurityMetricsFactory {
         private final CCVA ccva;
         private final CMA cma;
         private final CMR cmr;
+        private final CAI cai;
 
         public MetricsStructure() {
             // Create here all existing metrics and compose them
@@ -79,6 +85,7 @@ public class SecurityMetricsFactory {
             this.ccva = new CCVACached(ca);
             this.cma = new CMACached(cm);
             this.cmr = new CMRCached(cm);
+            this.cai = new CAICached(ca, cm);
         }
 
         public CA getCa() {
@@ -107,6 +114,10 @@ public class SecurityMetricsFactory {
 
         public CMR getCmr() {
             return cmr;
+        }
+
+        public CAI getCai() {
+            return cai;
         }
     }
 }
