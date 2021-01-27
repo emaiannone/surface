@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 public class ClassifiedAnalyzerResults implements Iterable<Map.Entry<VariableDeclarator, Set<MethodDeclaration>>> {
     private final ClassOrInterfaceDeclaration classOrInterfaceDeclaration;
     private final Map<VariableDeclarator, Set<MethodDeclaration>> results;
+    private boolean usingReflection;
 
     public ClassifiedAnalyzerResults(ClassOrInterfaceDeclaration classOrInterfaceDeclaration) {
         this.classOrInterfaceDeclaration = classOrInterfaceDeclaration;
@@ -27,6 +28,10 @@ public class ClassifiedAnalyzerResults implements Iterable<Map.Entry<VariableDec
 
     public void put(VariableDeclarator variableDeclarator, Set<MethodDeclaration> methodDeclarations) {
         results.put(variableDeclarator, methodDeclarations);
+    }
+
+    public void setUsingReflection(boolean usingReflection) {
+        this.usingReflection = usingReflection;
     }
 
     public String getClassName() {
@@ -50,6 +55,10 @@ public class ClassifiedAnalyzerResults implements Iterable<Map.Entry<VariableDec
 
     public Map<VariableDeclarator, Set<MethodDeclaration>> getResults() {
         return new HashMap<>(results);
+    }
+
+    public boolean isUsingReflection() {
+        return usingReflection;
     }
 
     public Set<MethodDeclaration> getClassifiedMethods(VariableDeclarator variableDeclarator) {

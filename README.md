@@ -14,7 +14,7 @@
 - [x] CIVA (Classified Instance Variables Accessibility) - Ratio of non-private non-static CA out of the total of CA.
 - [x] CCVA (Classified Class Variables Accessibility) - Ratio of non-private static CA out of the total of CA.
 - [x] CMA (Classified Method Accessibility) - Ratio of non-private CM out of the total of CM.
-- [] RP (Reflection Package) - true/false use of java.reflection
+- [x] RP (Reflection Package) - true/false use of java.reflection
 
 ## Cohesion
 - [] CMR (CM Ratio) - Ratio of CM out of number of total methods

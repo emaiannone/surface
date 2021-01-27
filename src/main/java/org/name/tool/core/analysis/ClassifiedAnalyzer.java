@@ -1,5 +1,6 @@
 package org.name.tool.core.analysis;
 
+import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -19,12 +20,11 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class ClassifiedAnalyzer {
-    private final ClassOrInterfaceDeclaration classDeclaration;
+public class ClassifiedAnalyzer extends ClassAnalyzer {
     private final List<Pattern> patterns;
 
     public ClassifiedAnalyzer(ClassOrInterfaceDeclaration classDeclaration) {
-        this.classDeclaration = classDeclaration;
+        super(classDeclaration);
         this.patterns = ClassifiedPatterns.getInstance().getPatterns();
     }
 
@@ -37,9 +37,8 @@ public class ClassifiedAnalyzer {
      * if the analysis does not find any classified method, the results map will only contain the classified attributes (key).
      */
     public ClassifiedAnalyzerResults analyze() {
-        System.out.println("** Analyzing class: " + classDeclaration.getName());
-        ClassifiedAnalyzerResults results = new ClassifiedAnalyzerResults(classDeclaration);
-        Set<VariableDeclarator> classifiedAttributes = getClassifiedAttributes(new HashSet<>(classDeclaration.getFields()));
+        ClassifiedAnalyzerResults results = new ClassifiedAnalyzerResults(getClassDeclaration());
+        Set<VariableDeclarator> classifiedAttributes = getClassifiedAttributes(new HashSet<>(getClassDeclaration().getFields()));
         System.out.println("*** Classified Attributes: " + classifiedAttributes);
         if (classifiedAttributes.size() > 0) {
             for (VariableDeclarator attribute : classifiedAttributes) {
@@ -48,6 +47,7 @@ public class ClassifiedAnalyzer {
                 results.put(attribute, classifiedMethods);
             }
         }
+        results.setUsingReflection(isUsingReflection());
         return results;
     }
 
@@ -79,7 +79,7 @@ public class ClassifiedAnalyzer {
      */
     private Set<MethodDeclaration> getClassifiedMethods(VariableDeclarator classifiedAttribute) {
         Set<MethodDeclaration> classifiedMethods = new HashSet<>();
-        for (MethodDeclaration method : classDeclaration.getMethods()) {
+        for (MethodDeclaration method : getClassDeclaration().getMethods()) {
             BlockStmt bodyBlock = method.getBody().orElse(null);
             if (bodyBlock != null) {
                 Set<NodeWithSimpleName<?>> usagesNameExpr = bodyBlock
@@ -117,5 +117,16 @@ public class ClassifiedAnalyzer {
         return nodeWithSimpleNames.stream()
                 .map(NodeWithSimpleName::getNameAsString)
                 .anyMatch(name -> name.equals(classifiedAttribute.getNameAsString()));
+    }
+
+    private boolean isUsingReflection() {
+        boolean usingReflection = false;
+        CompilationUnit compilationUnit = getClassDeclaration().findCompilationUnit().orElse(null);
+        if (compilationUnit != null) {
+            usingReflection = compilationUnit.getImports()
+                    .stream()
+                    .anyMatch(imp -> imp.getNameAsString().contains("java.lang.reflect"));
+        }
+        return usingReflection;
     }
 }
