@@ -13,27 +13,19 @@ import com.github.javaparser.resolution.UnsolvedSymbolException;
 import com.github.javaparser.resolution.declarations.ResolvedValueDeclaration;
 import org.name.tool.core.results.ClassifiedAnalyzerResults;
 
-import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ClassifiedAnalyzer {
     private final ClassOrInterfaceDeclaration classDeclaration;
-
-    // TODO Add more patterns
-    public static final Pattern[] patterns = new Pattern[]{
-            Pattern.compile("username*", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("password*", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("passphrase*", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("key*", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("token*", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("secret*", Pattern.CASE_INSENSITIVE)
-    };
+    private final List<Pattern> patterns;
 
     public ClassifiedAnalyzer(ClassOrInterfaceDeclaration classDeclaration) {
         this.classDeclaration = classDeclaration;
+        this.patterns = ClassifiedPatterns.getInstance().getPatterns();
     }
 
     /**
@@ -74,7 +66,7 @@ public class ClassifiedAnalyzer {
 
     private boolean isClassified(VariableDeclarator attribute) {
         String attributeName = attribute.getNameAsString();
-        return Arrays.stream(patterns)
+        return patterns.stream()
                 .anyMatch(p -> p.matcher(attributeName).matches());
     }
 
