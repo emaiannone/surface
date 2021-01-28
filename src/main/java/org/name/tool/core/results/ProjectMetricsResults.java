@@ -33,7 +33,7 @@ public class ProjectMetricsResults implements Iterable<ClassMetricsResults> {
         StringBuilder builder = new StringBuilder("Project: " + projectRoot.getRoot().getFileName());
         for (ClassMetricsResults entries : this) {
             if (entries.getResults().size() > 0) {
-                builder.append("\n");
+                builder.append("\n\n");
                 builder.append(entries);
             }
         }
