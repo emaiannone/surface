@@ -1,15 +1,16 @@
 package org.name.tool.core.metrics.api;
 
-import org.name.tool.core.results.ClassifiedAnalyzerResults;
+import org.name.tool.core.results.AnalyzerResults;
 import org.name.tool.core.results.SecurityMetricResult;
 
 import java.io.Serializable;
 
-public abstract class SecurityMetric<T extends Serializable> {
+// T is for the parameters type (AnalyzerResults implementor) and U is for the type of the SecurityMetricResult returned
+public abstract class SecurityMetric<T extends AnalyzerResults, U extends Serializable> {
     private String name;
     private String code;
 
-    public abstract SecurityMetricResult<T> compute(ClassifiedAnalyzerResults classResults);
+    public abstract SecurityMetricResult<U> compute(T classResults);
 
     protected void setName(String name) {
         this.name = name;

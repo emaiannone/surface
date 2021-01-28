@@ -2,26 +2,34 @@ package org.name.tool.core.results;
 
 import com.github.javaparser.utils.ProjectRoot;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 public class ProjectMetricsResults implements Iterable<ClassMetricsResults> {
     private final ProjectRoot projectRoot;
-    private final Set<ClassMetricsResults> results;
+    private final Set<ClassMetricsResults> classMetricsResultsSet;
+    private final List<SecurityMetricResult<?>> projectMetrics;
 
     public ProjectMetricsResults(ProjectRoot projectRoot) {
         this.projectRoot = projectRoot;
-        this.results = new HashSet<>();
+        this.classMetricsResultsSet = new HashSet<>();
+        this.projectMetrics = new ArrayList<>();
     }
 
     @Override
     public Iterator<ClassMetricsResults> iterator() {
-        return results.iterator();
+        return classMetricsResultsSet.iterator();
     }
 
     public void add(ClassMetricsResults classResults) {
-        results.add(classResults);
+        this.classMetricsResultsSet.add(classResults);
+    }
+
+    public void add(SecurityMetricResult<?> projectMetric) {
+        projectMetrics.add(projectMetric);
     }
 
     public ProjectRoot getProjectRoot() {
@@ -31,8 +39,14 @@ public class ProjectMetricsResults implements Iterable<ClassMetricsResults> {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder("Project: " + projectRoot.getRoot().getFileName());
+        for (SecurityMetricResult<?> projectMetric : projectMetrics) {
+            builder.append("\n");
+            builder.append(projectMetric.getMetricCode());
+            builder.append(" = ");
+            builder.append(projectMetric.getValue());
+        }
         for (ClassMetricsResults entries : this) {
-            if (entries.getResults().size() > 0) {
+            if (entries.getClassMetrics().size() > 0) {
                 builder.append("\n\n");
                 builder.append(entries);
             }

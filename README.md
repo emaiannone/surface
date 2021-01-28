@@ -1,4 +1,4 @@
-# Intra-class
+# Class-level Metrics
 
 ## Basic
 - [x] CA (Classified Attributes) - Number of **classified** attributes of a class, computed through heuristics (pattern matching, e.g. password, token, etc.)
@@ -24,8 +24,8 @@
   - [ ] CMAI (Classified Mutator-Attribute Interactions) - Ratio of sum of CWM per CA out of the product of all CWM and all CA
   - [ ] CAAI (Classified Accessor-Attribute Interactions) - Ratio of sum of CRM per CA out of the product of all CRM and all CA
 
-# Inter-class
-- [ ] CC (Critical Classes) - Number of **critical** classes. Number of classes with at least one **classified** components (CA, ICA or CM)
+# Project-level Metrics
+- [x] CC (Critical Classes) - Number of **critical** classes. Number of classes with at least one **classified** components (CA, ICA or CM)
 - [ ] ICC (Indirect Critical Classes) - Given a CA, it is the number of classes (excluding its host) that indirectly uses it, such as with direct access or method calls.
 
 ## Coupling

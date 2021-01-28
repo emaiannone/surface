@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ClassifiedAnalyzerResults implements Iterable<Map.Entry<VariableDeclarator, Set<MethodDeclaration>>> {
+public class ClassifiedAnalyzerResults implements AnalyzerResults, Iterable<Map.Entry<VariableDeclarator, Set<MethodDeclaration>>> {
     private final ClassOrInterfaceDeclaration classOrInterfaceDeclaration;
     private final Map<VariableDeclarator, Set<MethodDeclaration>> results;
     private boolean usingReflection;

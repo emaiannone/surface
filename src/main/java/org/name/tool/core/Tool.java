@@ -27,8 +27,6 @@ public class Tool {
         System.out.println("* Printing Project Metrics");
         System.out.println(projectMetricsResults);
 
-        // TODO Inter-class metrics should be computed here
-
         // TODO Export
     }
 }

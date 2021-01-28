@@ -11,7 +11,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ProjectAnalyzerResults implements Iterable<ClassifiedAnalyzerResults> {
+public class ProjectAnalyzerResults implements AnalyzerResults, Iterable<ClassifiedAnalyzerResults> {
     private final ProjectRoot projectRoot;
     private final Set<ClassifiedAnalyzerResults> results;
 

@@ -6,20 +6,20 @@ import java.util.List;
 
 public class ClassMetricsResults implements Iterable<SecurityMetricResult<?>> {
     private final ClassifiedAnalyzerResults classResults;
-    private final List<SecurityMetricResult<?>> results;
+    private final List<SecurityMetricResult<?>> classMetrics;
 
     public ClassMetricsResults(ClassifiedAnalyzerResults classResults) {
         this.classResults = classResults;
-        this.results = new ArrayList<>();
+        this.classMetrics = new ArrayList<>();
     }
 
     @Override
     public Iterator<SecurityMetricResult<?>> iterator() {
-        return results.iterator();
+        return classMetrics.iterator();
     }
 
     public void add(SecurityMetricResult<?> securityMetricResult) {
-        results.add(securityMetricResult);
+        classMetrics.add(securityMetricResult);
     }
 
     public String getClassName() {
@@ -30,8 +30,8 @@ public class ClassMetricsResults implements Iterable<SecurityMetricResult<?>> {
         return classResults;
     }
 
-    public List<SecurityMetricResult<?>> getResults() {
-        return new ArrayList<>(results);
+    public List<SecurityMetricResult<?>> getClassMetrics() {
+        return new ArrayList<>(classMetrics);
     }
 
     @Override
