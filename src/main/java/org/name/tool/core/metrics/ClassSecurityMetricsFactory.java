@@ -5,7 +5,6 @@ import org.name.tool.core.metrics.ca.CA;
 import org.name.tool.core.metrics.ca.CACached;
 import org.name.tool.core.metrics.cai.CAI;
 import org.name.tool.core.metrics.cai.CAICached;
-import org.name.tool.core.metrics.cc.CC;
 import org.name.tool.core.metrics.ccva.CCVA;
 import org.name.tool.core.metrics.ccva.CCVACached;
 import org.name.tool.core.metrics.civa.CIVA;
