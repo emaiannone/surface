@@ -39,7 +39,7 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults, Iterable<Map.
         return classOrInterfaceDeclaration.getNameAsString();
     }
 
-    public ClassOrInterfaceDeclaration getClassOrInterfaceDeclaration() {
+    ClassOrInterfaceDeclaration getClassOrInterfaceDeclaration() {
         return classOrInterfaceDeclaration;
     }
 
@@ -64,6 +64,10 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults, Iterable<Map.
 
     public boolean isUsingReflection() {
         return usingReflection;
+    }
+
+    public boolean isCritical() {
+        return getClassifiedAttributes().size() + getClassifiedMethods().size() > 0;
     }
 
     public Set<MethodDeclaration> getClassifiedMethods(VariableDeclarator variableDeclarator) {

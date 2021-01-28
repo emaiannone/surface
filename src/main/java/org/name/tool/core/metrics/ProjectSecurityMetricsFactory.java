@@ -1,8 +1,8 @@
 package org.name.tool.core.metrics;
 
 import org.name.tool.core.metrics.api.ProjectSecurityMetric;
-import org.name.tool.core.metrics.cc.CC;
-import org.name.tool.core.metrics.cc.CCCached;
+import org.name.tool.core.metrics.projectlevel.cc.CC;
+import org.name.tool.core.metrics.projectlevel.cc.CCCached;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -6,8 +6,8 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.name.tool.core.ToolInput;
-import org.name.tool.core.metrics.ca.CA;
-import org.name.tool.core.metrics.cm.CM;
+import org.name.tool.core.metrics.classlevel.ca.CA;
+import org.name.tool.core.metrics.classlevel.cm.CM;
 
 import java.nio.file.Paths;
 import java.util.Arrays;
