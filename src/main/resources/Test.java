@@ -1,6 +1,6 @@
 import java.lang.reflect.*;
 
-public class Test {
+public final class Test {
     private String username;
     private String password;
     protected String name;

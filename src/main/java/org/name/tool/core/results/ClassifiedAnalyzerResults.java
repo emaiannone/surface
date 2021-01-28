@@ -70,6 +70,10 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults, Iterable<Map.
         return getClassifiedAttributes().size() + getClassifiedMethods().size() > 0;
     }
 
+    public boolean isFinal() {
+        return classOrInterfaceDeclaration.isFinal();
+    }
+
     public Set<MethodDeclaration> getClassifiedMethods(VariableDeclarator variableDeclarator) {
         return results.get(variableDeclarator);
     }

@@ -32,7 +32,7 @@
 - [ ] ICCC (ICC Coupling) - Ratio of sum of ICC per CA out of the product of all classes and all CA (not counting the host)
 
 ## Extensibility
-- [ ] CCE (CC Extensibility) - Ratio of non-final CC out of all CC
+- [x] CCE (CC Extensibility) - Ratio of non-final CC out of all CC
 - [ ] CME (CM Extensibility) - Ratio of non-final CM out of all CM
 
 ## Inheritance
