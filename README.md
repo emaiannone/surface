@@ -33,7 +33,7 @@
 
 ## Extensibility
 - [x] CCE (CC Extensibility) - Ratio of non-final CC out of all CC
-- [ ] CME (CM Extensibility) - Ratio of non-final CM out of all CM
+- [x] CME (CM Extensibility) - Ratio of non-final CM out of all CM (union)
 
 ## Inheritance
 - [ ] CSCR (Critical Super Classes Ratio) - Given a class, it is the number of critical superclasses out of all its superclasses

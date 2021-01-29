@@ -5,6 +5,8 @@ import org.name.tool.core.metrics.projectlevel.cc.CC;
 import org.name.tool.core.metrics.projectlevel.cc.CCCached;
 import org.name.tool.core.metrics.projectlevel.cce.CCE;
 import org.name.tool.core.metrics.projectlevel.cce.CCECached;
+import org.name.tool.core.metrics.projectlevel.cme.CME;
+import org.name.tool.core.metrics.projectlevel.cme.CMECached;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,9 @@ public class ProjectSecurityMetricsFactory {
                 case CCE.CODE:
                     securityMetric = metricsStructure.getCce();
                     break;
+                case CME.CODE:
+                    securityMetric = metricsStructure.getCme();
+                    break;
                 // Add other metrics here
             }
             if (securityMetric != null) {
@@ -39,11 +44,13 @@ public class ProjectSecurityMetricsFactory {
     private static class MetricsStructure {
         private final CC cc;
         private final CCE cce;
+        private final CME cme;
 
         public MetricsStructure() {
             // Create here all existing metrics and compose them
             this.cc = new CCCached();
             this.cce = new CCECached(cc);
+            this.cme = new CMECached();
         }
 
         public CC getCc() {
@@ -52,6 +59,10 @@ public class ProjectSecurityMetricsFactory {
 
         public CCE getCce() {
             return cce;
+        }
+
+        public CME getCme() {
+            return cme;
         }
     }
 }

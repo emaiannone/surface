@@ -26,7 +26,7 @@ public final class Test {
         return password;
     }
 
-    private void setPassword(String password) {
+    private final void setPassword(String password) {
         this.password = password;
     }
 
