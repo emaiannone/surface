@@ -27,7 +27,7 @@
 # Project-level Metrics
 - [x] CC (Critical Classes) - Number of **critical** classes. Number of classes with at least one **classified** components (CA, ICA or CM)
 - [x] CCR (CC Ratio) - Ratio of CC out of all classes
-- [ ] SCCR (Serialized CCR) - Ratio of Serializable CC out of CC
+- [x] SCCR (Serializable CCR) - Ratio of Serializable CC out of CC
 - [ ] ICC (Indirect Critical Classes) - Given a CA, it is the number of classes (excluding its host) that indirectly uses it, such as with direct access or method calls.
 
 ## Coupling

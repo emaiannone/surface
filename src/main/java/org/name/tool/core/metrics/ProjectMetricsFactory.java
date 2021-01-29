@@ -11,6 +11,8 @@ import org.name.tool.core.metrics.projectlevel.cme.CME;
 import org.name.tool.core.metrics.projectlevel.cme.CMECached;
 import org.name.tool.core.metrics.projectlevel.cscr.CSCR;
 import org.name.tool.core.metrics.projectlevel.cscr.CSCRCached;
+import org.name.tool.core.metrics.projectlevel.sccr.SCCR;
+import org.name.tool.core.metrics.projectlevel.sccr.SCCRCached;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,9 @@ public class ProjectMetricsFactory implements MetricsFactory<ProjectMetric<?>> {
                 case CCR.CODE:
                     projectMetric = metricsStructure.getCcr();
                     break;
+                case SCCR.CODE:
+                    projectMetric = metricsStructure.getSccr();
+                    break;
                 case CME.CODE:
                     projectMetric = metricsStructure.getCme();
                     break;
@@ -55,6 +60,7 @@ public class ProjectMetricsFactory implements MetricsFactory<ProjectMetric<?>> {
         private final CC cc;
         private final CCE cce;
         private final CCR ccr;
+        private final SCCR sccr;
         private final CME cme;
         private final CSCR cscr;
 
@@ -63,6 +69,7 @@ public class ProjectMetricsFactory implements MetricsFactory<ProjectMetric<?>> {
             this.cc = new CCCached();
             this.cce = new CCECached(cc);
             this.ccr = new CCRCached(cc);
+            this.sccr = new SCCRCached(cc);
             this.cme = new CMECached();
             this.cscr = new CSCRCached();
         }
@@ -77,6 +84,11 @@ public class ProjectMetricsFactory implements MetricsFactory<ProjectMetric<?>> {
 
         public CCR getCcr() {
             return ccr;
+        }
+
+
+        public SCCR getSccr() {
+            return sccr;
         }
 
         public CME getCme() {

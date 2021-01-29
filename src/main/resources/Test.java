@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.lang.reflect.*;
 
-public final class Test {
+public final class Test implements Serializable {
     private String username;
     private String password;
     protected String name;

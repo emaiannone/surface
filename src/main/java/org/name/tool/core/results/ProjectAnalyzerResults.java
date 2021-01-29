@@ -53,6 +53,16 @@ public class ProjectAnalyzerResults implements AnalyzerResults, Iterable<Classif
                 .collect(Collectors.toSet());
     }
 
+    public Set<ClassifiedAnalyzerResults> getCriticalClasses() {
+        Set<ClassifiedAnalyzerResults> criticalClasses = new HashSet<>();
+        for (ClassifiedAnalyzerResults classResults : results) {
+            if (classResults.isCritical()) {
+                criticalClasses.add(classResults);
+            }
+        }
+        return criticalClasses;
+    }
+
     public Set<VariableDeclarator> getClassifiedAttributes() {
         return results
                 .stream()

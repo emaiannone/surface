@@ -80,6 +80,16 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults, Iterable<Map.
         return classOrInterfaceDeclaration.isFinal();
     }
 
+    public boolean isSerializable() {
+        List<ResolvedReferenceType> ancestors = classOrInterfaceDeclaration.resolve().getAllAncestors();
+        for (ResolvedReferenceType ancestor : ancestors) {
+            if (ancestor.getQualifiedName().equals("java.io.Serializable")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public Set<MethodDeclaration> getClassifiedMethods(VariableDeclarator variableDeclarator) {
         return results.get(variableDeclarator);
     }
