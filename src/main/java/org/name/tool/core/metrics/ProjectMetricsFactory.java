@@ -15,11 +15,11 @@ import org.name.tool.core.metrics.projectlevel.cscr.CSCRCached;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProjectMetricsFactory {
-    private final ProjectMetricsFactory.MetricsStructure metricsStructure;
+public class ProjectMetricsFactory implements MetricsFactory<ProjectMetric<?>> {
+    private final MetricsStructure metricsStructure;
 
     public ProjectMetricsFactory() {
-        this.metricsStructure = new ProjectMetricsFactory.MetricsStructure();
+        this.metricsStructure = new MetricsStructure();
     }
 
     public List<ProjectMetric<?>> getMetrics(String[] metricsCodes) {

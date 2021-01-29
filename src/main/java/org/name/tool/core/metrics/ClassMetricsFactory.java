@@ -21,7 +21,7 @@ import org.name.tool.core.metrics.classlevel.rp.RPCached;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClassMetricsFactory {
+public class ClassMetricsFactory implements MetricsFactory<ClassMetric<?>> {
     private final MetricsStructure metricsStructure;
 
     public ClassMetricsFactory() {
