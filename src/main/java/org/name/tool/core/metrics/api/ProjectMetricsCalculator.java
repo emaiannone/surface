@@ -1,7 +1,7 @@
 package org.name.tool.core.metrics.api;
 
-import org.name.tool.core.metrics.ClassSecurityMetricsFactory;
-import org.name.tool.core.metrics.ProjectSecurityMetricsFactory;
+import org.name.tool.core.metrics.ClassMetricsFactory;
+import org.name.tool.core.metrics.ProjectMetricsFactory;
 import org.name.tool.core.results.ClassMetricsResults;
 import org.name.tool.core.results.ClassifiedAnalyzerResults;
 import org.name.tool.core.results.ProjectAnalyzerResults;
@@ -21,15 +21,15 @@ public class ProjectMetricsCalculator {
         // Class-level metrics
         for (ClassifiedAnalyzerResults classResults : projectAnalyzerResults) {
             ClassMetricsResults classMetricsResults = new ClassMetricsResults(classResults);
-            List<ClassSecurityMetric<?>> classMetrics = new ClassSecurityMetricsFactory().getSecurityMetrics(metricsCode);
-            for (ClassSecurityMetric<?> classMetric : classMetrics) {
+            List<ClassMetric<?>> classMetrics = new ClassMetricsFactory().getMetrics(metricsCode);
+            for (ClassMetric<?> classMetric : classMetrics) {
                 classMetricsResults.add(classMetric.compute(classResults));
             }
             projectMetricsResults.add(classMetricsResults);
         }
         // Project-level metrics
-        List<ProjectSecurityMetric<?>> projectMetrics = new ProjectSecurityMetricsFactory().getSecurityMetrics(metricsCode);
-        for (ProjectSecurityMetric<?> projectMetric : projectMetrics) {
+        List<ProjectMetric<?>> projectMetrics = new ProjectMetricsFactory().getMetrics(metricsCode);
+        for (ProjectMetric<?> projectMetric : projectMetrics) {
             projectMetricsResults.add(projectMetric.compute(projectAnalyzerResults));
         }
         return projectMetricsResults;

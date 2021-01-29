@@ -2,8 +2,8 @@ package org.name.tool.core.metrics.projectlevel.cce;
 
 import org.name.tool.core.metrics.projectlevel.cc.CC;
 import org.name.tool.core.results.ClassifiedAnalyzerResults;
+import org.name.tool.core.results.MetricResult;
 import org.name.tool.core.results.ProjectAnalyzerResults;
-import org.name.tool.core.results.SecurityMetricResult;
 
 public class CCEImpl extends CCE {
     private final CC cc;
@@ -13,7 +13,7 @@ public class CCEImpl extends CCE {
     }
 
     @Override
-    public SecurityMetricResult<Double> compute(ProjectAnalyzerResults projectResults) {
+    public MetricResult<Double> compute(ProjectAnalyzerResults projectResults) {
         int nonFinalCC = 0;
         for (ClassifiedAnalyzerResults classResults : projectResults) {
             if (classResults.isCritical() && !classResults.isFinal()) {
@@ -22,6 +22,6 @@ public class CCEImpl extends CCE {
         }
         int ccValue = cc.compute(projectResults).getValue();
         double value = ccValue != 0.0 ? (double) nonFinalCC / ccValue : 0.0;
-        return new SecurityMetricResult<>(getName(), getCode(), value);
+        return new MetricResult<>(getName(), getCode(), value);
     }
 }

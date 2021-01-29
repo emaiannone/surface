@@ -1,11 +1,11 @@
 package org.name.tool.core.metrics.classlevel.rp;
 
 import org.name.tool.core.results.ClassifiedAnalyzerResults;
-import org.name.tool.core.results.SecurityMetricResult;
+import org.name.tool.core.results.MetricResult;
 
 public class RPCached extends RP {
     private final RPImpl rp;
-    private SecurityMetricResult<Boolean> cachedResult;
+    private MetricResult<Boolean> cachedResult;
 
     public RPCached() {
         this.rp = new RPImpl();
@@ -13,7 +13,7 @@ public class RPCached extends RP {
     }
 
     @Override
-    public SecurityMetricResult<Boolean> compute(ClassifiedAnalyzerResults classResults) {
+    public MetricResult<Boolean> compute(ClassifiedAnalyzerResults classResults) {
         if (cachedResult == null) {
             cachedResult = rp.compute(classResults);
         }

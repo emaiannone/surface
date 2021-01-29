@@ -1,13 +1,13 @@
 package org.name.tool.core.metrics.projectlevel.cscr;
 
+import org.name.tool.core.results.MetricResult;
 import org.name.tool.core.results.ProjectAnalyzerResults;
-import org.name.tool.core.results.SecurityMetricResult;
 
 import java.util.Map;
 
 public class CSCRCached extends CSCR {
     private final CSCRImpl cscr;
-    private SecurityMetricResult<Map<String, Double>> cachedResult;
+    private MetricResult<Map<String, Double>> cachedResult;
 
     public CSCRCached() {
         this.cscr = new CSCRImpl();
@@ -15,7 +15,7 @@ public class CSCRCached extends CSCR {
     }
 
     @Override
-    public SecurityMetricResult<Map<String, Double>> compute(ProjectAnalyzerResults projectResults) {
+    public MetricResult<Map<String, Double>> compute(ProjectAnalyzerResults projectResults) {
         if (cachedResult == null) {
             cachedResult = cscr.compute(projectResults);
         }

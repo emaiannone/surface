@@ -1,11 +1,11 @@
 package org.name.tool.core.metrics.projectlevel.cme;
 
+import org.name.tool.core.results.MetricResult;
 import org.name.tool.core.results.ProjectAnalyzerResults;
-import org.name.tool.core.results.SecurityMetricResult;
 
 public class CMECached extends CME {
     private final CMEImpl cme;
-    private SecurityMetricResult<Double> cachedResult;
+    private MetricResult<Double> cachedResult;
 
     public CMECached() {
         this.cme = new CMEImpl();
@@ -13,7 +13,7 @@ public class CMECached extends CME {
     }
 
     @Override
-    public SecurityMetricResult<Double> compute(ProjectAnalyzerResults projectResults) {
+    public MetricResult<Double> compute(ProjectAnalyzerResults projectResults) {
         if (cachedResult == null) {
             cachedResult = cme.compute(projectResults);
         }

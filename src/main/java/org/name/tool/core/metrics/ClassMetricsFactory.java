@@ -1,6 +1,6 @@
 package org.name.tool.core.metrics;
 
-import org.name.tool.core.metrics.api.ClassSecurityMetric;
+import org.name.tool.core.metrics.api.ClassMetric;
 import org.name.tool.core.metrics.classlevel.ca.CA;
 import org.name.tool.core.metrics.classlevel.ca.CACached;
 import org.name.tool.core.metrics.classlevel.cai.CAI;
@@ -21,49 +21,49 @@ import org.name.tool.core.metrics.classlevel.rp.RPCached;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClassSecurityMetricsFactory {
+public class ClassMetricsFactory {
     private final MetricsStructure metricsStructure;
 
-    public ClassSecurityMetricsFactory() {
+    public ClassMetricsFactory() {
         this.metricsStructure = new MetricsStructure();
     }
 
-    public List<ClassSecurityMetric<?>> getSecurityMetrics(String[] metricsCodes) {
-        List<ClassSecurityMetric<?>> securityMetrics = new ArrayList<>();
+    public List<ClassMetric<?>> getMetrics(String[] metricsCodes) {
+        List<ClassMetric<?>> classMetrics = new ArrayList<>();
         for (String metricCode : metricsCodes) {
-            ClassSecurityMetric<?> securityMetric = null;
+            ClassMetric<?> classMetric = null;
             switch (metricCode) {
                 case CA.CODE:
-                    securityMetric = metricsStructure.getCa();
+                    classMetric = metricsStructure.getCa();
                     break;
                 case CM.CODE:
-                    securityMetric = metricsStructure.getCm();
+                    classMetric = metricsStructure.getCm();
                     break;
                 case RP.CODE:
-                    securityMetric = metricsStructure.getRp();
+                    classMetric = metricsStructure.getRp();
                     break;
                 case CIVA.CODE:
-                    securityMetric = metricsStructure.getCiva();
+                    classMetric = metricsStructure.getCiva();
                     break;
                 case CCVA.CODE:
-                    securityMetric = metricsStructure.getCcva();
+                    classMetric = metricsStructure.getCcva();
                     break;
                 case CMA.CODE:
-                    securityMetric = metricsStructure.getCma();
+                    classMetric = metricsStructure.getCma();
                     break;
                 case CMR.CODE:
-                    securityMetric = metricsStructure.getCmr();
+                    classMetric = metricsStructure.getCmr();
                     break;
                 case CAI.CODE:
-                    securityMetric = metricsStructure.getCai();
+                    classMetric = metricsStructure.getCai();
                     break;
                 // Add other metrics here
             }
-            if (securityMetric != null) {
-                securityMetrics.add(securityMetric);
+            if (classMetric != null) {
+                classMetrics.add(classMetric);
             }
         }
-        return securityMetrics;
+        return classMetrics;
     }
 
     private static class MetricsStructure {

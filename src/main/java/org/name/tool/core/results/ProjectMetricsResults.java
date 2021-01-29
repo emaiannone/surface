@@ -11,7 +11,7 @@ import java.util.Set;
 public class ProjectMetricsResults implements Iterable<ClassMetricsResults> {
     private final ProjectRoot projectRoot;
     private final Set<ClassMetricsResults> classMetricsResultsSet;
-    private final List<SecurityMetricResult<?>> projectMetrics;
+    private final List<MetricResult<?>> projectMetrics;
 
     public ProjectMetricsResults(ProjectRoot projectRoot) {
         this.projectRoot = projectRoot;
@@ -28,7 +28,7 @@ public class ProjectMetricsResults implements Iterable<ClassMetricsResults> {
         this.classMetricsResultsSet.add(classResults);
     }
 
-    public void add(SecurityMetricResult<?> projectMetric) {
+    public void add(MetricResult<?> projectMetric) {
         projectMetrics.add(projectMetric);
     }
 
@@ -39,7 +39,7 @@ public class ProjectMetricsResults implements Iterable<ClassMetricsResults> {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder("Project: " + projectRoot.getRoot().getFileName());
-        for (SecurityMetricResult<?> projectMetric : projectMetrics) {
+        for (MetricResult<?> projectMetric : projectMetrics) {
             builder.append("\n");
             builder.append(projectMetric.getMetricCode());
             builder.append(" = ");

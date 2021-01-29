@@ -4,7 +4,7 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import org.name.tool.core.metrics.classlevel.ca.CA;
 import org.name.tool.core.results.ClassifiedAnalyzerResults;
-import org.name.tool.core.results.SecurityMetricResult;
+import org.name.tool.core.results.MetricResult;
 
 import java.util.Set;
 
@@ -16,7 +16,7 @@ public class CIVAImpl extends CIVA {
     }
 
     @Override
-    public SecurityMetricResult<Double> compute(ClassifiedAnalyzerResults classResults) {
+    public MetricResult<Double> compute(ClassifiedAnalyzerResults classResults) {
         int nonPrivateNonStatic = 0;
         Set<VariableDeclarator> classifiedAttributes = classResults.getClassifiedAttributes();
         for (VariableDeclarator classifiedAttribute : classifiedAttributes) {
@@ -29,6 +29,6 @@ public class CIVAImpl extends CIVA {
         }
         int caValue = ca.compute(classResults).getValue();
         double value = caValue != 0.0 ? (double) nonPrivateNonStatic / caValue : 0.0;
-        return new SecurityMetricResult<>(getName(), getCode(), value);
+        return new MetricResult<>(getName(), getCode(), value);
     }
 }

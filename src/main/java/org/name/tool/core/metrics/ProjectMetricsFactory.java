@@ -1,6 +1,6 @@
 package org.name.tool.core.metrics;
 
-import org.name.tool.core.metrics.api.ProjectSecurityMetric;
+import org.name.tool.core.metrics.api.ProjectMetric;
 import org.name.tool.core.metrics.projectlevel.cc.CC;
 import org.name.tool.core.metrics.projectlevel.cc.CCCached;
 import org.name.tool.core.metrics.projectlevel.cce.CCE;
@@ -15,40 +15,40 @@ import org.name.tool.core.metrics.projectlevel.cscr.CSCRCached;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProjectSecurityMetricsFactory {
-    private final ProjectSecurityMetricsFactory.MetricsStructure metricsStructure;
+public class ProjectMetricsFactory {
+    private final ProjectMetricsFactory.MetricsStructure metricsStructure;
 
-    public ProjectSecurityMetricsFactory() {
-        this.metricsStructure = new ProjectSecurityMetricsFactory.MetricsStructure();
+    public ProjectMetricsFactory() {
+        this.metricsStructure = new ProjectMetricsFactory.MetricsStructure();
     }
 
-    public List<ProjectSecurityMetric<?>> getSecurityMetrics(String[] metricsCodes) {
-        List<ProjectSecurityMetric<?>> securityMetrics = new ArrayList<>();
+    public List<ProjectMetric<?>> getMetrics(String[] metricsCodes) {
+        List<ProjectMetric<?>> projectMetrics = new ArrayList<>();
         for (String metricCode : metricsCodes) {
-            ProjectSecurityMetric<?> securityMetric = null;
+            ProjectMetric<?> projectMetric = null;
             switch (metricCode) {
                 case CC.CODE:
-                    securityMetric = metricsStructure.getCc();
+                    projectMetric = metricsStructure.getCc();
                     break;
                 case CCE.CODE:
-                    securityMetric = metricsStructure.getCce();
+                    projectMetric = metricsStructure.getCce();
                     break;
                 case CCR.CODE:
-                    securityMetric = metricsStructure.getCcr();
+                    projectMetric = metricsStructure.getCcr();
                     break;
                 case CME.CODE:
-                    securityMetric = metricsStructure.getCme();
+                    projectMetric = metricsStructure.getCme();
                     break;
                 case CSCR.CODE:
-                    securityMetric = metricsStructure.getCscr();
+                    projectMetric = metricsStructure.getCscr();
                     break;
                 // Add other metrics here
             }
-            if (securityMetric != null) {
-                securityMetrics.add(securityMetric);
+            if (projectMetric != null) {
+                projectMetrics.add(projectMetric);
             }
         }
-        return securityMetrics;
+        return projectMetrics;
     }
 
     private static class MetricsStructure {

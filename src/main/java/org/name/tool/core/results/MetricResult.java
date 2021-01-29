@@ -1,11 +1,11 @@
 package org.name.tool.core.results;
 
-public class SecurityMetricResult<T> {
+public class MetricResult<T> {
     private final String metricName;
     private final String metricCode;
     private final T value;
 
-    public SecurityMetricResult(String metricName, String metricCode, T value) {
+    public MetricResult(String metricName, String metricCode, T value) {
         this.metricName = metricName;
         this.metricCode = metricCode;
         this.value = value;

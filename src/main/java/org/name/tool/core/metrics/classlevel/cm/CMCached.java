@@ -1,11 +1,11 @@
 package org.name.tool.core.metrics.classlevel.cm;
 
 import org.name.tool.core.results.ClassifiedAnalyzerResults;
-import org.name.tool.core.results.SecurityMetricResult;
+import org.name.tool.core.results.MetricResult;
 
 public class CMCached extends CM {
     private final CMImpl classifiedMethods;
-    private SecurityMetricResult<Integer> cachedResult;
+    private MetricResult<Integer> cachedResult;
 
     public CMCached() {
         this.classifiedMethods = new CMImpl();
@@ -13,7 +13,7 @@ public class CMCached extends CM {
     }
 
     @Override
-    public SecurityMetricResult<Integer> compute(ClassifiedAnalyzerResults classResults) {
+    public MetricResult<Integer> compute(ClassifiedAnalyzerResults classResults) {
         if (cachedResult == null) {
             cachedResult = classifiedMethods.compute(classResults);
         }
