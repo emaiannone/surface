@@ -68,6 +68,14 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults, Iterable<Map.
         return results.keySet();
     }
 
+    public List<ResolvedReferenceType> getSuperclasses() {
+        return classOrInterfaceDeclaration.resolve().getAllAncestors();
+    }
+
+    public Set<MethodDeclaration> getClassifiedMethods(VariableDeclarator variableDeclarator) {
+        return results.get(variableDeclarator);
+    }
+
     public boolean isUsingReflection() {
         return usingReflection;
     }
@@ -81,21 +89,13 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults, Iterable<Map.
     }
 
     public boolean isSerializable() {
-        List<ResolvedReferenceType> ancestors = classOrInterfaceDeclaration.resolve().getAllAncestors();
+        List<ResolvedReferenceType> ancestors = getSuperclasses();
         for (ResolvedReferenceType ancestor : ancestors) {
             if (ancestor.getQualifiedName().equals("java.io.Serializable")) {
                 return true;
             }
         }
         return false;
-    }
-
-    public Set<MethodDeclaration> getClassifiedMethods(VariableDeclarator variableDeclarator) {
-        return results.get(variableDeclarator);
-    }
-
-    public List<ResolvedReferenceType> getSuperclasses() {
-        return classOrInterfaceDeclaration.resolve().getAllAncestors();
     }
 
     @Override
