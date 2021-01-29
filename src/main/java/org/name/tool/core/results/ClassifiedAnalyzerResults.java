@@ -95,7 +95,7 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults, Iterable<Map.
     }
 
     public List<ResolvedReferenceType> getSuperclasses() {
-        return classOrInterfaceDeclaration.resolve().getAncestors();
+        return classOrInterfaceDeclaration.resolve().getAllAncestors();
     }
 
     @Override
