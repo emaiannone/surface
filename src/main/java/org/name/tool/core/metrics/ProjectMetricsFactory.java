@@ -32,14 +32,14 @@ public class ProjectMetricsFactory implements MetricsFactory<ProjectMetric<?>> {
                 case CC.CODE:
                     projectMetric = metricsStructure.getCc();
                     break;
-                case CCE.CODE:
-                    projectMetric = metricsStructure.getCce();
-                    break;
                 case CCR.CODE:
                     projectMetric = metricsStructure.getCcr();
                     break;
                 case SCCR.CODE:
                     projectMetric = metricsStructure.getSccr();
+                    break;
+                case CCE.CODE:
+                    projectMetric = metricsStructure.getCce();
                     break;
                 case CME.CODE:
                     projectMetric = metricsStructure.getCme();
@@ -58,18 +58,18 @@ public class ProjectMetricsFactory implements MetricsFactory<ProjectMetric<?>> {
 
     private static class MetricsStructure {
         private final CC cc;
-        private final CCE cce;
         private final CCR ccr;
         private final SCCR sccr;
+        private final CCE cce;
         private final CME cme;
         private final CSCR cscr;
 
         public MetricsStructure() {
             // Create here all existing metrics and compose them
             this.cc = new CCCached();
-            this.cce = new CCECached(cc);
             this.ccr = new CCRCached(cc);
             this.sccr = new SCCRCached(cc);
+            this.cce = new CCECached(cc);
             this.cme = new CMECached();
             this.cscr = new CSCRCached();
         }
@@ -78,17 +78,16 @@ public class ProjectMetricsFactory implements MetricsFactory<ProjectMetric<?>> {
             return cc;
         }
 
-        public CCE getCce() {
-            return cce;
-        }
-
         public CCR getCcr() {
             return ccr;
         }
 
-
         public SCCR getSccr() {
             return sccr;
+        }
+
+        public CCE getCce() {
+            return cce;
         }
 
         public CME getCme() {
