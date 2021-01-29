@@ -74,7 +74,7 @@ public class ProjectAnalyzerResults implements AnalyzerResults, Iterable<Classif
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder("Project: " + projectRoot.getRoot().getFileName());
-        for (ClassifiedAnalyzerResults entries : this) {
+        for (ClassifiedAnalyzerResults entries : results) {
             if (entries.getResults().size() > 0) {
                 builder.append("\n");
                 builder.append(entries);
