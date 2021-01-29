@@ -36,7 +36,7 @@
 - [x] CME (CM Extensibility) - Ratio of non-final CM out of all CM (union)
 
 ## Inheritance
-- [ ] CSCR (Critical Super Classes Ratio) - Given a class, it is the number of critical superclasses out of all its superclasses
+- [x] CSCR (Critical Super Classes Ratios) - For each class, it is the ratio of the number of critical superclasses out of all its superclasses
 
 ## Size
 - [ ] CCR (CC Ratio) - Ratio of CC out of all classes

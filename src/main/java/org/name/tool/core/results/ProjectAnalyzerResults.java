@@ -1,6 +1,5 @@
 package org.name.tool.core.results;
 
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.utils.ProjectRoot;
@@ -33,9 +32,9 @@ public class ProjectAnalyzerResults implements AnalyzerResults, Iterable<Classif
         return projectRoot;
     }
 
-    public ClassifiedAnalyzerResults getClassResults(ClassOrInterfaceDeclaration classOrInterfaceDeclaration) {
+    public ClassifiedAnalyzerResults getClassResults(String classQualifiedName) {
         for (ClassifiedAnalyzerResults res : results) {
-            if (res.getClassOrInterfaceDeclaration().equals(classOrInterfaceDeclaration)) {
+            if (res.getFullyQualifiedName().equals(classQualifiedName)) {
                 return res;
             }
         }

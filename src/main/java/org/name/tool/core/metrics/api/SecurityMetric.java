@@ -3,10 +3,8 @@ package org.name.tool.core.metrics.api;
 import org.name.tool.core.results.AnalyzerResults;
 import org.name.tool.core.results.SecurityMetricResult;
 
-import java.io.Serializable;
-
 // T is for the parameters type (AnalyzerResults implementor) and U is for the type of the SecurityMetricResult returned
-public abstract class SecurityMetric<T extends AnalyzerResults, U extends Serializable> {
+public abstract class SecurityMetric<T extends AnalyzerResults, U> {
     private String name;
     private String code;
 

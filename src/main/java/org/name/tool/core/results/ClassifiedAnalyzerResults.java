@@ -3,11 +3,13 @@ package org.name.tool.core.results;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.resolution.types.ResolvedReferenceType;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,6 +39,10 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults, Iterable<Map.
 
     public String getClassName() {
         return classOrInterfaceDeclaration.getNameAsString();
+    }
+
+    public String getFullyQualifiedName() {
+        return classOrInterfaceDeclaration.resolve().getQualifiedName();
     }
 
     ClassOrInterfaceDeclaration getClassOrInterfaceDeclaration() {
@@ -76,6 +82,10 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults, Iterable<Map.
 
     public Set<MethodDeclaration> getClassifiedMethods(VariableDeclarator variableDeclarator) {
         return results.get(variableDeclarator);
+    }
+
+    public List<ResolvedReferenceType> getSuperclasses() {
+        return classOrInterfaceDeclaration.resolve().getAncestors();
     }
 
     @Override
