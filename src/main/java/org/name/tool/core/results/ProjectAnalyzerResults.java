@@ -19,9 +19,13 @@ public class ProjectAnalyzerResults implements AnalyzerResults, Iterable<Classif
         this.results = new HashSet<>();
     }
 
+    public Set<ClassifiedAnalyzerResults> getResults() {
+        return new HashSet<>(results);
+    }
+
     @Override
     public Iterator<ClassifiedAnalyzerResults> iterator() {
-        return results.iterator();
+        return getResults().iterator();
     }
 
     public void add(ClassifiedAnalyzerResults classResults) {

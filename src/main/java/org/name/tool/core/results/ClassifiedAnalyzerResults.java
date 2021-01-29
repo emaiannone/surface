@@ -24,9 +24,13 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults, Iterable<Map.
         this.results = new HashMap<>();
     }
 
+    public Map<VariableDeclarator, Set<MethodDeclaration>> getResults() {
+        return new HashMap<>(results);
+    }
+
     @Override
     public Iterator<Map.Entry<VariableDeclarator, Set<MethodDeclaration>>> iterator() {
-        return results.entrySet().iterator();
+        return getResults().entrySet().iterator();
     }
 
     public void put(VariableDeclarator variableDeclarator, Set<MethodDeclaration> methodDeclarations) {
@@ -62,10 +66,6 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults, Iterable<Map.
 
     public Set<VariableDeclarator> getClassifiedAttributes() {
         return results.keySet();
-    }
-
-    public Map<VariableDeclarator, Set<MethodDeclaration>> getResults() {
-        return new HashMap<>(results);
     }
 
     public boolean isUsingReflection() {
