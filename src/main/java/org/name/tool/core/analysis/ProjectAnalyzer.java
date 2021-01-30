@@ -12,7 +12,6 @@ import org.name.tool.core.results.ProjectAnalyzerResults;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,8 +19,9 @@ public class ProjectAnalyzer {
     private final ProjectRoot projectRoot;
 
     // TODO: Would be good if the list of invalid paths is taken from a file
-    public static final List<Path> invalidPaths = Arrays.asList(
-            Paths.get("target/classes").toAbsolutePath()
+    public static final List<String> invalidPaths = Arrays.asList(
+            "src/test/java",
+            "target/classes"
     );
 
     public ProjectAnalyzer(Path projectAbsolutePath) {
@@ -32,7 +32,8 @@ public class ProjectAnalyzer {
         // A SourceRoot is a subdirectory of ProjectRoot containing a root package structure (e.g., src/main/java, src/test/java, target/classes)
         ProjectAnalyzerResults projectResults = new ProjectAnalyzerResults(projectRoot);
         for (SourceRoot sourceRoot : projectRoot.getSourceRoots()) {
-            if (invalidPaths.contains(sourceRoot.getRoot())) {
+            if (invalidPaths.stream().anyMatch(ip -> sourceRoot.getRoot().toString().contains(ip))) {
+                System.out.println("* Source root " + sourceRoot + " is invalid: ignoring.");
                 continue;
             }
             try {
