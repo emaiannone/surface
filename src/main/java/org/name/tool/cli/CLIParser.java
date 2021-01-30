@@ -9,24 +9,20 @@ import org.name.tool.core.ToolInput;
 import org.name.tool.core.metrics.classlevel.ca.CA;
 import org.name.tool.core.metrics.classlevel.cm.CM;
 
-import java.nio.file.Paths;
 import java.util.Arrays;
 
 public class CLIParser {
 
-    // Current working directory as default
-    private static final String DEFAULT_PROJECT = "";
     // List of default metrics
     // FIXME: 25/01/21 Is this this strong coupling necessary?
     private static final String[] DEFAULT_METRICS = new String[]{
             CA.CODE,
             CM.CODE
     };
+    // Current working directory as default
+    private static final String DEFAULT_PROJECT = "";
     // csv as default
     private static final String DEFAULT_EXPORT = "csv";
-
-    public CLIParser() {
-    }
 
     public ToolInput parse(String[] args) throws ParseException {
         // Accepted CLI options
@@ -34,32 +30,34 @@ public class CLIParser {
         CommandLineParser cliParser = new DefaultParser();
         CommandLine commandLine = cliParser.parse(options, args);
 
-        String project;
-        if (commandLine.hasOption(CLIOptions.PROJECT)) {
-            project = commandLine.getOptionValue(CLIOptions.PROJECT);
-            System.out.println("* Using " + project + " as project root.");
-        } else {
-            project = DEFAULT_PROJECT;
-            System.out.println("* No specified project root: going to use Current Working Directory.");
-        }
-
         String[] metricsCodes;
         if (commandLine.hasOption(CLIOptions.METRICS)) {
             metricsCodes = commandLine.getOptionValues(CLIOptions.METRICS);
-            System.out.println("* Going to compute the following metrics: " + Arrays.toString(metricsCodes) + ".");
         } else {
             metricsCodes = DEFAULT_METRICS;
-            System.out.println("* No specified set of metrics: going to compute the following defaults: " + Arrays.toString(metricsCodes) + ".");
+            System.out.println("* No specified set of metrics: using the defaults: " + Arrays.toString(metricsCodes) + ".");
+        }
+
+        String remoteProjects = null;
+        if (commandLine.hasOption(CLIOptions.REMOTE_PROJECTS)) {
+            remoteProjects = commandLine.getOptionValue(CLIOptions.REMOTE_PROJECTS);
+        }
+
+        String project;
+        if (commandLine.hasOption(CLIOptions.PROJECT)) {
+            project = commandLine.getOptionValue(CLIOptions.PROJECT);
+        } else {
+            project = DEFAULT_PROJECT;
+            System.out.println("* No specified project root: using Current Working Directory.");
         }
 
         String export;
         if (commandLine.hasOption(CLIOptions.EXPORT)) {
             export = commandLine.getOptionValue(CLIOptions.EXPORT);
-            System.out.println("* Going to export as " + export + " file.");
         } else {
             export = DEFAULT_EXPORT;
-            System.out.println("* No specified export format: going to export as " + export + " file.");
+            System.out.println("* No specified export format: using " + export + " file.");
         }
-        return new ToolInput(Paths.get(project).toAbsolutePath(), metricsCodes, export);
+        return new ToolInput(metricsCodes, remoteProjects, project, export);
     }
 }

@@ -1,9 +1,10 @@
 package org.name.tool.core;
 
-import org.name.tool.core.analysis.ProjectAnalyzer;
-import org.name.tool.core.metrics.api.ProjectMetricsCalculator;
-import org.name.tool.core.results.ProjectAnalyzerResults;
-import org.name.tool.core.results.ProjectMetricsResults;
+import org.name.tool.core.control.ManyRemoteProjectsControl;
+import org.name.tool.core.control.SingleLocalProjectControl;
+
+import java.nio.file.Path;
+import java.util.Arrays;
 
 public class Tool {
     private final ToolInput toolInput;
@@ -13,20 +14,20 @@ public class Tool {
     }
 
     public void run() {
-        ProjectAnalyzer projectAnalyzer = new ProjectAnalyzer(toolInput.getProjectAbsolutePath());
-        System.out.println("* Project Analysis starting");
-        ProjectAnalyzerResults projectAnalyzerResults = projectAnalyzer.analyze();
-        System.out.println("* Project Analysis finished");
-        System.out.println("* Printing Project results");
-        System.out.println(projectAnalyzerResults);
+        String[] metricsCodes = toolInput.getMetricsCodes();
+        System.out.println("* Going to compute the following metrics: " + Arrays.toString(metricsCodes) + ".");
 
-        System.out.println("* Project Metrics Computation starting");
-        ProjectMetricsCalculator projectMetricsCalculator = new ProjectMetricsCalculator(projectAnalyzerResults);
-        ProjectMetricsResults projectMetricsResults = projectMetricsCalculator.calculate(toolInput.getMetricsCodes());
-        System.out.println("* Project Metrics Computation finished");
-        System.out.println("* Printing Project Metrics");
-        System.out.println(projectMetricsResults);
+        String exportFormat = toolInput.getExportFormat();
+        System.out.println("* Going to export as " + exportFormat + " file.");
 
-        // TODO Export
+        Path remoteProjectsAbsolutePath = toolInput.getRemoteProjectsAbsolutePath();
+        if (remoteProjectsAbsolutePath != null) {
+            ManyRemoteProjectsControl manyRemoteProjectsControl = new ManyRemoteProjectsControl(metricsCodes, exportFormat, remoteProjectsAbsolutePath);
+            manyRemoteProjectsControl.run();
+        } else {
+            Path projectAbsolutePath = toolInput.getProjectAbsolutePath();
+            SingleLocalProjectControl singleLocalProjectControl = new SingleLocalProjectControl(metricsCodes, exportFormat, projectAbsolutePath);
+            singleLocalProjectControl.run();
+        }
     }
 }

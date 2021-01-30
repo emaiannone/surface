@@ -42,7 +42,7 @@
                         <configuration>
                             <archive>
                                 <manifest>
-                                    <mainClass>org.name.tool.Starter</mainClass>
+                                    <mainClass>org.name.tool.CLIStarter</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>
