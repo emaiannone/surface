@@ -10,14 +10,20 @@ import com.github.javaparser.resolution.types.ResolvedReferenceType;
 import java.util.*;
 import java.util.stream.Collectors;
 
+// TODO Remove unused methods
 public class ClassifiedAnalyzerResults implements AnalyzerResults, Iterable<Map.Entry<VariableDeclarator, Set<MethodDeclaration>>> {
     private final ClassOrInterfaceDeclaration classOrInterfaceDeclaration;
     private final Map<VariableDeclarator, Set<MethodDeclaration>> results;
     private boolean usingReflection;
 
+    private Set<FieldDeclaration> correspondingFieldDeclarations;
+    private List<ResolvedReferenceType> superClasses;
+
     public ClassifiedAnalyzerResults(ClassOrInterfaceDeclaration classOrInterfaceDeclaration) {
         this.classOrInterfaceDeclaration = classOrInterfaceDeclaration;
         this.results = new HashMap<>();
+        this.correspondingFieldDeclarations = null;
+        this.superClasses = null;
     }
 
     public Map<VariableDeclarator, Set<MethodDeclaration>> getResults() {
@@ -64,16 +70,20 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults, Iterable<Map.
         return results.keySet();
     }
 
-    // TODO This result could be computed and stored in an instance variable, to avoid useless recomputations
     public List<ResolvedReferenceType> getSuperclasses() {
+        // If already computed, return it
+        if (this.superClasses != null) {
+            return this.superClasses;
+        }
+        this.superClasses = new ArrayList<>();
         try {
             List<ResolvedReferenceType> directAncestors = classOrInterfaceDeclaration.resolve().getAncestors(true);
-            return getIndirectAncestors(directAncestors);
+            this.superClasses.addAll(getIndirectAncestors(directAncestors));
         } catch (RuntimeException e) {
             //TODO Improve with logging ERROR. In any case, return an empty list
             // resolve() raises a number of issues: UnsupportedOperationException, UnsolvedSymbolException, a pure RuntimeException, StackOverflowError
-            return new ArrayList<>();
         }
+        return this.superClasses;
     }
 
     private List<ResolvedReferenceType> getIndirectAncestors(List<ResolvedReferenceType> ancestors) {
@@ -88,21 +98,24 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults, Iterable<Map.
         return allAncestors;
     }
 
-    // TODO This result could be computed and stored in an instance variable, to avoid useless recomputations
     public Set<FieldDeclaration> getCorrespondingFieldDeclarations() {
-        Set<FieldDeclaration> correspondingFieldDeclarations = new HashSet<>();
+        // If already computed, return it
+        if (this.correspondingFieldDeclarations != null) {
+            return this.correspondingFieldDeclarations;
+        }
+        this.correspondingFieldDeclarations = new HashSet<>();
         for (VariableDeclarator classifiedAttribute : getClassifiedAttributes()) {
             try {
                 FieldDeclaration correspondingFieldDecl = classifiedAttribute.resolve().asField().toAst().orElse(null);
                 if (correspondingFieldDecl != null) {
-                    correspondingFieldDeclarations.add(correspondingFieldDecl);
+                    this.correspondingFieldDeclarations.add(correspondingFieldDecl);
                 }
             } catch (RuntimeException ignore) {
                 //TODO Improve with logging ERROR. In any case, skip this classifiedAttribute
                 // resolve() raises a number of issues: UnsupportedOperationException, UnsolvedSymbolException, a pure RuntimeException, StackOverflowError
             }
         }
-        return correspondingFieldDeclarations;
+        return this.correspondingFieldDeclarations;
     }
 
     public Set<MethodDeclaration> getClassifiedMethods(VariableDeclarator variableDeclarator) {
