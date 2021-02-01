@@ -14,8 +14,10 @@ import com.github.javaparser.resolution.UnsolvedSymbolException;
 import com.github.javaparser.resolution.declarations.ResolvedValueDeclaration;
 import org.name.tool.core.results.ClassifiedAnalyzerResults;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -39,12 +41,10 @@ public class ClassifiedAnalyzer extends ClassAnalyzer {
     public ClassifiedAnalyzerResults analyze() {
         ClassifiedAnalyzerResults results = new ClassifiedAnalyzerResults(getClassDeclaration());
         Set<VariableDeclarator> classifiedAttributes = getClassifiedAttributes(new HashSet<>(getClassDeclaration().getFields()));
-        System.out.println("*** Classified Attributes: " + classifiedAttributes);
         if (classifiedAttributes.size() > 0) {
-            for (VariableDeclarator attribute : classifiedAttributes) {
-                System.out.println("*** Searching classified method of: " + attribute);
-                Set<MethodDeclaration> classifiedMethods = getClassifiedMethods(attribute);
-                results.put(attribute, classifiedMethods);
+            Map<VariableDeclarator, Set<MethodDeclaration>> classifiedMethodsMap = getClassifiedMethods(classifiedAttributes);
+            for (Map.Entry<VariableDeclarator, Set<MethodDeclaration>> variableDeclaratorSetEntry : classifiedMethodsMap.entrySet()) {
+                results.put(variableDeclaratorSetEntry.getKey(), variableDeclaratorSetEntry.getValue());
             }
         }
         results.setUsingReflection(isUsingReflection());
@@ -73,50 +73,103 @@ public class ClassifiedAnalyzer extends ClassAnalyzer {
     /**
      * Analyze the class given to the constructor in search of the classified methods of the given classified attributes.
      *
-     * @param classifiedAttribute the classified attribute for which search for methods that uses (read/write) it.
-     * @return the set of classified methods of the given classified attribute.
-     * If no methods are found, the set will be empty.
+     * @param classifiedAttributes the set of classified attribute for which search for methods that uses (read/write) them.
+     * @return a {@link Map} containing for each classified attribute {@link VariableDeclarator} a set of its matched classified methods {@link MethodDeclaration}.
+     * Attributes without any matched methods, will result with an empty set of methods.
      */
+    private Map<VariableDeclarator, Set<MethodDeclaration>> getClassifiedMethods(Set<VariableDeclarator> classifiedAttributes) {
+        // All classified attributes start with an empty set of methods
+        Map<VariableDeclarator, Set<MethodDeclaration>> resultMap = new HashMap<>();
+        for (VariableDeclarator variableDeclarator : classifiedAttributes) {
+            resultMap.put(variableDeclarator, new HashSet<>());
+        }
+
+        for (MethodDeclaration method : getClassDeclaration().getMethods()) {
+            Set<VariableDeclarator> unmatchedClassifiedAttrSet = new HashSet<>(classifiedAttributes);
+            List<NameExpr> nameExprs = method.findAll(NameExpr.class);
+            for (int i = 0; i < nameExprs.size() && unmatchedClassifiedAttrSet.size() > 0; i++) {
+                NameExpr nameExpr = nameExprs.get(i);
+                VariableDeclarator matchedClassifiedAttr = unmatchedClassifiedAttrSet.stream()
+                        .filter(ca -> isAttributeUsed(ca, nameExpr))
+                        .findFirst().orElse(null);
+                if (matchedClassifiedAttr != null) {
+                    try {
+                        if (nameExpr.resolve().isField()) {
+                            Set<MethodDeclaration> classifiedMethods = resultMap.get(matchedClassifiedAttr);
+                            classifiedMethods.add(method);
+                            resultMap.put(matchedClassifiedAttr, classifiedMethods);
+                            unmatchedClassifiedAttrSet.remove(matchedClassifiedAttr);
+                        }
+                    } catch (UnsolvedSymbolException | UnsupportedOperationException ignored) {
+                    }
+                }
+            }
+            // TODO Find a solution for these duplicated loops
+            List<FieldAccessExpr> fieldAccessExprs = method.findAll(FieldAccessExpr.class);
+            for (int i = 0; i < fieldAccessExprs.size() && unmatchedClassifiedAttrSet.size() > 0; i++) {
+                FieldAccessExpr fieldAccessExpr = fieldAccessExprs.get(i);
+                VariableDeclarator matchedClassifiedAttr = unmatchedClassifiedAttrSet.stream()
+                        .filter(ca -> isAttributeUsed(ca, fieldAccessExpr))
+                        .findFirst().orElse(null);
+                if (matchedClassifiedAttr != null) {
+                    try {
+                        if (fieldAccessExpr.resolve().isField()) {
+                            Set<MethodDeclaration> classifiedMethods = resultMap.get(matchedClassifiedAttr);
+                            classifiedMethods.add(method);
+                            resultMap.put(matchedClassifiedAttr, classifiedMethods);
+                            unmatchedClassifiedAttrSet.remove(matchedClassifiedAttr);
+                        }
+                    } catch (UnsolvedSymbolException | UnsupportedOperationException ignored) {
+                    }
+                }
+            }
+        }
+        return resultMap;
+    }
+
+    @Deprecated
     private Set<MethodDeclaration> getClassifiedMethods(VariableDeclarator classifiedAttribute) {
         Set<MethodDeclaration> classifiedMethods = new HashSet<>();
         for (MethodDeclaration method : getClassDeclaration().getMethods()) {
             BlockStmt bodyBlock = method.getBody().orElse(null);
             if (bodyBlock != null) {
-                Set<NodeWithSimpleName<?>> usagesNameExpr = bodyBlock
-                        .findAll(NameExpr.class)
-                        .stream()
-                        .filter(this::isFieldDeclared)
-                        .collect(Collectors.toSet());
-                Set<NodeWithSimpleName<?>> usagesFieldAccess = bodyBlock
-                        .findAll(FieldAccessExpr.class)
-                        .stream()
-                        .filter(this::isFieldDeclared)
-                        .collect(Collectors.toSet());
-                boolean classifiedUsedInNameExpr = isAttributeUsed(classifiedAttribute, usagesNameExpr);
-                boolean classifiedUsedInFieldAccess = isAttributeUsed(classifiedAttribute, usagesFieldAccess);
-                if (classifiedUsedInNameExpr || classifiedUsedInFieldAccess) {
-                    System.out.println("*** Method " + method.getSignature().toString() + " has no usages.");
-                    classifiedMethods.add(method);
-                } else {
-                    System.out.println("*** Method " + method.getSignature().toString() + " has a usage.");
+                for (NameExpr nameExpr : bodyBlock.findAll(NameExpr.class)) {
+                    if (isAttributeUsed(classifiedAttribute, nameExpr)) {
+                        try {
+                            if (nameExpr.resolve().isField()) {
+                                classifiedMethods.add(method);
+                            }
+                        } catch (UnsolvedSymbolException | UnsupportedOperationException ignored) {
+                        }
+                    }
+                }
+                for (FieldAccessExpr fieldAccessExpr : bodyBlock.findAll(FieldAccessExpr.class)) {
+                    if (isAttributeUsed(classifiedAttribute, fieldAccessExpr)) {
+                        try {
+                            if (fieldAccessExpr.resolve().isField()) {
+                                classifiedMethods.add(method);
+                            }
+                        } catch (UnsolvedSymbolException | UnsupportedOperationException ignored) {
+                        }
+                    }
                 }
             }
         }
         return classifiedMethods;
     }
 
+    @Deprecated
     private boolean isFieldDeclared(Resolvable<ResolvedValueDeclaration> resolvable) {
         try {
-            return resolvable.resolve().isField();
-        } catch (UnsolvedSymbolException e) {
+            ResolvedValueDeclaration resolved = resolvable.resolve();
+            return resolved.isField();
+        } catch (UnsolvedSymbolException | UnsupportedOperationException e) {
             return false;
         }
     }
 
-    private boolean isAttributeUsed(VariableDeclarator classifiedAttribute, Set<NodeWithSimpleName<?>> nodeWithSimpleNames) {
-        return nodeWithSimpleNames.stream()
-                .map(NodeWithSimpleName::getNameAsString)
-                .anyMatch(name -> name.equals(classifiedAttribute.getNameAsString()));
+    private boolean isAttributeUsed(VariableDeclarator classifiedAttribute, NodeWithSimpleName<?> nodeWithSimpleNames) {
+        return classifiedAttribute.getNameAsString().equals(nodeWithSimpleNames.getNameAsString());
     }
 
     private boolean isUsingReflection() {
