@@ -47,4 +47,5 @@
 - [ ] The papers talk about other measures that we are ignoring for not. What to do with them?
 
 # Keywords
-- name and code regex seems to be useless
+- `name`, `code` and some others regex seems to be useless, I think we should remove them
+- `port` was added

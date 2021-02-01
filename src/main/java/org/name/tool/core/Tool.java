@@ -1,6 +1,6 @@
 package org.name.tool.core;
 
-import org.name.tool.core.control.ManyRemoteProjectsControl;
+import org.name.tool.core.control.RemoteSnapshotsProjectsControl;
 import org.name.tool.core.control.SingleLocalProjectControl;
 
 import java.nio.file.Path;
@@ -22,8 +22,8 @@ public class Tool {
 
         Path remoteProjectsAbsolutePath = toolInput.getRemoteProjectsAbsolutePath();
         if (remoteProjectsAbsolutePath != null) {
-            ManyRemoteProjectsControl manyRemoteProjectsControl = new ManyRemoteProjectsControl(metricsCodes, exportFormat, remoteProjectsAbsolutePath);
-            manyRemoteProjectsControl.run();
+            RemoteSnapshotsProjectsControl remoteSnapshotsProjectsControl = new RemoteSnapshotsProjectsControl(metricsCodes, exportFormat, remoteProjectsAbsolutePath);
+            remoteSnapshotsProjectsControl.run();
         } else {
             Path projectAbsolutePath = toolInput.getProjectAbsolutePath();
             SingleLocalProjectControl singleLocalProjectControl = new SingleLocalProjectControl(metricsCodes, exportFormat, projectAbsolutePath);
