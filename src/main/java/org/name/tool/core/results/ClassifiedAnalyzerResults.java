@@ -41,7 +41,7 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults, Iterable<Map.
     }
 
     public String getFullyQualifiedName() {
-        return classOrInterfaceDeclaration.resolve().getQualifiedName();
+        return classOrInterfaceDeclaration.getFullyQualifiedName().orElse(getClassName());
     }
 
     ClassOrInterfaceDeclaration getClassOrInterfaceDeclaration() {
@@ -64,8 +64,14 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults, Iterable<Map.
     }
 
     public List<ResolvedReferenceType> getSuperclasses() {
-        List<ResolvedReferenceType> directAncestors = classOrInterfaceDeclaration.resolve().getAncestors(true);
-        return getIndirectAncestors(directAncestors);
+        try {
+            List<ResolvedReferenceType> directAncestors = classOrInterfaceDeclaration.resolve().getAncestors(true);
+            return getIndirectAncestors(directAncestors);
+        } catch (RuntimeException e) {
+            //TODO Improve with logging ERROR. In any case, return an empty list
+            // resolve() raises a number of issues: UnsupportedOperationException, UnsolvedSymbolException, a pure RuntimeException, StackOverflowError
+            return new ArrayList<>();
+        }
     }
 
     private List<ResolvedReferenceType> getIndirectAncestors(List<ResolvedReferenceType> ancestors) {

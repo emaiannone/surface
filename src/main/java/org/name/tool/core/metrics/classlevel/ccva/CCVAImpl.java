@@ -20,11 +20,14 @@ public class CCVAImpl extends CCVA {
         int nonPrivateStatic = 0;
         Set<VariableDeclarator> classifiedAttributes = classResults.getClassifiedAttributes();
         for (VariableDeclarator classifiedAttribute : classifiedAttributes) {
-            FieldDeclaration fieldDecl = classifiedAttribute.resolve().asField().toAst().orElse(null);
-            if (fieldDecl != null) {
-                if (!fieldDecl.isPrivate() && fieldDecl.isStatic()) {
+            try {
+                FieldDeclaration correspondingFieldDecl = classifiedAttribute.resolve().asField().toAst().orElse(null);
+                if (correspondingFieldDecl != null && !correspondingFieldDecl.isPrivate() && correspondingFieldDecl.isStatic()) {
                     nonPrivateStatic++;
                 }
+            } catch (RuntimeException ignore) {
+                //TODO Improve with logging ERROR. In any case, skip this classifiedAttribute
+                // resolve() raises a number of issues: UnsupportedOperationException, UnsolvedSymbolException, a pure RuntimeException, StackOverflowError
             }
         }
         int caValue = ca.compute(classResults).getValue();

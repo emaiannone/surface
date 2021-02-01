@@ -8,9 +8,7 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
-import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.resolution.Resolvable;
-import com.github.javaparser.resolution.UnsolvedSymbolException;
 import com.github.javaparser.resolution.declarations.ResolvedValueDeclaration;
 import org.name.tool.core.results.ClassifiedAnalyzerResults;
 
@@ -106,58 +104,14 @@ public class ClassifiedAnalyzer extends ClassAnalyzer {
                                 unmatchedClassifiedAttrSet.remove(matchedClassifiedAttr);
                             }
                         }
-                    } catch (UnsolvedSymbolException | UnsupportedOperationException ignored) {
+                    } catch (RuntimeException | StackOverflowError ignored) {
+                        //TODO Improve with logging ERROR. In any case, any raised exception should ignore this usageNode
+                        // resolve() raises a number of issues: UnsupportedOperationException, UnsolvedSymbolException, a pure RuntimeException, StackOverflowError
                     }
                 }
             }
         }
         return resultMap;
-    }
-
-    @Deprecated
-    private Set<MethodDeclaration> getClassifiedMethods(VariableDeclarator classifiedAttribute) {
-        Set<MethodDeclaration> classifiedMethods = new HashSet<>();
-        for (MethodDeclaration method : getClassDeclaration().getMethods()) {
-            BlockStmt bodyBlock = method.getBody().orElse(null);
-            if (bodyBlock != null) {
-                for (NameExpr nameExpr : bodyBlock.findAll(NameExpr.class)) {
-                    if (isAttributeUsed(classifiedAttribute, nameExpr)) {
-                        try {
-                            if (nameExpr.resolve().isField()) {
-                                classifiedMethods.add(method);
-                            }
-                        } catch (UnsolvedSymbolException | UnsupportedOperationException ignored) {
-                        }
-                    }
-                }
-                for (FieldAccessExpr fieldAccessExpr : bodyBlock.findAll(FieldAccessExpr.class)) {
-                    if (isAttributeUsed(classifiedAttribute, fieldAccessExpr)) {
-                        try {
-                            if (fieldAccessExpr.resolve().isField()) {
-                                classifiedMethods.add(method);
-                            }
-                        } catch (UnsolvedSymbolException | UnsupportedOperationException ignored) {
-                        }
-                    }
-                }
-            }
-        }
-        return classifiedMethods;
-    }
-
-    @Deprecated
-    private boolean isFieldDeclared(Resolvable<ResolvedValueDeclaration> resolvable) {
-        try {
-            ResolvedValueDeclaration resolved = resolvable.resolve();
-            return resolved.isField();
-        } catch (UnsolvedSymbolException | UnsupportedOperationException e) {
-            return false;
-        }
-    }
-
-    @Deprecated
-    private boolean isAttributeUsed(VariableDeclarator classifiedAttribute, NodeWithSimpleName<?> nodeWithSimpleNames) {
-        return classifiedAttribute.getNameAsString().equals(nodeWithSimpleNames.getNameAsString());
     }
 
     private boolean isUsingReflection() {
