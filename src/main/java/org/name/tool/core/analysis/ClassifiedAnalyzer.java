@@ -14,6 +14,7 @@ import com.github.javaparser.resolution.UnsolvedSymbolException;
 import com.github.javaparser.resolution.declarations.ResolvedValueDeclaration;
 import org.name.tool.core.results.ClassifiedAnalyzerResults;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -86,38 +87,24 @@ public class ClassifiedAnalyzer extends ClassAnalyzer {
 
         for (MethodDeclaration method : getClassDeclaration().getMethods()) {
             Set<VariableDeclarator> unmatchedClassifiedAttrSet = new HashSet<>(classifiedAttributes);
-            List<NameExpr> nameExprs = method.findAll(NameExpr.class);
-            for (int i = 0; i < nameExprs.size() && unmatchedClassifiedAttrSet.size() > 0; i++) {
-                NameExpr nameExpr = nameExprs.get(i);
+            List<NodeWithSimpleName<?>> usageNodes = new ArrayList<>();
+            usageNodes.addAll(method.findAll(NameExpr.class));
+            usageNodes.addAll(method.findAll(FieldAccessExpr.class));
+            for (int i = 0; i < usageNodes.size() && unmatchedClassifiedAttrSet.size() > 0; i++) {
+                NodeWithSimpleName<?> usageNode = usageNodes.get(i);
                 VariableDeclarator matchedClassifiedAttr = unmatchedClassifiedAttrSet.stream()
-                        .filter(ca -> isAttributeUsed(ca, nameExpr))
+                        .filter(ca -> ca.getNameAsString().equals(usageNode.getNameAsString()))
                         .findFirst().orElse(null);
                 if (matchedClassifiedAttr != null) {
                     try {
-                        if (nameExpr.resolve().isField()) {
-                            Set<MethodDeclaration> classifiedMethods = resultMap.get(matchedClassifiedAttr);
-                            classifiedMethods.add(method);
-                            resultMap.put(matchedClassifiedAttr, classifiedMethods);
-                            unmatchedClassifiedAttrSet.remove(matchedClassifiedAttr);
-                        }
-                    } catch (UnsolvedSymbolException | UnsupportedOperationException ignored) {
-                    }
-                }
-            }
-            // TODO Find a solution for these duplicated loops
-            List<FieldAccessExpr> fieldAccessExprs = method.findAll(FieldAccessExpr.class);
-            for (int i = 0; i < fieldAccessExprs.size() && unmatchedClassifiedAttrSet.size() > 0; i++) {
-                FieldAccessExpr fieldAccessExpr = fieldAccessExprs.get(i);
-                VariableDeclarator matchedClassifiedAttr = unmatchedClassifiedAttrSet.stream()
-                        .filter(ca -> isAttributeUsed(ca, fieldAccessExpr))
-                        .findFirst().orElse(null);
-                if (matchedClassifiedAttr != null) {
-                    try {
-                        if (fieldAccessExpr.resolve().isField()) {
-                            Set<MethodDeclaration> classifiedMethods = resultMap.get(matchedClassifiedAttr);
-                            classifiedMethods.add(method);
-                            resultMap.put(matchedClassifiedAttr, classifiedMethods);
-                            unmatchedClassifiedAttrSet.remove(matchedClassifiedAttr);
+                        // FIXME This is working, but it seems a bad solution... I would like a list of object that are both NodeWithSimpleName and Resolvable<ResolvedValueDeclaration>
+                        if (usageNode instanceof Resolvable<?>) {
+                            if (((Resolvable<ResolvedValueDeclaration>) usageNode).resolve().isField()) {
+                                Set<MethodDeclaration> classifiedMethods = resultMap.get(matchedClassifiedAttr);
+                                classifiedMethods.add(method);
+                                resultMap.put(matchedClassifiedAttr, classifiedMethods);
+                                unmatchedClassifiedAttrSet.remove(matchedClassifiedAttr);
+                            }
                         }
                     } catch (UnsolvedSymbolException | UnsupportedOperationException ignored) {
                     }
@@ -168,6 +155,7 @@ public class ClassifiedAnalyzer extends ClassAnalyzer {
         }
     }
 
+    @Deprecated
     private boolean isAttributeUsed(VariableDeclarator classifiedAttribute, NodeWithSimpleName<?> nodeWithSimpleNames) {
         return classifiedAttribute.getNameAsString().equals(nodeWithSimpleNames.getNameAsString());
     }
