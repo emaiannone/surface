@@ -20,7 +20,7 @@ public class ProjectAnalyzer {
 
     // TODO: Would be good if the list of invalid paths is taken from a file
     public static final List<String> invalidPaths = Arrays.asList(
-            "src/test/java",
+            "src/test",
             "target/classes"
     );
 
@@ -49,7 +49,7 @@ public class ProjectAnalyzer {
                                 ClassOrInterfaceDeclaration classOrInterfaceDeclaration = typeDeclaration.asClassOrInterfaceDeclaration();
                                 if (!classOrInterfaceDeclaration.isInterface()) {
                                     ClassifiedAnalyzer classifiedAnalyzer = new ClassifiedAnalyzer(classOrInterfaceDeclaration);
-                                    System.out.println("** Analyzing class: " + classOrInterfaceDeclaration.getName());
+                                    System.out.println("** Analyzing class: " + classOrInterfaceDeclaration.getFullyQualifiedName().orElse(classOrInterfaceDeclaration.getNameAsString()));
                                     ClassifiedAnalyzerResults classResults = classifiedAnalyzer.analyze();
                                     projectResults.add(classResults);
                                 }
