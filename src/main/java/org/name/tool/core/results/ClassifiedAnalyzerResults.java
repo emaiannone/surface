@@ -1,6 +1,7 @@
 package org.name.tool.core.results;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.resolution.declarations.ResolvedReferenceTypeDeclaration;
@@ -63,6 +64,7 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults, Iterable<Map.
         return results.keySet();
     }
 
+    // TODO This result could be computed and stored in an instance variable, to avoid useless recomputations
     public List<ResolvedReferenceType> getSuperclasses() {
         try {
             List<ResolvedReferenceType> directAncestors = classOrInterfaceDeclaration.resolve().getAncestors(true);
@@ -84,6 +86,23 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults, Iterable<Map.
             }
         }
         return allAncestors;
+    }
+
+    // TODO This result could be computed and stored in an instance variable, to avoid useless recomputations
+    public Set<FieldDeclaration> getCorrespondingFieldDeclarations() {
+        Set<FieldDeclaration> correspondingFieldDeclarations = new HashSet<>();
+        for (VariableDeclarator classifiedAttribute : getClassifiedAttributes()) {
+            try {
+                FieldDeclaration correspondingFieldDecl = classifiedAttribute.resolve().asField().toAst().orElse(null);
+                if (correspondingFieldDecl != null) {
+                    correspondingFieldDeclarations.add(correspondingFieldDecl);
+                }
+            } catch (RuntimeException ignore) {
+                //TODO Improve with logging ERROR. In any case, skip this classifiedAttribute
+                // resolve() raises a number of issues: UnsupportedOperationException, UnsolvedSymbolException, a pure RuntimeException, StackOverflowError
+            }
+        }
+        return correspondingFieldDeclarations;
     }
 
     public Set<MethodDeclaration> getClassifiedMethods(VariableDeclarator variableDeclarator) {
