@@ -1,5 +1,6 @@
 package org.name.tool.core.control;
 
+import com.github.javaparser.symbolsolver.javaparsermodel.JavaParserFacade;
 import org.name.tool.core.analysis.ProjectAnalyzer;
 import org.name.tool.core.metrics.api.ProjectMetricsCalculator;
 import org.name.tool.core.results.ProjectAnalyzerResults;
@@ -41,6 +42,9 @@ public abstract class ProjectsControl {
 
         // TODO Implement Export
         System.out.println("* NOT IMPLEMENTED: Export results.");
+
+        // Release! Sadly, the library does not manage well its internal cache, so we have to do this manual clear
+        JavaParserFacade.clearInstances();
     }
 
     public abstract void run();

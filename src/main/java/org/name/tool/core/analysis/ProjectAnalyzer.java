@@ -25,7 +25,10 @@ public class ProjectAnalyzer {
     );
 
     public ProjectAnalyzer(Path projectAbsolutePath) {
-        projectRoot = new SymbolSolverCollectionStrategy().collect(projectAbsolutePath);
+        SymbolSolverCollectionStrategy symbolSolverCollectionStrategy = new SymbolSolverCollectionStrategy();
+        symbolSolverCollectionStrategy.getParserConfiguration().setStoreTokens(false);
+        symbolSolverCollectionStrategy.getParserConfiguration().setAttributeComments(false);
+        projectRoot = symbolSolverCollectionStrategy.collect(projectAbsolutePath);
     }
 
     public ProjectAnalyzerResults analyze() {
@@ -37,6 +40,7 @@ public class ProjectAnalyzer {
                 continue;
             }
             try {
+                // TODO Consider the parallel version of tryToParse
                 List<ParseResult<CompilationUnit>> parseResults = sourceRoot.tryToParse();
                 for (ParseResult<CompilationUnit> parseResult : parseResults) {
                     // A CompilationUnit represent an AST of a Java file/code snippet
