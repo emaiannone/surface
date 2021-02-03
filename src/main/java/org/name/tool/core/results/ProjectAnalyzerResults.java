@@ -5,6 +5,7 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.utils.ProjectRoot;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -20,7 +21,7 @@ public class ProjectAnalyzerResults implements AnalyzerResults, Iterable<Classif
     }
 
     public Set<ClassifiedAnalyzerResults> getResults() {
-        return new HashSet<>(results);
+        return Collections.unmodifiableSet(results);
     }
 
     @Override

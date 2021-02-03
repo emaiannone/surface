@@ -27,7 +27,7 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults, Iterable<Map.
     }
 
     public Map<VariableDeclarator, Set<MethodDeclaration>> getResults() {
-        return new HashMap<>(results);
+        return Collections.unmodifiableMap(results);
     }
 
     @Override

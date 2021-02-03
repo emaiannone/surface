@@ -1,6 +1,7 @@
 package org.name.tool.core.results;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -13,9 +14,13 @@ public class ClassMetricsResults implements Iterable<MetricResult<?>> {
         this.classMetrics = new ArrayList<>();
     }
 
+    public List<MetricResult<?>> getClassMetrics() {
+        return Collections.unmodifiableList(classMetrics);
+    }
+
     @Override
     public Iterator<MetricResult<?>> iterator() {
-        return classMetrics.iterator();
+        return getClassMetrics().iterator();
     }
 
     public void add(MetricResult<?> metricResult) {
@@ -28,10 +33,6 @@ public class ClassMetricsResults implements Iterable<MetricResult<?>> {
 
     public ClassifiedAnalyzerResults getClassResults() {
         return classResults;
-    }
-
-    public List<MetricResult<?>> getClassMetrics() {
-        return new ArrayList<>(classMetrics);
     }
 
     @Override

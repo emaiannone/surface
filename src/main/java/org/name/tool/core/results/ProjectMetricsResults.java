@@ -3,6 +3,7 @@ package org.name.tool.core.results;
 import com.github.javaparser.utils.ProjectRoot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -19,9 +20,13 @@ public class ProjectMetricsResults implements Iterable<ClassMetricsResults> {
         this.projectMetrics = new ArrayList<>();
     }
 
+    public Set<ClassMetricsResults> getClassMetricsResultsSet() {
+        return Collections.unmodifiableSet(classMetricsResultsSet);
+    }
+
     @Override
     public Iterator<ClassMetricsResults> iterator() {
-        return classMetricsResultsSet.iterator();
+        return getClassMetricsResultsSet().iterator();
     }
 
     public void add(ClassMetricsResults classResults) {
@@ -30,10 +35,6 @@ public class ProjectMetricsResults implements Iterable<ClassMetricsResults> {
 
     public void add(MetricResult<?> projectMetric) {
         projectMetrics.add(projectMetric);
-    }
-
-    public ProjectRoot getProjectRoot() {
-        return projectRoot;
     }
 
     @Override
