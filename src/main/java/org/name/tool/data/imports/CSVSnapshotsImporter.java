@@ -20,9 +20,10 @@ public class CSVSnapshotsImporter implements SnapshotsImporter {
                 .withIgnoreHeaderCase()
                 .withTrim());
         for (CSVRecord csvRecord : csvParser) {
+            String projectName = csvRecord.get("project");
             String repositoryURI = csvRecord.get("github");
             String commitSha = csvRecord.get("commit_sha");
-            snapshots.add(new Snapshot(repositoryURI, commitSha));
+            snapshots.add(new Snapshot(projectName, repositoryURI, commitSha));
         }
         csvParser.close();
         return snapshots;

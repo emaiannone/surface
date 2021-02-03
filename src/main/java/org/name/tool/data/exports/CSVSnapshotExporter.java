@@ -14,13 +14,13 @@ import java.nio.file.StandardOpenOption;
 public class CSVSnapshotExporter implements SnapshotExporter {
     public static final String CODE = "csv";
     private static final String[] headers = {
-            "github",
+            "project",
             "commit_sha"
     };
 
     @Override
     public boolean export(Snapshot snapshot, ProjectMetricsResults projectMetricsResults) throws IOException {
-        String projectName = projectMetricsResults.getProjectRoot().getRoot().getFileName().toString();
+        String projectName = snapshot.getProjectName();
         Path exportFilePath = Paths.get(projectName + "_results.csv");
         CSVFormat csvFormat = CSVFormat.DEFAULT
                 .withHeader(headers)
@@ -30,8 +30,8 @@ public class CSVSnapshotExporter implements SnapshotExporter {
                 StandardOpenOption.APPEND,
                 StandardOpenOption.CREATE),
                 csvFormat);
-        //TODO Complete Implementation
-        csvPrinter.printRecord(snapshot.getRepositoryURI(), snapshot.getCommitSha());
+        //TODO Complete Implementation: call the proper method in ProjectMetricsResults
+        csvPrinter.printRecord(projectName, snapshot.getCommitSha());
         csvPrinter.close(true);
         return true;
     }
