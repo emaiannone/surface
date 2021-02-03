@@ -10,22 +10,16 @@ import java.nio.file.Path;
 
 public abstract class ProjectsControl {
     private final String[] metricsCodes;
-    private final String exportFormat;
 
-    public ProjectsControl(String[] metricsCodes, String exportFormat) {
+    public ProjectsControl(String[] metricsCodes) {
         this.metricsCodes = metricsCodes;
-        this.exportFormat = exportFormat;
     }
 
     public String[] getMetricsCodes() {
         return metricsCodes.clone();
     }
 
-    public String getExportFormat() {
-        return exportFormat;
-    }
-
-    protected void processProject(Path projectAbsolutePath) {
+    protected ProjectMetricsResults processProject(Path projectAbsolutePath) {
         ProjectAnalyzer projectAnalyzer = new ProjectAnalyzer(projectAbsolutePath);
         System.out.println("* Project Analysis starting");
         ProjectAnalyzerResults projectAnalyzerResults = projectAnalyzer.analyze();
@@ -40,11 +34,10 @@ public abstract class ProjectsControl {
         System.out.println("* Printing Project Metrics");
         System.out.println(projectMetricsResults);
 
-        // TODO Implement Export
-        System.out.println("* NOT IMPLEMENTED: Export results.");
-
         // Release! Sadly, the library does not manage well its internal cache, so we have to do this manual clear
         JavaParserFacade.clearInstances();
+
+        return projectMetricsResults;
     }
 
     public abstract void run();

@@ -6,6 +6,8 @@ import org.apache.commons.csv.CSVRecord;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.util.FileUtils;
+import org.name.tool.core.results.ProjectMetricsResults;
+import org.name.tool.export.ProjectMetricsResultsExporter;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,12 +21,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class RemoteSnapshotsProjectsControl extends ProjectsControl {
-    public static final String BASE_DIR = "/tmp";
     private final Path remoteProjectsAbsolutePath;
+    public static final String BASE_DIR = "/tmp";
+    private final String exportFormat;
 
-    public RemoteSnapshotsProjectsControl(String[] metricsCodes, String exportFormat, Path remoteProjectsAbsolutePath) {
-        super(metricsCodes, exportFormat);
+    public RemoteSnapshotsProjectsControl(String[] metricsCodes, Path remoteProjectsAbsolutePath, String exportFormat) {
+        super(metricsCodes);
         this.remoteProjectsAbsolutePath = remoteProjectsAbsolutePath;
+        this.exportFormat = exportFormat;
     }
 
     @Override
@@ -50,8 +54,16 @@ public class RemoteSnapshotsProjectsControl extends ProjectsControl {
                         Snapshot repoSnapshot = repoSnapshots.get(i);
                         String commitSha = repoSnapshot.getCommitSha();
                         System.out.println("* [" + (i + 1) + "/" + repoSnapshots.size() + "] Checking out commit " + commitSha);
+                        // Checkout commit
                         git.checkout().setName(commitSha).call();
-                        super.processProject(destinationDir.toPath());
+                        // Analyze and compute metrics
+                        ProjectMetricsResults projectMetricsResults = super.processProject(destinationDir.toPath());
+                        // Export
+                        ProjectMetricsResultsExporter projectMetricsResultsExporter = new ProjectMetricsResultsExporter(projectMetricsResults);
+                        boolean exportOutcome = projectMetricsResultsExporter.exportAs(exportFormat);
+                        if (!exportOutcome) {
+                            System.out.println("* Could not export results: skipping.");
+                        }
                     }
                 } catch (GitAPIException e) {
                     System.out.println("* Failed to clone " + repositoryURI + ": skipping.");
@@ -71,7 +83,8 @@ public class RemoteSnapshotsProjectsControl extends ProjectsControl {
         } catch (IOException ignored) {
         }
     }
-    
+
+    // TODO Extract this logic into a separate CSVSnapshotImporter
     private List<Snapshot> extractSnapshots() throws IOException {
         List<Snapshot> snapshots = new ArrayList<>();
         CSVParser csvParser = new CSVParser(Files.newBufferedReader(remoteProjectsAbsolutePath), CSVFormat.DEFAULT

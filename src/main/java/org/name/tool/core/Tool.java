@@ -22,11 +22,11 @@ public class Tool {
 
         Path remoteProjectsAbsolutePath = toolInput.getRemoteProjectsAbsolutePath();
         if (remoteProjectsAbsolutePath != null) {
-            RemoteSnapshotsProjectsControl remoteSnapshotsProjectsControl = new RemoteSnapshotsProjectsControl(metricsCodes, exportFormat, remoteProjectsAbsolutePath);
+            RemoteSnapshotsProjectsControl remoteSnapshotsProjectsControl = new RemoteSnapshotsProjectsControl(metricsCodes, remoteProjectsAbsolutePath, exportFormat);
             remoteSnapshotsProjectsControl.run();
         } else {
             Path projectAbsolutePath = toolInput.getProjectAbsolutePath();
-            SingleLocalProjectControl singleLocalProjectControl = new SingleLocalProjectControl(metricsCodes, exportFormat, projectAbsolutePath);
+            SingleLocalProjectControl singleLocalProjectControl = new SingleLocalProjectControl(metricsCodes, projectAbsolutePath);
             singleLocalProjectControl.run();
         }
     }

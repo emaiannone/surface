@@ -5,8 +5,8 @@ import java.nio.file.Path;
 public class SingleLocalProjectControl extends ProjectsControl {
     private final Path projectAbsolutePath;
 
-    public SingleLocalProjectControl(String[] metricsCodes, String exportFormat, Path projectAbsolutePath) {
-        super(metricsCodes, exportFormat);
+    public SingleLocalProjectControl(String[] metricsCodes, Path projectAbsolutePath) {
+        super(metricsCodes);
         this.projectAbsolutePath = projectAbsolutePath;
     }
 
