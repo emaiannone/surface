@@ -1,7 +1,7 @@
 package org.name.tool.core.metrics.api;
 
-import org.name.tool.core.results.AnalyzerResults;
-import org.name.tool.core.results.MetricResult;
+import org.name.tool.results.AnalyzerResults;
+import org.name.tool.results.MetricResult;
 
 // T is for the parameters type (AnalyzerResults implementor) and U is for the type of the MetricResult returned
 public abstract class Metric<T extends AnalyzerResults, U> {

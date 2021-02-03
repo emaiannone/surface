@@ -1,8 +1,8 @@
 package org.name.tool.core.metrics.classlevel.cma;
 
 import org.name.tool.core.metrics.classlevel.cm.CM;
-import org.name.tool.core.results.ClassifiedAnalyzerResults;
-import org.name.tool.core.results.MetricResult;
+import org.name.tool.results.ClassifiedAnalyzerResults;
+import org.name.tool.results.MetricResult;
 
 public class CMACached extends CMA {
     private final CMAImpl cma;

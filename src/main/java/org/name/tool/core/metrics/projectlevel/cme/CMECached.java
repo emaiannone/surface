@@ -1,7 +1,7 @@
 package org.name.tool.core.metrics.projectlevel.cme;
 
-import org.name.tool.core.results.MetricResult;
-import org.name.tool.core.results.ProjectAnalyzerResults;
+import org.name.tool.results.MetricResult;
+import org.name.tool.results.ProjectAnalyzerResults;
 
 public class CMECached extends CME {
     private final CMEImpl cme;

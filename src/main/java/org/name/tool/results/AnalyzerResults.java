@@ -1,4 +1,4 @@
-package org.name.tool.core.results;
+package org.name.tool.results;
 
 public interface AnalyzerResults {
 }

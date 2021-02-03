@@ -7,8 +7,8 @@ import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.symbolsolver.utils.SymbolSolverCollectionStrategy;
 import com.github.javaparser.utils.ProjectRoot;
 import com.github.javaparser.utils.SourceRoot;
-import org.name.tool.core.results.ClassifiedAnalyzerResults;
-import org.name.tool.core.results.ProjectAnalyzerResults;
+import org.name.tool.results.ClassifiedAnalyzerResults;
+import org.name.tool.results.ProjectAnalyzerResults;
 
 import java.io.IOException;
 import java.nio.file.Path;

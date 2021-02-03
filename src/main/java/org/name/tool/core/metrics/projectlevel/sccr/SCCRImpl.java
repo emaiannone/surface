@@ -1,9 +1,9 @@
 package org.name.tool.core.metrics.projectlevel.sccr;
 
 import org.name.tool.core.metrics.projectlevel.cc.CC;
-import org.name.tool.core.results.ClassifiedAnalyzerResults;
-import org.name.tool.core.results.MetricResult;
-import org.name.tool.core.results.ProjectAnalyzerResults;
+import org.name.tool.results.ClassifiedAnalyzerResults;
+import org.name.tool.results.MetricResult;
+import org.name.tool.results.ProjectAnalyzerResults;
 
 public class SCCRImpl extends SCCR {
     private final CC cc;

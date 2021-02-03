@@ -1,8 +1,8 @@
 package org.name.tool.core.metrics.classlevel.civa;
 
 import org.name.tool.core.metrics.classlevel.ca.CA;
-import org.name.tool.core.results.ClassifiedAnalyzerResults;
-import org.name.tool.core.results.MetricResult;
+import org.name.tool.results.ClassifiedAnalyzerResults;
+import org.name.tool.results.MetricResult;
 
 public class CIVACached extends CIVA {
     private final CIVAImpl civa;

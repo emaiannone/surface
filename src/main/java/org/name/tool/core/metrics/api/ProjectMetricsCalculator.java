@@ -2,10 +2,10 @@ package org.name.tool.core.metrics.api;
 
 import org.name.tool.core.metrics.ClassMetricsFactory;
 import org.name.tool.core.metrics.ProjectMetricsFactory;
-import org.name.tool.core.results.ClassMetricsResults;
-import org.name.tool.core.results.ClassifiedAnalyzerResults;
-import org.name.tool.core.results.ProjectAnalyzerResults;
-import org.name.tool.core.results.ProjectMetricsResults;
+import org.name.tool.results.ClassMetricsResults;
+import org.name.tool.results.ClassifiedAnalyzerResults;
+import org.name.tool.results.ProjectAnalyzerResults;
+import org.name.tool.results.ProjectMetricsResults;
 
 import java.util.List;
 

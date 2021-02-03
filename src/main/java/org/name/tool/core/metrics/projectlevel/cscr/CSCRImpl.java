@@ -1,9 +1,9 @@
 package org.name.tool.core.metrics.projectlevel.cscr;
 
 import com.github.javaparser.resolution.types.ResolvedReferenceType;
-import org.name.tool.core.results.ClassifiedAnalyzerResults;
-import org.name.tool.core.results.MetricResult;
-import org.name.tool.core.results.ProjectAnalyzerResults;
+import org.name.tool.results.ClassifiedAnalyzerResults;
+import org.name.tool.results.MetricResult;
+import org.name.tool.results.ProjectAnalyzerResults;
 
 import java.util.HashMap;
 import java.util.List;

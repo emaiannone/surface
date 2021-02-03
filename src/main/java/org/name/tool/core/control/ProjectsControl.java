@@ -3,8 +3,8 @@ package org.name.tool.core.control;
 import com.github.javaparser.symbolsolver.javaparsermodel.JavaParserFacade;
 import org.name.tool.core.analysis.ProjectAnalyzer;
 import org.name.tool.core.metrics.api.ProjectMetricsCalculator;
-import org.name.tool.core.results.ProjectAnalyzerResults;
-import org.name.tool.core.results.ProjectMetricsResults;
+import org.name.tool.results.ProjectAnalyzerResults;
+import org.name.tool.results.ProjectMetricsResults;
 
 import java.nio.file.Path;
 

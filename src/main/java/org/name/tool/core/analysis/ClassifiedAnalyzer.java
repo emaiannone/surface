@@ -10,7 +10,7 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
 import com.github.javaparser.resolution.Resolvable;
 import com.github.javaparser.resolution.declarations.ResolvedValueDeclaration;
-import org.name.tool.core.results.ClassifiedAnalyzerResults;
+import org.name.tool.results.ClassifiedAnalyzerResults;
 
 import java.util.ArrayList;
 import java.util.HashMap;

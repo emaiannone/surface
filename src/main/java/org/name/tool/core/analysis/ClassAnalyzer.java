@@ -1,7 +1,7 @@
 package org.name.tool.core.analysis;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import org.name.tool.core.results.ClassifiedAnalyzerResults;
+import org.name.tool.results.ClassifiedAnalyzerResults;
 
 public abstract class ClassAnalyzer {
     private final ClassOrInterfaceDeclaration classDeclaration;

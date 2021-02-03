@@ -3,10 +3,10 @@ package org.name.tool.core.control;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.util.FileUtils;
-import org.name.tool.core.results.ProjectMetricsResults;
 import org.name.tool.data.bean.Snapshot;
 import org.name.tool.data.exports.ProjectMetricsResultsExporter;
 import org.name.tool.data.imports.CSVSnapshotsImporter;
+import org.name.tool.results.ProjectMetricsResults;
 
 import java.io.File;
 import java.io.IOException;

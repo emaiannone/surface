@@ -1,8 +1,8 @@
 package org.name.tool.core.metrics.projectlevel.cme;
 
 import com.github.javaparser.ast.body.MethodDeclaration;
-import org.name.tool.core.results.MetricResult;
-import org.name.tool.core.results.ProjectAnalyzerResults;
+import org.name.tool.results.MetricResult;
+import org.name.tool.results.ProjectAnalyzerResults;
 
 import java.util.Set;
 

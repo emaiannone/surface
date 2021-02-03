@@ -1,8 +1,8 @@
 package org.name.tool.core.metrics.projectlevel.ccr;
 
 import org.name.tool.core.metrics.projectlevel.cc.CC;
-import org.name.tool.core.results.MetricResult;
-import org.name.tool.core.results.ProjectAnalyzerResults;
+import org.name.tool.results.MetricResult;
+import org.name.tool.results.ProjectAnalyzerResults;
 
 public class CCRCached extends CCR {
     private final CCRImpl ccr;

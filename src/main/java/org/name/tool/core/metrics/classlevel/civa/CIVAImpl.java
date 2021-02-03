@@ -2,8 +2,8 @@ package org.name.tool.core.metrics.classlevel.civa;
 
 import com.github.javaparser.ast.body.FieldDeclaration;
 import org.name.tool.core.metrics.classlevel.ca.CA;
-import org.name.tool.core.results.ClassifiedAnalyzerResults;
-import org.name.tool.core.results.MetricResult;
+import org.name.tool.results.ClassifiedAnalyzerResults;
+import org.name.tool.results.MetricResult;
 
 import java.util.Set;
 
