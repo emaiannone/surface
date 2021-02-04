@@ -1,5 +1,7 @@
 package org.name.tool.results;
 
+import org.name.tool.results.values.MetricValue;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;

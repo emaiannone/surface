@@ -1,13 +1,13 @@
 package org.name.tool.core.metrics.projectlevel.cc;
 
-import org.name.tool.results.MetricValue;
 import org.name.tool.results.ProjectAnalyzerResults;
+import org.name.tool.results.values.IntMetricValue;
 
 public class CCImpl extends CC {
 
     @Override
-    public MetricValue<Integer> compute(ProjectAnalyzerResults projectResults) {
+    public IntMetricValue compute(ProjectAnalyzerResults projectResults) {
         int value = projectResults.getCriticalClasses().size();
-        return new MetricValue<>(getName(), getCode(), value);
+        return new IntMetricValue(getName(), getCode(), value);
     }
 }

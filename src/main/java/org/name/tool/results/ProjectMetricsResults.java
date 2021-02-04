@@ -1,6 +1,7 @@
 package org.name.tool.results;
 
 import com.github.javaparser.utils.ProjectRoot;
+import org.name.tool.results.values.MetricValue;
 
 import java.util.*;
 import java.util.stream.Collectors;

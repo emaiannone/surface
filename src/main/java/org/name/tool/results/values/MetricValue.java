@@ -1,6 +1,6 @@
-package org.name.tool.results;
+package org.name.tool.results.values;
 
-public class MetricValue<T> {
+public abstract class MetricValue<T> {
     private final String metricName;
     private final String metricCode;
     private final T value;

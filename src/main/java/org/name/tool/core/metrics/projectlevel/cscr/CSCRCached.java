@@ -1,11 +1,11 @@
 package org.name.tool.core.metrics.projectlevel.cscr;
 
-import org.name.tool.results.MetricValue;
 import org.name.tool.results.ProjectAnalyzerResults;
+import org.name.tool.results.values.DoubleMetricValue;
 
 public class CSCRCached extends CSCR {
     private final CSCRImpl cscr;
-    private MetricValue<Double> cachedResult;
+    private DoubleMetricValue cachedResult;
 
     public CSCRCached() {
         this.cscr = new CSCRImpl();
@@ -13,7 +13,7 @@ public class CSCRCached extends CSCR {
     }
 
     @Override
-    public MetricValue<Double> compute(ProjectAnalyzerResults projectResults) {
+    public DoubleMetricValue compute(ProjectAnalyzerResults projectResults) {
         if (cachedResult == null) {
             cachedResult = cscr.compute(projectResults);
         }

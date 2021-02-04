@@ -2,8 +2,8 @@ package org.name.tool.core.metrics.projectlevel.cscr;
 
 import com.github.javaparser.resolution.types.ResolvedReferenceType;
 import org.name.tool.results.ClassifiedAnalyzerResults;
-import org.name.tool.results.MetricValue;
 import org.name.tool.results.ProjectAnalyzerResults;
+import org.name.tool.results.values.DoubleMetricValue;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.Map;
 public class CSCRImpl extends CSCR {
 
     @Override
-    public MetricValue<Double> compute(ProjectAnalyzerResults projectResults) {
+    public DoubleMetricValue compute(ProjectAnalyzerResults projectResults) {
         Map<String, Double> values = new HashMap<>();
         for (ClassifiedAnalyzerResults classResults : projectResults) {
             List<ResolvedReferenceType> superclasses = classResults.getSuperclasses();
@@ -29,6 +29,6 @@ public class CSCRImpl extends CSCR {
             values.put(classResults.getFullyQualifiedName(), metricValue);
         }
         double value = values.values().stream().mapToDouble(x -> x).average().orElse(0.0);
-        return new MetricValue<>(getName(), getCode(), value);
+        return new DoubleMetricValue(getName(), getCode(), value);
     }
 }

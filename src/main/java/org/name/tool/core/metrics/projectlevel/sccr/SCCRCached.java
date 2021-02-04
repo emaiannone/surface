@@ -1,12 +1,12 @@
 package org.name.tool.core.metrics.projectlevel.sccr;
 
 import org.name.tool.core.metrics.projectlevel.cc.CC;
-import org.name.tool.results.MetricValue;
 import org.name.tool.results.ProjectAnalyzerResults;
+import org.name.tool.results.values.DoubleMetricValue;
 
 public class SCCRCached extends SCCR {
     private final SCCRImpl ccr;
-    private MetricValue<Double> cachedResult;
+    private DoubleMetricValue cachedResult;
 
     public SCCRCached(CC cc) {
         this.ccr = new SCCRImpl(cc);
@@ -14,7 +14,7 @@ public class SCCRCached extends SCCR {
     }
 
     @Override
-    public MetricValue<Double> compute(ProjectAnalyzerResults projectResults) {
+    public DoubleMetricValue compute(ProjectAnalyzerResults projectResults) {
         if (cachedResult == null) {
             cachedResult = ccr.compute(projectResults);
         }

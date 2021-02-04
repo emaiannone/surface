@@ -4,7 +4,7 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import org.name.tool.core.metrics.classlevel.ca.CA;
 import org.name.tool.core.metrics.classlevel.cm.CM;
 import org.name.tool.results.ClassifiedAnalyzerResults;
-import org.name.tool.results.MetricValue;
+import org.name.tool.results.values.DoubleMetricValue;
 
 public class CAIImpl extends CAI {
     private final CA ca;
@@ -16,13 +16,13 @@ public class CAIImpl extends CAI {
     }
 
     @Override
-    public MetricValue<Double> compute(ClassifiedAnalyzerResults classResults) {
+    public DoubleMetricValue compute(ClassifiedAnalyzerResults classResults) {
         double actualInteractions = 0;
         for (VariableDeclarator attr : classResults.getClassifiedAttributes()) {
             actualInteractions += classResults.getClassifiedMethods(attr).size();
         }
         double possibleInteractions = ca.compute(classResults).getValue() * cm.compute(classResults).getValue();
         double value = possibleInteractions != 0.0 ? actualInteractions / possibleInteractions : 0.0;
-        return new MetricValue<>(getName(), getCode(), value);
+        return new DoubleMetricValue(getName(), getCode(), value);
     }
 }
