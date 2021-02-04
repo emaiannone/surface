@@ -2,7 +2,7 @@ package org.name.tool.core.metrics.projectlevel.sccr;
 
 import org.name.tool.core.metrics.projectlevel.cc.CC;
 import org.name.tool.results.ClassifiedAnalyzerResults;
-import org.name.tool.results.MetricResult;
+import org.name.tool.results.MetricValue;
 import org.name.tool.results.ProjectAnalyzerResults;
 
 public class SCCRImpl extends SCCR {
@@ -13,7 +13,7 @@ public class SCCRImpl extends SCCR {
     }
 
     @Override
-    public MetricResult<Double> compute(ProjectAnalyzerResults projectResults) {
+    public MetricValue<Double> compute(ProjectAnalyzerResults projectResults) {
         int ccValue = cc.compute(projectResults).getValue();
         int serializedClassifiedClasses = 0;
         for (ClassifiedAnalyzerResults classResults : projectResults.getCriticalClasses()) {
@@ -22,6 +22,6 @@ public class SCCRImpl extends SCCR {
             }
         }
         double value = ccValue != 0.0 ? (double) serializedClassifiedClasses / ccValue : 0.0;
-        return new MetricResult<>(getName(), getCode(), value);
+        return new MetricValue<>(getName(), getCode(), value);
     }
 }

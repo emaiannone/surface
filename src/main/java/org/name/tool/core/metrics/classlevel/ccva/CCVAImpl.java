@@ -3,7 +3,7 @@ package org.name.tool.core.metrics.classlevel.ccva;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import org.name.tool.core.metrics.classlevel.ca.CA;
 import org.name.tool.results.ClassifiedAnalyzerResults;
-import org.name.tool.results.MetricResult;
+import org.name.tool.results.MetricValue;
 
 import java.util.Set;
 
@@ -15,7 +15,7 @@ public class CCVAImpl extends CCVA {
     }
 
     @Override
-    public MetricResult<Double> compute(ClassifiedAnalyzerResults classResults) {
+    public MetricValue<Double> compute(ClassifiedAnalyzerResults classResults) {
         int nonPrivateStatic = 0;
         Set<FieldDeclaration> correspondingFieldDeclarations = classResults.getCorrespondingFieldDeclarations();
         for (FieldDeclaration correspondingFieldDecl : correspondingFieldDeclarations) {
@@ -25,6 +25,6 @@ public class CCVAImpl extends CCVA {
         }
         int caValue = ca.compute(classResults).getValue();
         double value = caValue != 0.0 ? (double) nonPrivateStatic / caValue : 0.0;
-        return new MetricResult<>(getName(), getCode(), value);
+        return new MetricValue<>(getName(), getCode(), value);
     }
 }

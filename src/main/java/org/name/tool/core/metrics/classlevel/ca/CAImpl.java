@@ -1,13 +1,13 @@
 package org.name.tool.core.metrics.classlevel.ca;
 
 import org.name.tool.results.ClassifiedAnalyzerResults;
-import org.name.tool.results.MetricResult;
+import org.name.tool.results.MetricValue;
 
 public class CAImpl extends CA {
 
     @Override
-    public MetricResult<Integer> compute(ClassifiedAnalyzerResults classResults) {
+    public MetricValue<Integer> compute(ClassifiedAnalyzerResults classResults) {
         int value = classResults.getClassifiedAttributes().size();
-        return new MetricResult<>(getName(), getCode(), value);
+        return new MetricValue<>(getName(), getCode(), value);
     }
 }

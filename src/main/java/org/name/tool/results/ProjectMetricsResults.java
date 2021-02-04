@@ -13,16 +13,16 @@ import java.util.stream.Collectors;
 public class ProjectMetricsResults implements Iterable<ClassMetricsResults> {
     private final ProjectRoot projectRoot;
     private final Set<ClassMetricsResults> classMetricsResults;
-    private final List<MetricResult<?>> projectMetrics;
+    private final List<MetricValue<?>> projectValues;
 
     public ProjectMetricsResults(ProjectRoot projectRoot) {
         this.projectRoot = projectRoot;
         this.classMetricsResults = new HashSet<>();
-        this.projectMetrics = new ArrayList<>();
+        this.projectValues = new ArrayList<>();
     }
 
-    public List<MetricResult<?>> getProjectMetrics() {
-        return Collections.unmodifiableList(projectMetrics);
+    public List<MetricValue<?>> getProjectValues() {
+        return Collections.unmodifiableList(projectValues);
     }
 
     public Set<ClassMetricsResults> getClassMetricsResults() {
@@ -38,26 +38,26 @@ public class ProjectMetricsResults implements Iterable<ClassMetricsResults> {
         this.classMetricsResults.add(classResults);
     }
 
-    public void add(MetricResult<?> projectMetric) {
-        projectMetrics.add(projectMetric);
+    public void add(MetricValue<?> projectValue) {
+        projectValues.add(projectValue);
     }
 
     public List<String> getProjectMetricsCodes() {
-        return projectMetrics.stream()
-                .map(MetricResult::getMetricCode)
+        return projectValues.stream()
+                .map(MetricValue::getMetricCode)
                 .collect(Collectors.toList());
     }
 
     public List<?> getProjectMetricsValues() {
-        return projectMetrics.stream()
-                .map(MetricResult::getValue)
+        return projectValues.stream()
+                .map(MetricValue::getValue)
                 .collect(Collectors.toList());
     }
 
     public List<String> getClassMetricsCodes() {
         return classMetricsResults.stream()
-                .flatMap(mr -> mr.getClassMetrics().stream())
-                .map(MetricResult::getMetricCode)
+                .flatMap(mr -> mr.getClassValues().stream())
+                .map(MetricValue::getMetricCode)
                 .distinct()
                 .collect(Collectors.toList());
     }
@@ -65,14 +65,14 @@ public class ProjectMetricsResults implements Iterable<ClassMetricsResults> {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder("Project: " + projectRoot.getRoot().getFileName());
-        for (MetricResult<?> projectMetric : projectMetrics) {
+        for (MetricValue<?> projectMetric : projectValues) {
             builder.append("\n");
             builder.append(projectMetric.getMetricCode());
             builder.append(" = ");
             builder.append(projectMetric.getValue());
         }
         for (ClassMetricsResults entries : this) {
-            if (entries.getClassMetrics().size() > 0) {
+            if (entries.getClassValues().size() > 0) {
                 builder.append("\n\n");
                 builder.append(entries);
             }

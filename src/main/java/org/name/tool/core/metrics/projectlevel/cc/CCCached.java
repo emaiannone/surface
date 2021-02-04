@@ -1,11 +1,11 @@
 package org.name.tool.core.metrics.projectlevel.cc;
 
-import org.name.tool.results.MetricResult;
+import org.name.tool.results.MetricValue;
 import org.name.tool.results.ProjectAnalyzerResults;
 
 public class CCCached extends CC {
     private final CCImpl cc;
-    private MetricResult<Integer> cachedResult;
+    private MetricValue<Integer> cachedResult;
 
     public CCCached() {
         this.cc = new CCImpl();
@@ -13,7 +13,7 @@ public class CCCached extends CC {
     }
 
     @Override
-    public MetricResult<Integer> compute(ProjectAnalyzerResults projectResults) {
+    public MetricValue<Integer> compute(ProjectAnalyzerResults projectResults) {
         if (cachedResult == null) {
             cachedResult = cc.compute(projectResults);
         }

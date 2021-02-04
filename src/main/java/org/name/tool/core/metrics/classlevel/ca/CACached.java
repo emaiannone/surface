@@ -1,11 +1,11 @@
 package org.name.tool.core.metrics.classlevel.ca;
 
 import org.name.tool.results.ClassifiedAnalyzerResults;
-import org.name.tool.results.MetricResult;
+import org.name.tool.results.MetricValue;
 
 public class CACached extends CA {
     private final CAImpl classifiedAttributes;
-    private MetricResult<Integer> cachedResult;
+    private MetricValue<Integer> cachedResult;
 
     public CACached() {
         this.classifiedAttributes = new CAImpl();
@@ -13,7 +13,7 @@ public class CACached extends CA {
     }
 
     @Override
-    public MetricResult<Integer> compute(ClassifiedAnalyzerResults classResults) {
+    public MetricValue<Integer> compute(ClassifiedAnalyzerResults classResults) {
         if (cachedResult == null) {
             cachedResult = classifiedAttributes.compute(classResults);
         }

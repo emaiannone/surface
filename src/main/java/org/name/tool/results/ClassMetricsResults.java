@@ -5,26 +5,26 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-public class ClassMetricsResults implements Iterable<MetricResult<?>> {
+public class ClassMetricsResults implements Iterable<MetricValue<?>> {
     private final ClassifiedAnalyzerResults classResults;
-    private final List<MetricResult<?>> classMetrics;
+    private final List<MetricValue<?>> classValues;
 
     public ClassMetricsResults(ClassifiedAnalyzerResults classResults) {
         this.classResults = classResults;
-        this.classMetrics = new ArrayList<>();
+        this.classValues = new ArrayList<>();
     }
 
-    public List<MetricResult<?>> getClassMetrics() {
-        return Collections.unmodifiableList(classMetrics);
+    public List<MetricValue<?>> getClassValues() {
+        return Collections.unmodifiableList(classValues);
     }
 
     @Override
-    public Iterator<MetricResult<?>> iterator() {
-        return getClassMetrics().iterator();
+    public Iterator<MetricValue<?>> iterator() {
+        return getClassValues().iterator();
     }
 
-    public void add(MetricResult<?> metricResult) {
-        classMetrics.add(metricResult);
+    public void add(MetricValue<?> classValue) {
+        classValues.add(classValue);
     }
 
     public String getClassName() {
@@ -38,7 +38,7 @@ public class ClassMetricsResults implements Iterable<MetricResult<?>> {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder("Class: " + getClassName());
-        for (MetricResult<?> r : this) {
+        for (MetricValue<?> r : this) {
             builder.append("\n");
             builder.append(r.getMetricCode());
             builder.append(" = ");

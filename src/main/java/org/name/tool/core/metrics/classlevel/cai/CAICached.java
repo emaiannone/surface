@@ -3,11 +3,11 @@ package org.name.tool.core.metrics.classlevel.cai;
 import org.name.tool.core.metrics.classlevel.ca.CA;
 import org.name.tool.core.metrics.classlevel.cm.CM;
 import org.name.tool.results.ClassifiedAnalyzerResults;
-import org.name.tool.results.MetricResult;
+import org.name.tool.results.MetricValue;
 
 public class CAICached extends CAI {
     private final CAIImpl cai;
-    private MetricResult<Double> cachedResult;
+    private MetricValue<Double> cachedResult;
 
     public CAICached(CA ca, CM cm) {
         this.cai = new CAIImpl(ca, cm);
@@ -15,7 +15,7 @@ public class CAICached extends CAI {
     }
 
     @Override
-    public MetricResult<Double> compute(ClassifiedAnalyzerResults classResults) {
+    public MetricValue<Double> compute(ClassifiedAnalyzerResults classResults) {
         if (cachedResult == null) {
             cachedResult = cai.compute(classResults);
         }

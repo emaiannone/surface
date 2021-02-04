@@ -1,11 +1,11 @@
 package org.name.tool.results;
 
-public class MetricResult<T> {
+public class MetricValue<T> {
     private final String metricName;
     private final String metricCode;
     private final T value;
 
-    public MetricResult(String metricName, String metricCode, T value) {
+    public MetricValue(String metricName, String metricCode, T value) {
         this.metricName = metricName;
         this.metricCode = metricCode;
         this.value = value;

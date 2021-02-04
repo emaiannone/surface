@@ -2,11 +2,11 @@ package org.name.tool.core.metrics.classlevel.cmr;
 
 import org.name.tool.core.metrics.classlevel.cm.CM;
 import org.name.tool.results.ClassifiedAnalyzerResults;
-import org.name.tool.results.MetricResult;
+import org.name.tool.results.MetricValue;
 
 public class CMRCached extends CMR {
     private final CMRImpl cmr;
-    private MetricResult<Double> cachedResult;
+    private MetricValue<Double> cachedResult;
 
     public CMRCached(CM cm) {
         this.cmr = new CMRImpl(cm);
@@ -14,7 +14,7 @@ public class CMRCached extends CMR {
     }
 
     @Override
-    public MetricResult<Double> compute(ClassifiedAnalyzerResults classResults) {
+    public MetricValue<Double> compute(ClassifiedAnalyzerResults classResults) {
         if (cachedResult == null) {
             cachedResult = cmr.compute(classResults);
         }

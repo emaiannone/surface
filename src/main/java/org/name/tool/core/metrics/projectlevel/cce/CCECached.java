@@ -1,12 +1,12 @@
 package org.name.tool.core.metrics.projectlevel.cce;
 
 import org.name.tool.core.metrics.projectlevel.cc.CC;
-import org.name.tool.results.MetricResult;
+import org.name.tool.results.MetricValue;
 import org.name.tool.results.ProjectAnalyzerResults;
 
 public class CCECached extends CCE {
     private final CCEImpl cce;
-    private MetricResult<Double> cachedResult;
+    private MetricValue<Double> cachedResult;
 
     public CCECached(CC cc) {
         this.cce = new CCEImpl(cc);
@@ -14,7 +14,7 @@ public class CCECached extends CCE {
     }
 
     @Override
-    public MetricResult<Double> compute(ProjectAnalyzerResults projectResults) {
+    public MetricValue<Double> compute(ProjectAnalyzerResults projectResults) {
         if (cachedResult == null) {
             cachedResult = cce.compute(projectResults);
         }
