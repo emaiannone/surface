@@ -2,12 +2,7 @@ package org.name.tool.results;
 
 import com.github.javaparser.utils.ProjectRoot;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ProjectMetricsResults implements Iterable<ClassMetricsResults> {
@@ -60,6 +55,18 @@ public class ProjectMetricsResults implements Iterable<ClassMetricsResults> {
                 .map(MetricValue::getMetricCode)
                 .distinct()
                 .collect(Collectors.toList());
+    }
+
+    public Map<String, List<MetricValue<?>>> classMetricsGroupedByCode() {
+        Map<String, List<MetricValue<?>>> map = new HashMap<>();
+        for (String classMetricsCode : getClassMetricsCodes()) {
+            List<MetricValue<?>> collect = classMetricsResults.stream()
+                    .flatMap(mr -> mr.getClassValues().stream())
+                    .filter(mr -> mr.getMetricCode().equals(classMetricsCode))
+                    .collect(Collectors.toList());
+            map.put(classMetricsCode, collect);
+        }
+        return map;
     }
 
     @Override
