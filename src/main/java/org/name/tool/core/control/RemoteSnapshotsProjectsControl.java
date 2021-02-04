@@ -55,7 +55,7 @@ public class RemoteSnapshotsProjectsControl extends ProjectsControl {
                 for (int i = 0; i < repoSnapshots.size(); i++) {
                     Snapshot repoSnapshot = repoSnapshots.get(i);
                     String commitSha = repoSnapshot.getCommitSha();
-                    System.out.println("* [" + (i + 1) + "/" + repoSnapshots.size() + "] Checking out commit " + commitSha);
+                    System.out.println("\n* [" + (i + 1) + "/" + repoSnapshots.size() + "] Checking out commit " + commitSha);
                     // Checkout commit
                     git.checkout().setName(commitSha).call();
                     // Analyze and compute metrics
