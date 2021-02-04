@@ -1,3 +1,15 @@
+# Replicating the data extraction
+
+Requirements:
+- Java 8
+- Maven
+- `snapshots.csv` available
+
+Follow these steps (Linux):
+1. In the root directory, run `mvn package` to generate the runnable JAR in the `target` directory.
+2. Run the script `./data_extraction.sh /path/to/snapshots.csv` and wait for the completion (you can kill it anytime with `CTRL+C`).
+3. Get the resulting CSV in `exports` directory.
+
 # Class-level Metrics
 
 ## Basic
