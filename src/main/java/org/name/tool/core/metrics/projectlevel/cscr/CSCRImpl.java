@@ -12,8 +12,8 @@ import java.util.Map;
 public class CSCRImpl extends CSCR {
 
     @Override
-    public MetricResult<Map<String, Double>> compute(ProjectAnalyzerResults projectResults) {
-        Map<String, Double> value = new HashMap<>();
+    public MetricResult<Double> compute(ProjectAnalyzerResults projectResults) {
+        Map<String, Double> values = new HashMap<>();
         for (ClassifiedAnalyzerResults classResults : projectResults) {
             List<ResolvedReferenceType> superclasses = classResults.getSuperclasses();
             int totalSuperClasses = superclasses.size();
@@ -26,8 +26,9 @@ public class CSCRImpl extends CSCR {
                 }
             }
             double metricValue = totalSuperClasses != 0.0 ? (double) criticalSuperClasses / totalSuperClasses : 0.0;
-            value.put(classResults.getFullyQualifiedName(), metricValue);
+            values.put(classResults.getFullyQualifiedName(), metricValue);
         }
+        double value = values.values().stream().mapToDouble(x -> x).average().orElse(0.0);
         return new MetricResult<>(getName(), getCode(), value);
     }
 }

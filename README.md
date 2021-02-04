@@ -38,13 +38,13 @@
 - [x] CME (CM Extensibility) - Ratio of non-final CM out of all CM (union)
 
 ## Inheritance
-- [x] CSCR (Critical Super Classes Ratios) - For each class, it is the ratio of the number of critical superclasses out of all its superclasses
+- [x] CSCR (Critical Super Classes Ratios) - Mean of classes ratios of the number of critical superclasses out of all their superclasses
 
 # Assumptions and Open Issues
 - [x] Exclude empty and inherited methods
+- [ ] The papers talk about other measures that we are ignoring for not. What to do with them?
 - [ ] How many times should we count a method that both read and writes?
 - [ ] Classified methods and critical classes are boolean concepts. Should we give them a ratio?
-- [ ] The papers talk about other measures that we are ignoring for not. What to do with them?
 
 # Keywords
 - `name`, `code` and some others regex seems to be useless, I think we should remove them
