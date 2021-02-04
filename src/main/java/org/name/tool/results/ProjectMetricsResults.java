@@ -5,7 +5,7 @@ import com.github.javaparser.utils.ProjectRoot;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ProjectMetricsResults implements Iterable<ClassMetricsResults> {
+public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetricsResults> {
     private final ProjectRoot projectRoot;
     private final Set<ClassMetricsResults> classMetricsResults;
     private final List<MetricValue<?>> projectValues;

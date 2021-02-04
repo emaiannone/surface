@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-public class ClassMetricsResults implements Iterable<MetricValue<?>> {
+public class ClassMetricsResults implements MetricsResults, Iterable<MetricValue<?>> {
     private final ClassifiedAnalyzerResults classResults;
     private final List<MetricValue<?>> classValues;
 
