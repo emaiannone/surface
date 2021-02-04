@@ -1,7 +1,6 @@
 package org.name.tool.results;
 
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.utils.ProjectRoot;
 
 import java.util.Collection;
@@ -20,6 +19,10 @@ public class ProjectAnalyzerResults implements AnalyzerResults, Iterable<Classif
         this.results = new HashSet<>();
     }
 
+    public void add(ClassifiedAnalyzerResults classResults) {
+        results.add(classResults);
+    }
+
     public Set<ClassifiedAnalyzerResults> getResults() {
         return Collections.unmodifiableSet(results);
     }
@@ -27,10 +30,6 @@ public class ProjectAnalyzerResults implements AnalyzerResults, Iterable<Classif
     @Override
     public Iterator<ClassifiedAnalyzerResults> iterator() {
         return getResults().iterator();
-    }
-
-    public void add(ClassifiedAnalyzerResults classResults) {
-        results.add(classResults);
     }
 
     public ProjectRoot getProjectRoot() {
@@ -47,11 +46,11 @@ public class ProjectAnalyzerResults implements AnalyzerResults, Iterable<Classif
     }
 
     public Set<MethodDeclaration> getClassifiedMethods() {
-        return results
-                .stream()
+        return Collections.unmodifiableSet(
+                results.stream()
                 .map(ClassifiedAnalyzerResults::getClassifiedMethods)
                 .flatMap(Collection::stream)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toSet()));
     }
 
     public Set<ClassifiedAnalyzerResults> getCriticalClasses() {
@@ -61,15 +60,7 @@ public class ProjectAnalyzerResults implements AnalyzerResults, Iterable<Classif
                 criticalClasses.add(classResults);
             }
         }
-        return criticalClasses;
-    }
-
-    public Set<VariableDeclarator> getClassifiedAttributes() {
-        return results
-                .stream()
-                .map(ClassifiedAnalyzerResults::getClassifiedAttributes)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toSet());
+        return Collections.unmodifiableSet(criticalClasses);
     }
 
     @Override
