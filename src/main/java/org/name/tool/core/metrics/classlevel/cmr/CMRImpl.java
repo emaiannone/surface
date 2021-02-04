@@ -14,7 +14,7 @@ public class CMRImpl extends CMR {
     @Override
     public DoubleMetricValue compute(ClassifiedAnalyzerResults classResults) {
         int cmValue = cm.compute(classResults).getValue();
-        int methods = classResults.getMethods().size();
+        int methods = classResults.getAllMethods().size();
         double value = methods != 0.0 ? (double) cmValue / methods : 0.0;
         return new DoubleMetricValue(getName(), getCode(), value);
     }

@@ -10,7 +10,6 @@ import com.github.javaparser.resolution.types.ResolvedReferenceType;
 import java.util.*;
 import java.util.stream.Collectors;
 
-// TODO Remove unused methods
 public class ClassifiedAnalyzerResults implements AnalyzerResults, Iterable<Map.Entry<VariableDeclarator, Set<MethodDeclaration>>> {
     private final ClassOrInterfaceDeclaration classOrInterfaceDeclaration;
     private final Map<VariableDeclarator, Set<MethodDeclaration>> results;
@@ -26,6 +25,14 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults, Iterable<Map.
         this.superClasses = null;
     }
 
+    public void put(VariableDeclarator variableDeclarator, Set<MethodDeclaration> methodDeclarations) {
+        results.put(variableDeclarator, methodDeclarations);
+    }
+
+    public void setUsingReflection(boolean usingReflection) {
+        this.usingReflection = usingReflection;
+    }
+
     public Map<VariableDeclarator, Set<MethodDeclaration>> getResults() {
         return Collections.unmodifiableMap(results);
     }
@@ -35,39 +42,32 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults, Iterable<Map.
         return getResults().entrySet().iterator();
     }
 
-    public void put(VariableDeclarator variableDeclarator, Set<MethodDeclaration> methodDeclarations) {
-        results.put(variableDeclarator, methodDeclarations);
-    }
-
-    public void setUsingReflection(boolean usingReflection) {
-        this.usingReflection = usingReflection;
-    }
-
     public String getClassName() {
         return classOrInterfaceDeclaration.getNameAsString();
     }
 
-    public String getFullyQualifiedName() {
+    public String getFullyQualifiedClassName() {
         return classOrInterfaceDeclaration.getFullyQualifiedName().orElse(getClassName());
     }
 
-    ClassOrInterfaceDeclaration getClassOrInterfaceDeclaration() {
-        return classOrInterfaceDeclaration;
+    public Set<MethodDeclaration> getAllMethods() {
+        return Collections.unmodifiableSet(new HashSet<>(classOrInterfaceDeclaration.getMethods()));
     }
 
     public Set<MethodDeclaration> getClassifiedMethods() {
-        return results.values()
+        return Collections.unmodifiableSet(
+                results.values()
                 .stream()
                 .flatMap(Collection::stream)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toSet()));
     }
 
-    public Set<MethodDeclaration> getMethods() {
-        return new HashSet<>(classOrInterfaceDeclaration.getMethods());
+    public Set<MethodDeclaration> getClassifiedMethods(VariableDeclarator variableDeclarator) {
+        return Collections.unmodifiableSet(results.get(variableDeclarator));
     }
 
     public Set<VariableDeclarator> getClassifiedAttributes() {
-        return results.keySet();
+        return Collections.unmodifiableSet(results.keySet());
     }
 
     public List<ResolvedReferenceType> getSuperclasses() {
@@ -116,10 +116,6 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults, Iterable<Map.
             }
         }
         return this.correspondingFieldDeclarations;
-    }
-
-    public Set<MethodDeclaration> getClassifiedMethods(VariableDeclarator variableDeclarator) {
-        return results.get(variableDeclarator);
     }
 
     public boolean isUsingReflection() {

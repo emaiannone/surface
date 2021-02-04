@@ -26,7 +26,7 @@ public class CSCRImpl extends CSCR {
                 }
             }
             double metricValue = totalSuperClasses != 0.0 ? (double) criticalSuperClasses / totalSuperClasses : 0.0;
-            values.put(classResults.getFullyQualifiedName(), metricValue);
+            values.put(classResults.getFullyQualifiedClassName(), metricValue);
         }
         double value = values.values().stream().mapToDouble(x -> x).average().orElse(0.0);
         return new DoubleMetricValue(getName(), getCode(), value);

@@ -39,7 +39,7 @@ public class ProjectAnalyzerResults implements AnalyzerResults, Iterable<Classif
 
     public ClassifiedAnalyzerResults getClassResults(String classQualifiedName) {
         for (ClassifiedAnalyzerResults res : results) {
-            if (res.getFullyQualifiedName().equals(classQualifiedName)) {
+            if (res.getFullyQualifiedClassName().equals(classQualifiedName)) {
                 return res;
             }
         }
