@@ -45,14 +45,12 @@ public class ProjectMetricsResults implements Iterable<ClassMetricsResults> {
     public List<String> getProjectMetricsCodes() {
         return projectMetrics.stream()
                 .map(MetricResult::getMetricCode)
-                .distinct()
                 .collect(Collectors.toList());
     }
 
     public List<?> getProjectMetricsValues() {
         return projectMetrics.stream()
                 .map(MetricResult::getValue)
-                .distinct()
                 .collect(Collectors.toList());
     }
 
