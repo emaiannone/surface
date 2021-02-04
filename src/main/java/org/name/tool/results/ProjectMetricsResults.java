@@ -38,28 +38,16 @@ public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetr
         projectValues.add(projectValue);
     }
 
-    public List<String> getProjectMetricsCodes() {
-        return projectValues.stream()
-                .map(MetricValue::getMetricCode)
-                .collect(Collectors.toList());
+    public SortedMap<String, Object> getProjectMetricsAsMap() {
+        SortedMap<String, Object> projectMetricsAsMap = new TreeMap<>();
+        for (MetricValue<?> projectValue : projectValues) {
+            projectMetricsAsMap.put(projectValue.getMetricCode(), projectValue.getValue());
+        }
+        return projectMetricsAsMap;
     }
 
-    public List<?> getProjectMetricsValues() {
-        return projectValues.stream()
-                .map(MetricValue::getValue)
-                .collect(Collectors.toList());
-    }
-
-    public List<String> getClassMetricsCodes() {
-        return classMetricsResults.stream()
-                .flatMap(mr -> mr.getClassValues().stream())
-                .map(MetricValue::getMetricCode)
-                .distinct()
-                .collect(Collectors.toList());
-    }
-
-    public Map<String, List<MetricValue<?>>> classMetricsGroupedByCode() {
-        Map<String, List<MetricValue<?>>> map = new HashMap<>();
+    public SortedMap<String, List<MetricValue<?>>> classMetricsGroupedByCode() {
+        SortedMap<String, List<MetricValue<?>>> map = new TreeMap<>();
         for (String classMetricsCode : getClassMetricsCodes()) {
             List<MetricValue<?>> collect = classMetricsResults.stream()
                     .flatMap(mr -> mr.getClassValues().stream())
@@ -68,6 +56,14 @@ public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetr
             map.put(classMetricsCode, collect);
         }
         return map;
+    }
+
+    private List<String> getClassMetricsCodes() {
+        return classMetricsResults.stream()
+                .flatMap(mr -> mr.getClassValues().stream())
+                .map(MetricValue::getMetricCode)
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     @Override
