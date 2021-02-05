@@ -1,94 +1,86 @@
-login
-account
-access
-auth
-authenticate
-authenticator
-auth constraint
-role
-permission
-access
+logins?
+accounts?
+auths?
+authenticates?
+authenticators?
+auth[-_ ]?constraints?
+roles?
+permissions?
+access(es)?
 restricted
-restricted access
-admin
-administrator
-certificate
-digital certificate
-biometrics
+restricted[-_ ]?access(es)?
+admins?
+administrators?
+certificates?
+digital certificates?
+biometrics?
 id
-identifier
-client id
+identifiers?
 userid
 uuid
+client[-_ ]?ids?
+user[-_ ]?ids?
 username
-name
-user details
-host
-hostname
-ip-address
-port
-address
-password
+user[-_ ]?details?
+e[-_ ]?mail
+passwords?
+pass[-_ ]?phrase
+passwd
 pwd
-credential
-credentials
-key
-secret key
-token
-hidden
-hidden field
-secret
-top secret
-confidential
+(secret[-_ ]?)?key
+(api[-_ ]?)?tokens?
+(oauth[-_ ]?)?tokens?
+credentials?
+ip[-_ ]?address(es)?
+ports?
+hosts?
+hostnames?
+address(es)?
+hiddens?
+hidden[-_ ]?fields?
+secrets?
+top[-_ ]?secrets?
+confidentials?
 confidentiality
 classified
-private
-private field
-private member
+privates?
+private[-_ ]?fields?
+private[-_ ]?members?
 privacy
-protect
-personal
-unique
-signature
-cover
-covered
-undercovered
-payment
-creditcard
-credit card number
-card
-credit
-email
-phonenumber
-socialsecuritynumber
-dateofbirth
+personals?
+protect(ed)?
+signatures?
+(under)?cover(ed)?
+payments?
+credit[-_ ]?cards?([-_ ]?number)?s?
+cards?
+credits?
+phone[-_ ]?numbers?
+social[-_ ]?security[-_ ]?numbers?
+date[-_ ]?of[-_ ]?birth
 safe
-secure
-content secure
+(content[-_ ]?)?secure
 security
-securitymanagement
-security constraint
-sensitive information
-sensitive data
+security[-_ ]?management
+security[-_ ]?constraint
 sensitive
-critical
-vulnerable
-backdoor
-crypted
-encrypted
-hash
-hashed
-encrypt
+sensitive[-_ ]?data
+sensitive[-_ ]?information
+criticals?
+vulnerables?
+weaks?
+weakness(es)?
+backdoors?
+(en)?crypt(ed)?
+cipher([-_ ]?text)?
+hash(ed)?
 salt
 nonce
-encoded
-transcoded
-algorithm
-code
-lock
-cached
-path
-connectionString
-post
-transaction
-job
+encoded?
+transcoded?
+lock(ed)?
+cach(ed)?
+paths?
+connection[-_ ]?string
+transactions?
+jobs?

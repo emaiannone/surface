@@ -59,5 +59,15 @@ Follow these steps (Linux):
 - [ ] Classified methods and critical classes are boolean concepts. Should we give them a ratio?
 
 # Keywords
-- `name`, `code` and some others regex seems to be useless, I think we should remove them
-- `port` was added
+Removed:
+- `name`
+- `unique`
+- `code`
+- `algorithm`
+- `post`
+
+Added:
+- `port`
+- `api token`
+- `weak` and `weakness`
+- `cypher`
