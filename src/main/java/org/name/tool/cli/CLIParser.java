@@ -6,19 +6,13 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.name.tool.core.ToolInput;
-import org.name.tool.core.metrics.classlevel.ca.CA;
-import org.name.tool.core.metrics.classlevel.cm.CM;
 
 import java.util.Arrays;
 
 public class CLIParser {
 
     // List of default metrics
-    // FIXME: 25/01/21 Is this this strong coupling necessary?
-    private static final String[] DEFAULT_METRICS = new String[]{
-            CA.CODE,
-            CM.CODE
-    };
+    private static final String[] DEFAULT_METRICS = new String[]{"CA", "CM"};
     // Current working directory as default
     private static final String DEFAULT_PROJECT = "";
     // csv as default
