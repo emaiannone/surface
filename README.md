@@ -69,5 +69,9 @@ Removed:
 Added:
 - `port`
 - `api token`
+- `oauth token`
+- `otp`
+- `passwd` and `pwd`
 - `weak` and `weakness`
 - `cypher`
+- `fingerprint`
