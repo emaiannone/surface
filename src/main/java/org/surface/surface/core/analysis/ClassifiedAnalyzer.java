@@ -51,22 +51,15 @@ public class ClassifiedAnalyzer extends ClassAnalyzer {
     }
 
     private Set<VariableDeclarator> getClassifiedAttributes(Set<FieldDeclaration> fieldDeclarations) {
-        Set<VariableDeclarator> classifiedAttributes = new HashSet<>();
-        Set<VariableDeclarator> attributes = fieldDeclarations.stream()
+        return fieldDeclarations.stream()
                 .flatMap(f -> f.getVariables().stream())
+                .filter(this::isClassified)
                 .collect(Collectors.toSet());
-        for (VariableDeclarator attribute : attributes) {
-            if (isClassified(attribute)) {
-                classifiedAttributes.add(attribute);
-            }
-        }
-        return classifiedAttributes;
     }
 
-    private boolean isClassified(VariableDeclarator attribute) {
-        String attributeName = attribute.getNameAsString();
+    private boolean isClassified(VariableDeclarator attributeDeclarator) {
         return patterns.stream()
-                .anyMatch(p -> p.matcher(attributeName).matches());
+                .anyMatch(p -> p.matcher(attributeDeclarator.getNameAsString()).matches());
     }
 
     /**
