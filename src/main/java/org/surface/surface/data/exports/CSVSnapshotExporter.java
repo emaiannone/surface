@@ -15,7 +15,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.SortedMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public class CSVSnapshotExporter implements SnapshotExporter {
@@ -34,18 +34,10 @@ public class CSVSnapshotExporter implements SnapshotExporter {
         record.add(projectName);
         record.add(snapshot.getCommitSha());
 
-        // Project Metrics
-        List<String> projectMetricsCode = new ArrayList<>();
-        SortedMap<String, Object> projectMetrics = projectMetricsResults.getProjectMetricsAsMap();
-        for (SortedMap.Entry<String, Object> projectMetricsEntry : projectMetrics.entrySet()) {
-            projectMetricsCode.add(projectMetricsEntry.getKey());
-            record.add(projectMetricsEntry.getValue());
-        }
-
         // Class Numeric Metrics (averages)
         List<String> classMetricsCode = new ArrayList<>();
-        SortedMap<String, List<MetricValue<?>>> groupedValues = projectMetricsResults.classMetricsGroupedByCode();
-        for (SortedMap.Entry<String, List<MetricValue<?>>> groupedValuesEntry : groupedValues.entrySet()) {
+        Map<String, List<MetricValue<?>>> groupedValues = projectMetricsResults.classMetricsGroupedByCode();
+        for (Map.Entry<String, List<MetricValue<?>>> groupedValuesEntry : groupedValues.entrySet()) {
             List<MetricValue<?>> values = groupedValuesEntry.getValue();
             // Consider only numeric metric values
             if (values.size() > 0 && values.get(0) instanceof NumericMetricValue<?>) {
@@ -58,9 +50,17 @@ public class CSVSnapshotExporter implements SnapshotExporter {
             }
         }
 
+        // Project Metrics
+        List<String> projectMetricsCode = new ArrayList<>();
+        Map<String, Object> projectMetrics = projectMetricsResults.getProjectMetrics();
+        for (Map.Entry<String, Object> projectMetricsEntry : projectMetrics.entrySet()) {
+            projectMetricsCode.add(projectMetricsEntry.getKey());
+            record.add(projectMetricsEntry.getValue());
+        }
+
         String[] headers = Stream.concat(Stream.concat(Arrays.stream(BASE_HEADERS),
-                projectMetricsCode.stream()),
-                classMetricsCode.stream())
+                classMetricsCode.stream()),
+                projectMetricsCode.stream())
                 .toArray(String[]::new);
         CSVFormat csvFormat = CSVFormat.DEFAULT
                 .withHeader(headers)
