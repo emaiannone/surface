@@ -106,8 +106,9 @@ public class ClassifiedAnalyzer extends ClassAnalyzer {
     }
 
     private Set<MethodDeclaration> getOtherClassifiedMethods(Set<MethodDeclaration> methodDeclarations) {
+        // Check whether the method name or any or the parameters matches one of the patterns
         return methodDeclarations.stream()
-                .filter(this::isClassified)
+                .filter(m -> isClassified(m) || m.getParameters().stream().anyMatch(this::isClassified))
                 .collect(Collectors.toSet());
     }
 

@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 
 public class ClassifiedAnalyzerResults implements AnalyzerResults {
     private final ClassOrInterfaceDeclaration classOrInterfaceDeclaration;
+    // TODO Create a ClassifiedAttribute class, having VariableDeclarator and FieldDeclaration
+    // TODO I don't like Usage and Other classified methods names... consider an alternative and clearer naming
     private final Map<VariableDeclarator, Set<MethodDeclaration>> classifiedAttributesAndMethods;
     private final Set<MethodDeclaration> otherClassifiedMethods;
     private boolean usingReflection;
@@ -161,7 +163,7 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults {
             builder.append(" -> ");
             builder.append(e.getValue().stream().map(m -> m.getSignature().toString()).collect(Collectors.toSet()));
         }
-        builder.append("Classified Methods: ").append(otherClassifiedMethods.stream().map(m -> m.getSignature().toString()).collect(Collectors.toSet()));
+        builder.append("\nOther Classified Methods: ").append(otherClassifiedMethods.stream().map(m -> m.getSignature().toString()).collect(Collectors.toSet()));
         return builder.toString();
     }
 }

@@ -32,19 +32,24 @@ public final class Test implements Serializable {
         this.password = password;
     }
 
-    public boolean login(String pUsername, String pPassword) {
-        if (pUsername.equals(username) && pPassword.equals(password)) {
+    public boolean logon(String pUsr, String pPsw) {
+        if (pUsr.equals(username) && pPsw.equals(password)) {
             return true;
         }
         return false;
     }
 
-    public void foolPassword() {
-        String password = "";
-        System.out.println(password);
+    public void validateCredentials() {
+        System.out.println("NOT YET IMPLEMENTED");
     }
 
-    public void foolUsername() {
+    public void validate(String passwd) {
+        if (passwd.equals("")) {
+            throw new RuntimeException("Nope");
+        }
+    }
+
+    public void foolMethod() {
         another.username = "";
     }
 
