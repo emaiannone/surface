@@ -7,7 +7,7 @@ public class CMImpl extends CM {
 
     @Override
     public IntMetricValue compute(ClassifiedAnalyzerResults classResults) {
-        int value = classResults.getClassifiedMethods().size();
+        int value = classResults.getAllClassifiedMethods().size();
         return new IntMetricValue(getName(), getCode(), value);
     }
 }

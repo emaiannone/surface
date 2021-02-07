@@ -10,9 +10,10 @@ import com.github.javaparser.resolution.types.ResolvedReferenceType;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ClassifiedAnalyzerResults implements AnalyzerResults, Iterable<Map.Entry<VariableDeclarator, Set<MethodDeclaration>>> {
+public class ClassifiedAnalyzerResults implements AnalyzerResults {
     private final ClassOrInterfaceDeclaration classOrInterfaceDeclaration;
-    private final Map<VariableDeclarator, Set<MethodDeclaration>> results;
+    private final Map<VariableDeclarator, Set<MethodDeclaration>> classifiedAttributesAndMethods;
+    private final Set<MethodDeclaration> otherClassifiedMethods;
     private boolean usingReflection;
 
     private Set<FieldDeclaration> correspondingFieldDeclarations;
@@ -20,26 +21,22 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults, Iterable<Map.
 
     public ClassifiedAnalyzerResults(ClassOrInterfaceDeclaration classOrInterfaceDeclaration) {
         this.classOrInterfaceDeclaration = classOrInterfaceDeclaration;
-        this.results = new HashMap<>();
+        this.classifiedAttributesAndMethods = new HashMap<>();
+        this.otherClassifiedMethods = new HashSet<>();
         this.correspondingFieldDeclarations = null;
         this.superClasses = null;
     }
 
     public void put(VariableDeclarator variableDeclarator, Set<MethodDeclaration> methodDeclarations) {
-        results.put(variableDeclarator, methodDeclarations);
+        classifiedAttributesAndMethods.put(variableDeclarator, methodDeclarations);
+    }
+
+    public void addOtherClassifiedMethod(MethodDeclaration methodDeclaration) {
+        otherClassifiedMethods.add(methodDeclaration);
     }
 
     public void setUsingReflection(boolean usingReflection) {
         this.usingReflection = usingReflection;
-    }
-
-    public Map<VariableDeclarator, Set<MethodDeclaration>> getResults() {
-        return Collections.unmodifiableMap(results);
-    }
-
-    @Override
-    public Iterator<Map.Entry<VariableDeclarator, Set<MethodDeclaration>>> iterator() {
-        return getResults().entrySet().iterator();
     }
 
     public String getClassName() {
@@ -54,21 +51,36 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults, Iterable<Map.
         return Collections.unmodifiableSet(new HashSet<>(classOrInterfaceDeclaration.getMethods()));
     }
 
-    public Set<MethodDeclaration> getClassifiedMethods() {
-        return Collections.unmodifiableSet(
-                results.values()
-                .stream()
-                .flatMap(Collection::stream)
-                .collect(Collectors.toSet()));
-    }
-
-    public Set<MethodDeclaration> getClassifiedMethods(VariableDeclarator variableDeclarator) {
-        return Collections.unmodifiableSet(results.get(variableDeclarator));
+    public Map<VariableDeclarator, Set<MethodDeclaration>> getClassifiedAttributesAndMethods() {
+        return Collections.unmodifiableMap(classifiedAttributesAndMethods);
     }
 
     public Set<VariableDeclarator> getClassifiedAttributes() {
-        return Collections.unmodifiableSet(results.keySet());
+        return Collections.unmodifiableSet(classifiedAttributesAndMethods.keySet());
     }
+
+    public Set<MethodDeclaration> getAllClassifiedMethods() {
+        Set<MethodDeclaration> allClassifiedMethods = new HashSet<>(getUsageClassifiedMethods());
+        allClassifiedMethods.addAll(otherClassifiedMethods);
+        return Collections.unmodifiableSet(allClassifiedMethods);
+    }
+
+    public Set<MethodDeclaration> getUsageClassifiedMethods(VariableDeclarator variableDeclarator) {
+        return Collections.unmodifiableSet(classifiedAttributesAndMethods.get(variableDeclarator));
+    }
+
+    public Set<MethodDeclaration> getUsageClassifiedMethods() {
+        return Collections.unmodifiableSet(
+                classifiedAttributesAndMethods.values()
+                        .stream()
+                        .flatMap(Collection::stream)
+                        .collect(Collectors.toSet()));
+    }
+
+    public Set<MethodDeclaration> getOtherClassifiedMethods() {
+        return Collections.unmodifiableSet(otherClassifiedMethods);
+    }
+
 
     public List<ResolvedReferenceType> getSuperclasses() {
         // If already computed, return it
@@ -123,7 +135,7 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults, Iterable<Map.
     }
 
     public boolean isCritical() {
-        return getClassifiedAttributes().size() + getClassifiedMethods().size() > 0;
+        return getClassifiedAttributes().size() + getAllClassifiedMethods().size() > 0;
     }
 
     public boolean isFinal() {
@@ -143,12 +155,13 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults, Iterable<Map.
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder("Class: " + classOrInterfaceDeclaration.getNameAsString());
-        for (Map.Entry<VariableDeclarator, Set<MethodDeclaration>> e : this) {
+        for (Map.Entry<VariableDeclarator, Set<MethodDeclaration>> e : getClassifiedAttributesAndMethods().entrySet()) {
             builder.append("\n");
             builder.append(e.getKey().getNameAsString());
             builder.append(" -> ");
             builder.append(e.getValue().stream().map(m -> m.getSignature().toString()).collect(Collectors.toSet()));
         }
+        builder.append("Classified Methods: ").append(otherClassifiedMethods.stream().map(m -> m.getSignature().toString()).collect(Collectors.toSet()));
         return builder.toString();
     }
 }

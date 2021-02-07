@@ -32,7 +32,7 @@ Follow these steps (Linux):
 - [x] CMR (CM Ratio) - Ratio of CM out of number of total methods
   - [ ] CWMR (CWM Ratio) - Ratio of CWM out of total CM
   - [ ] CRMR (CRM Ratio) - Ratio of CRM out of total CM
-- [x] CAI (Classified Attribute Interactions) - Ratio of sum of CM per CA out of the product of all CM and all CA <img src="https://render.githubusercontent.com/render/math?math=\frac{\sum_{a \in CA} |CM(a)|}{|CM| \cdot |CA|}">
+- [x] CAI (Classified Attribute Interactions) - Ratio of the sum of each CA number of CM that uses them out of the product of all usage CM and all CA <img src="https://render.githubusercontent.com/render/math?math=\frac{\sum_{a \in CA} |CM(a)|}{|CM| \cdot |CA|}">
   - [ ] CMAI (Classified Mutator-Attribute Interactions) - Ratio of sum of CWM per CA out of the product of all CWM and all CA
   - [ ] CAAI (Classified Accessor-Attribute Interactions) - Ratio of sum of CRM per CA out of the product of all CRM and all CA
 

@@ -9,8 +9,8 @@ public class CAICached extends CAI {
     private final CAIImpl cai;
     private DoubleMetricValue cachedResult;
 
-    public CAICached(CA ca, CM cm) {
-        this.cai = new CAIImpl(ca, cm);
+    public CAICached(CA ca) {
+        this.cai = new CAIImpl(ca);
         this.cachedResult = null;
     }
 

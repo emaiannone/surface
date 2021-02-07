@@ -16,7 +16,7 @@ public class CMAImpl extends CMA {
 
     @Override
     public DoubleMetricValue compute(ClassifiedAnalyzerResults classResults) {
-        Set<MethodDeclaration> classifiedMethods = classResults.getClassifiedMethods();
+        Set<MethodDeclaration> classifiedMethods = classResults.getAllClassifiedMethods();
         long nonPrivate = classifiedMethods.stream().filter(ca -> !ca.isPrivate()).count();
         int cmValue = cm.compute(classResults).getValue();
         double value = cmValue != 0.0 ? (double) nonPrivate / cmValue : 0.0;

@@ -85,7 +85,7 @@ public class ClassMetricsFactory implements MetricsFactory<ClassMetric<?>> {
             this.ccva = new CCVACached(ca);
             this.cma = new CMACached(cm);
             this.cmr = new CMRCached(cm);
-            this.cai = new CAICached(ca, cm);
+            this.cai = new CAICached(ca);
         }
 
         public CA getCa() {

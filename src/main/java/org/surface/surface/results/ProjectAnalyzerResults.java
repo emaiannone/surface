@@ -48,9 +48,9 @@ public class ProjectAnalyzerResults implements AnalyzerResults, Iterable<Classif
     public Set<MethodDeclaration> getClassifiedMethods() {
         return Collections.unmodifiableSet(
                 results.stream()
-                .map(ClassifiedAnalyzerResults::getClassifiedMethods)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toSet()));
+                        .map(ClassifiedAnalyzerResults::getAllClassifiedMethods)
+                        .flatMap(Collection::stream)
+                        .collect(Collectors.toSet()));
     }
 
     public Set<ClassifiedAnalyzerResults> getCriticalClasses() {
@@ -67,10 +67,8 @@ public class ProjectAnalyzerResults implements AnalyzerResults, Iterable<Classif
     public String toString() {
         StringBuilder builder = new StringBuilder("Project: " + projectRoot.getRoot().getFileName());
         for (ClassifiedAnalyzerResults entries : results) {
-            if (entries.getResults().size() > 0) {
-                builder.append("\n");
-                builder.append(entries);
-            }
+            builder.append("\n");
+            builder.append(entries);
         }
         return builder.toString();
     }
