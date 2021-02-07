@@ -9,12 +9,12 @@ import java.util.regex.Pattern;
 
 public class ClassifiedPatterns {
     private static ClassifiedPatterns INSTANCE;
-    private final String keywordsPath = "src/main/resources/keywords_regex";
+    private final String patternsPath = "src/main/resources/patterns";
     private List<Pattern> patterns;
 
     private ClassifiedPatterns() {
         try {
-            Scanner scanner = new Scanner(new File(keywordsPath));
+            Scanner scanner = new Scanner(new File(patternsPath));
             patterns = new ArrayList<>();
             while (scanner.hasNext()) {
                 String line = scanner.nextLine();

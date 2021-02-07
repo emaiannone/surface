@@ -58,7 +58,7 @@ Follow these steps (Linux):
 - [ ] How many times should we count a method that both read and writes?
 - [ ] Classified methods and critical classes are boolean concepts. Should we give them a ratio?
 
-# Keywords
+# Pattern
 Removed:
 - `name`
 - `unique`

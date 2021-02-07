@@ -4,6 +4,7 @@ import java.lang.reflect.*;
 public final class Test implements Serializable {
     private String username;
     private String password;
+    private boolean isValidPassword;
     protected String name;
     protected static String privateData = "c";
 
