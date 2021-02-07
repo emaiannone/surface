@@ -41,12 +41,12 @@ public class ClassifiedAnalyzer extends ClassAnalyzer {
         ClassifiedAnalyzerResults results = new ClassifiedAnalyzerResults(getClassDeclaration());
         Set<VariableDeclarator> classifiedAttributes = getClassifiedAttributes(new HashSet<>(getClassDeclaration().getFields()));
         if (classifiedAttributes.size() > 0) {
-            Map<VariableDeclarator, Set<MethodDeclaration>> classifiedMethodsMap = getClassifiedUsageMethods(classifiedAttributes);
+            Map<VariableDeclarator, Set<MethodDeclaration>> classifiedMethodsMap = getUsageClassifiedMethods(classifiedAttributes);
             for (Map.Entry<VariableDeclarator, Set<MethodDeclaration>> variableDeclaratorSetEntry : classifiedMethodsMap.entrySet()) {
                 results.put(variableDeclaratorSetEntry.getKey(), variableDeclaratorSetEntry.getValue());
             }
             // Other classified methods (i.e., name match)
-            Set<MethodDeclaration> classifiedMethods = getClassifiedMethods(new HashSet<>(getClassDeclaration().getMethods()));
+            Set<MethodDeclaration> classifiedMethods = getOtherClassifiedMethods(new HashSet<>(getClassDeclaration().getMethods()));
             classifiedMethods.forEach(results::addOtherClassifiedMethod);
         }
         results.setUsingReflection(isUsingReflection());
@@ -60,19 +60,14 @@ public class ClassifiedAnalyzer extends ClassAnalyzer {
                 .collect(Collectors.toSet());
     }
 
-    private boolean isClassified(VariableDeclarator attributeDeclarator) {
-        return patterns.stream()
-                .anyMatch(p -> p.matcher(attributeDeclarator.getNameAsString()).matches());
-    }
-
     /**
-     * Analyze the class given to the constructor in search of the classified methods of the given classified attributes.
+     * Analyze the class given to the constructor in search of the classified methods that uses the given classified attributes.
      *
      * @param classifiedAttributes the set of classified attribute for which search for methods that uses (read/write) them.
      * @return a {@link Map} containing for each classified attribute {@link VariableDeclarator} a set of its matched classified methods {@link MethodDeclaration}.
      * Attributes without any matched methods, will result with an empty set of methods.
      */
-    private Map<VariableDeclarator, Set<MethodDeclaration>> getClassifiedUsageMethods(Set<VariableDeclarator> classifiedAttributes) {
+    private Map<VariableDeclarator, Set<MethodDeclaration>> getUsageClassifiedMethods(Set<VariableDeclarator> classifiedAttributes) {
         // All classified attributes start with an empty set of methods
         Map<VariableDeclarator, Set<MethodDeclaration>> resultMap = new HashMap<>();
         for (VariableDeclarator variableDeclarator : classifiedAttributes) {
@@ -110,15 +105,15 @@ public class ClassifiedAnalyzer extends ClassAnalyzer {
         return resultMap;
     }
 
-    private Set<MethodDeclaration> getClassifiedMethods(Set<MethodDeclaration> methodDeclarations) {
+    private Set<MethodDeclaration> getOtherClassifiedMethods(Set<MethodDeclaration> methodDeclarations) {
         return methodDeclarations.stream()
                 .filter(this::isClassified)
                 .collect(Collectors.toSet());
     }
 
-    private boolean isClassified(MethodDeclaration methodDeclaration) {
+    private boolean isClassified(NodeWithSimpleName<?> node) {
         return patterns.stream()
-                .anyMatch(p -> p.matcher(methodDeclaration.getNameAsString()).matches());
+                .anyMatch(p -> p.matcher(node.getNameAsString()).matches());
     }
 
     private boolean isUsingReflection() {
