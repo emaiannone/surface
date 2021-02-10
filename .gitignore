@@ -27,3 +27,7 @@ target/**
 
 # IntelliJ
 .idea/
+*.iml
+
+# CSV exports
+*_results.csv

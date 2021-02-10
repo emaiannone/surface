@@ -6,9 +6,9 @@ Requirements:
 - `snapshots.csv` available
 
 Follow these steps (Linux):
-1. In the root directory, run `mvn package` to generate the runnable JAR in the `target` directory.
-2. Run the script `./data_extraction.sh /path/to/snapshots.csv` and wait for the completion (you can kill it anytime with `CTRL+C`).
-3. Get the resulting CSV in `exports` directory.
+1. In the root directory, run `mvn clean package` to generate the runnable JAR in the `target` directory.
+2. Run the script `./extract_data.sh /path/to/snapshots.csv` and wait for the completion (you can kill it anytime with `CTRL+C`).
+3. Get the resulting CSVs in the current working directory.
 
 # Class-level Metrics
 
