@@ -1,6 +1,7 @@
 package org.surface.surface.core.control;
 
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.util.FileUtils;
 import org.surface.surface.data.bean.Snapshot;
@@ -57,7 +58,13 @@ public class RemoteSnapshotsProjectsControl extends ProjectsControl {
                     String commitSha = repoSnapshot.getCommitSha();
                     System.out.println("\n* [" + (i + 1) + "/" + repoSnapshots.size() + "] Checking out commit " + commitSha);
                     // Checkout commit
-                    git.checkout().setName(commitSha).call();
+                    try {
+                        git.reset().setMode(ResetCommand.ResetType.HARD).call();
+                        git.checkout().setName(commitSha).call();
+                    } catch (GitAPIException e) {
+                        System.out.println("* Cannot checkout to " + commitSha + ": skipping commit.");
+                        continue;
+                    }
                     // Analyze and compute metrics
                     ProjectMetricsResults projectMetricsResults = super.processProject(destinationDir.toPath());
                     // Export
@@ -65,11 +72,11 @@ public class RemoteSnapshotsProjectsControl extends ProjectsControl {
                     try {
                         projectMetricsResultsExporter.exportAs(exportFormat);
                     } catch (IOException e) {
-                        System.out.println("* Could not export results: skipping.");
+                        System.out.println("* Could not export results: skipping commit.");
                     }
                 }
             } catch (GitAPIException e) {
-                System.out.println("* Failed to clone " + repositoryURI + ": skipping.");
+                System.out.println("* Cannot clone " + repositoryURI + ": skipping repository.");
                 continue;
             }
             // Delete after finishing
