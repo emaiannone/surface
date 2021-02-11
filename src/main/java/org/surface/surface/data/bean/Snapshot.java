@@ -1,25 +1,25 @@
 package org.surface.surface.data.bean;
 
 public class Snapshot {
-    private final String projectName;
+    private final String projectId;
     private final String repositoryURI;
-    private final String commitSha;
+    private final String commitHash;
 
-    public Snapshot(String projectName, String repositoryURI, String commitSha) {
-        this.projectName = projectName;
+    public Snapshot(String projectId, String repositoryURI, String commitHash) {
+        this.projectId = projectId;
         this.repositoryURI = repositoryURI;
-        this.commitSha = commitSha;
+        this.commitHash = commitHash;
     }
 
-    public String getProjectName() {
-        return projectName;
+    public String getProjectId() {
+        return projectId;
     }
 
     public String getRepositoryURI() {
         return repositoryURI;
     }
 
-    public String getCommitSha() {
-        return commitSha;
+    public String getCommitHash() {
+        return commitHash;
     }
 }

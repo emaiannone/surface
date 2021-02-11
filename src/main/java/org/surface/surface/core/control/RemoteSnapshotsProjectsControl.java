@@ -55,14 +55,14 @@ public class RemoteSnapshotsProjectsControl extends ProjectsControl {
                         .collect(Collectors.toList());
                 for (int i = 0; i < repoSnapshots.size(); i++) {
                     Snapshot repoSnapshot = repoSnapshots.get(i);
-                    String commitSha = repoSnapshot.getCommitSha();
-                    System.out.println("\n* [" + (i + 1) + "/" + repoSnapshots.size() + "] Checking out commit " + commitSha);
+                    String commitHash = repoSnapshot.getCommitHash();
+                    System.out.println("\n* [" + (i + 1) + "/" + repoSnapshots.size() + "] Checking out commit " + commitHash);
                     // Checkout commit
                     try {
                         git.reset().setMode(ResetCommand.ResetType.HARD).call();
-                        git.checkout().setName(commitSha).call();
+                        git.checkout().setName(commitHash).call();
                     } catch (GitAPIException e) {
-                        System.out.println("* Cannot checkout to " + commitSha + ": skipping commit.");
+                        System.out.println("* Cannot checkout to " + commitHash + ": skipping commit.");
                         continue;
                     }
                     // Analyze and compute metrics

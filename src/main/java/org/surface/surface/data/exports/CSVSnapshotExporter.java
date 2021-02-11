@@ -21,18 +21,18 @@ import java.util.stream.Stream;
 public class CSVSnapshotExporter implements SnapshotExporter {
     public static final String CODE = "csv";
     private static final String[] BASE_HEADERS = {
-            "project",
-            "commit_sha"
+            "projectID",
+            "commitHash"
     };
 
     @Override
     public boolean export(Snapshot snapshot, ProjectMetricsResults projectMetricsResults) throws IOException {
-        String projectName = snapshot.getProjectName();
-        Path exportFilePath = Paths.get(projectName + "_results.csv");
+        String projectId = snapshot.getProjectId();
+        Path exportFilePath = Paths.get(projectId + "_results.csv");
 
         List<Object> record = new ArrayList<>();
-        record.add(projectName);
-        record.add(snapshot.getCommitSha());
+        record.add(projectId);
+        record.add(snapshot.getCommitHash());
 
         // Class Numeric Metrics (averages)
         List<String> classMetricsCode = new ArrayList<>();
