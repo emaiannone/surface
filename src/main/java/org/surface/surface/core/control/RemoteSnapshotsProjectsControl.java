@@ -70,7 +70,7 @@ public class RemoteSnapshotsProjectsControl extends ProjectsControl {
                         // Analyze and compute metrics
                         ProjectMetricsResults projectMetricsResults = super.processProject(destinationDir.toPath());
                         // Export
-                        ProjectMetricsResultsExporter projectMetricsResultsExporter = new ProjectMetricsResultsExporter(repoSnapshot, projectMetricsResults);
+                        ProjectMetricsResultsExporter projectMetricsResultsExporter = new ProjectMetricsResultsExporter(repoSnapshot, projectMetricsResults, getMetricsCodes());
                         try {
                             projectMetricsResultsExporter.exportAs(exportFormat);
                         } catch (IOException e) {

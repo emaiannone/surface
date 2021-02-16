@@ -26,7 +26,7 @@ public class CSVSnapshotExporter implements SnapshotExporter {
     };
 
     @Override
-    public boolean export(Snapshot snapshot, ProjectMetricsResults projectMetricsResults) throws IOException {
+    public boolean export(Snapshot snapshot, ProjectMetricsResults projectMetricsResults, String[] metricsCodes) throws IOException {
         String projectId = snapshot.getProjectId();
         Path exportFilePath = Paths.get(projectId + "_results.csv");
 
@@ -34,34 +34,33 @@ public class CSVSnapshotExporter implements SnapshotExporter {
         record.add(projectId);
         record.add(snapshot.getCommitHash());
 
-        // Class Numeric Metrics (averages)
-        List<String> classMetricsCode = new ArrayList<>();
+        Map<String, Object> projectMetrics = projectMetricsResults.getProjectMetrics();
         Map<String, List<MetricValue<?>>> groupedValues = projectMetricsResults.classMetricsGroupedByCode();
-        for (Map.Entry<String, List<MetricValue<?>>> groupedValuesEntry : groupedValues.entrySet()) {
-            List<MetricValue<?>> values = groupedValuesEntry.getValue();
-            // Consider only numeric metric values
-            if (values.size() > 0 && values.get(0) instanceof NumericMetricValue<?>) {
-                classMetricsCode.add(groupedValuesEntry.getKey());
-                double meanResult = values.stream()
-                        .map(mv -> (NumericMetricValue<?>) mv)
-                        .mapToDouble(mv -> mv.getValue().doubleValue())
-                        .average().orElse(0.0);
-                record.add(meanResult);
+        for (String metricsCode : metricsCodes) {
+            Object projectMetricValue = projectMetrics.get(metricsCode);
+            // Check if it is a project metric
+            if (projectMetricValue != null) {
+                record.add(projectMetricValue);
+            } else {
+                // Check if it is a class metric (to be aggregated as average)
+                List<MetricValue<?>> values = groupedValues.get(metricsCode);
+                if (values != null) {
+                    // Consider only numeric metric values
+                    if (values.size() > 0 && values.get(0) instanceof NumericMetricValue<?>) {
+                        double meanResult = values.stream()
+                                .map(mv -> (NumericMetricValue<?>) mv)
+                                .mapToDouble(mv -> mv.getValue().doubleValue())
+                                .average().orElse(0.0);
+                        record.add(meanResult);
+                    }
+                } else {
+                    // Metrics not found in the results: set to 0.0
+                    record.add(0.0);
+                }
             }
         }
 
-        // Project Metrics
-        List<String> projectMetricsCode = new ArrayList<>();
-        Map<String, Object> projectMetrics = projectMetricsResults.getProjectMetrics();
-        for (Map.Entry<String, Object> projectMetricsEntry : projectMetrics.entrySet()) {
-            projectMetricsCode.add(projectMetricsEntry.getKey());
-            record.add(projectMetricsEntry.getValue());
-        }
-
-        String[] headers = Stream.concat(Stream.concat(Arrays.stream(BASE_HEADERS),
-                classMetricsCode.stream()),
-                projectMetricsCode.stream())
-                .toArray(String[]::new);
+        String[] headers = Stream.concat(Arrays.stream(BASE_HEADERS), Arrays.stream(metricsCodes)).toArray(String[]::new);
         CSVFormat csvFormat = CSVFormat.DEFAULT
                 .withHeader(headers)
                 .withSkipHeaderRecord(exportFilePath.toFile().exists());

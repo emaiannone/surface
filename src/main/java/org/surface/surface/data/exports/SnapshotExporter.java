@@ -6,5 +6,5 @@ import org.surface.surface.results.ProjectMetricsResults;
 import java.io.IOException;
 
 public interface SnapshotExporter {
-    boolean export(Snapshot snapshot, ProjectMetricsResults projectMetricsResults) throws IOException;
+    boolean export(Snapshot snapshot, ProjectMetricsResults projectMetricsResults, String[] metricsCodes) throws IOException;
 }
