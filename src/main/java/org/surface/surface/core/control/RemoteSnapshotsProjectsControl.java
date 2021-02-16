@@ -63,16 +63,24 @@ public class RemoteSnapshotsProjectsControl extends ProjectsControl {
                         git.checkout().setName(commitHash).call();
                     } catch (GitAPIException e) {
                         System.out.println("* Cannot checkout to " + commitHash + ": skipping commit.");
+                        e.printStackTrace();
                         continue;
                     }
-                    // Analyze and compute metrics
-                    ProjectMetricsResults projectMetricsResults = super.processProject(destinationDir.toPath());
-                    // Export
-                    ProjectMetricsResultsExporter projectMetricsResultsExporter = new ProjectMetricsResultsExporter(repoSnapshot, projectMetricsResults);
                     try {
-                        projectMetricsResultsExporter.exportAs(exportFormat);
-                    } catch (IOException e) {
-                        System.out.println("* Could not export results: skipping commit.");
+                        // Analyze and compute metrics
+                        ProjectMetricsResults projectMetricsResults = super.processProject(destinationDir.toPath());
+                        // Export
+                        ProjectMetricsResultsExporter projectMetricsResultsExporter = new ProjectMetricsResultsExporter(repoSnapshot, projectMetricsResults);
+                        try {
+                            projectMetricsResultsExporter.exportAs(exportFormat);
+                        } catch (IOException e) {
+                            System.out.println("* Could not export results: skipping commit.");
+                            e.printStackTrace();
+                        }
+                    }
+                    catch (RuntimeException e) {
+                        System.out.println("* Filed analyzing this snapshot: skipping commit.");
+                        e.printStackTrace();
                     }
                 }
             } catch (GitAPIException e) {
