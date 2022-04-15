@@ -52,7 +52,7 @@ public class ProjectAnalyzer {
                             if (typeDeclaration.isClassOrInterfaceDeclaration()) {
                                 ClassOrInterfaceDeclaration classOrInterfaceDeclaration = typeDeclaration.asClassOrInterfaceDeclaration();
                                 if (!classOrInterfaceDeclaration.isInterface()) {
-                                    ClassifiedAnalyzer classifiedAnalyzer = new ClassifiedAnalyzer(classOrInterfaceDeclaration);
+                                    ClassifiedAnalyzer classifiedAnalyzer = new ClassifiedAnalyzer(classOrInterfaceDeclaration, compilationUnit.getStorage().get().getPath());
                                     System.out.println("** Analyzing class: " + classOrInterfaceDeclaration.getFullyQualifiedName().orElse(classOrInterfaceDeclaration.getNameAsString()));
                                     ClassifiedAnalyzerResults classResults = classifiedAnalyzer.analyze();
                                     projectResults.add(classResults);

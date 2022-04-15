@@ -3,6 +3,7 @@ package org.surface.surface.results;
 import com.github.javaparser.utils.ProjectRoot;
 import org.surface.surface.results.values.MetricValue;
 
+import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -15,6 +16,10 @@ public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetr
         this.projectRoot = projectRoot;
         this.classMetricsResults = new HashSet<>();
         this.projectValues = new ArrayList<>();
+    }
+
+    public Path getProjectRoot() {
+        return projectRoot.getRoot();
     }
 
     public List<MetricValue<?>> getProjectValues() {

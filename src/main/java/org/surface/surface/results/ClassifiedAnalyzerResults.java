@@ -7,6 +7,7 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.resolution.declarations.ResolvedReferenceTypeDeclaration;
 import com.github.javaparser.resolution.types.ResolvedReferenceType;
 
+import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -14,6 +15,7 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults {
     private final ClassOrInterfaceDeclaration classOrInterfaceDeclaration;
     // TODO Create a ClassifiedAttribute class, having VariableDeclarator and FieldDeclaration
     // TODO I don't like Usage and Other classified methods names... consider an alternative and clearer naming
+    private final Path filepath;
     private final Map<VariableDeclarator, Set<MethodDeclaration>> classifiedAttributesAndMethods;
     private final Set<MethodDeclaration> otherClassifiedMethods;
     private boolean usingReflection;
@@ -21,8 +23,9 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults {
     private Set<FieldDeclaration> correspondingFieldDeclarations;
     private List<ResolvedReferenceType> superClasses;
 
-    public ClassifiedAnalyzerResults(ClassOrInterfaceDeclaration classOrInterfaceDeclaration) {
+    public ClassifiedAnalyzerResults(ClassOrInterfaceDeclaration classOrInterfaceDeclaration, Path filepath) {
         this.classOrInterfaceDeclaration = classOrInterfaceDeclaration;
+        this.filepath = filepath;
         this.classifiedAttributesAndMethods = new HashMap<>();
         this.otherClassifiedMethods = new HashSet<>();
         this.correspondingFieldDeclarations = null;
@@ -47,6 +50,10 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults {
 
     public String getFullyQualifiedClassName() {
         return classOrInterfaceDeclaration.getFullyQualifiedName().orElse(getClassName());
+    }
+
+    public Path getFilepath() {
+        return filepath;
     }
 
     public Set<MethodDeclaration> getAllMethods() {

@@ -5,7 +5,7 @@ import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.util.FileUtils;
 import org.surface.surface.data.bean.Snapshot;
-import org.surface.surface.data.exports.ProjectMetricsResultsExporter;
+import org.surface.surface.data.exports.remote.RemoteProjectResultsExporter;
 import org.surface.surface.data.imports.CSVSnapshotsImporter;
 import org.surface.surface.results.ProjectMetricsResults;
 
@@ -21,12 +21,10 @@ import java.util.stream.Collectors;
 public class RemoteSnapshotsProjectsControl extends ProjectsControl {
     private final Path remoteProjectsAbsolutePath;
     public static final String BASE_DIR = "/tmp";
-    private final String exportFormat;
 
-    public RemoteSnapshotsProjectsControl(String[] metricsCodes, Path remoteProjectsAbsolutePath, String exportFormat) {
-        super(metricsCodes);
+    public RemoteSnapshotsProjectsControl(String[] metricsCodes, String exportFormat, Path remoteProjectsAbsolutePath) {
+        super(metricsCodes, exportFormat);
         this.remoteProjectsAbsolutePath = remoteProjectsAbsolutePath;
-        this.exportFormat = exportFormat;
     }
 
     @Override
@@ -70,9 +68,9 @@ public class RemoteSnapshotsProjectsControl extends ProjectsControl {
                         // Analyze and compute metrics
                         ProjectMetricsResults projectMetricsResults = super.processProject(destinationDir.toPath());
                         // Export
-                        ProjectMetricsResultsExporter projectMetricsResultsExporter = new ProjectMetricsResultsExporter(repoSnapshot, projectMetricsResults, getMetricsCodes());
+                        RemoteProjectResultsExporter remoteProjectResultsExporter = new RemoteProjectResultsExporter(repoSnapshot, projectMetricsResults, getMetricsCodes());
                         try {
-                            projectMetricsResultsExporter.exportAs(exportFormat);
+                            remoteProjectResultsExporter.exportAs(getExportFormat());
                         } catch (IOException e) {
                             System.out.println("* Could not export results: skipping commit.");
                             e.printStackTrace();

@@ -1,4 +1,4 @@
-package org.surface.surface.data.exports;
+package org.surface.surface.data.exports.remote;
 
 public class SnapshotExporterFactory {
 

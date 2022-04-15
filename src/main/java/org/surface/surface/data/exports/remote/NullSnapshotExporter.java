@@ -1,4 +1,4 @@
-package org.surface.surface.data.exports;
+package org.surface.surface.data.exports.remote;
 
 import org.surface.surface.data.bean.Snapshot;
 import org.surface.surface.results.ProjectMetricsResults;

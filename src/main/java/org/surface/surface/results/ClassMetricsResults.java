@@ -2,10 +2,13 @@ package org.surface.surface.results;
 
 import org.surface.surface.results.values.MetricValue;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ClassMetricsResults implements MetricsResults, Iterable<MetricValue<?>> {
     private final ClassifiedAnalyzerResults classResults;
@@ -33,8 +36,20 @@ public class ClassMetricsResults implements MetricsResults, Iterable<MetricValue
         return classResults.getClassName();
     }
 
+    public Path getFilepath() {
+        return classResults.getFilepath();
+    }
+
     public ClassifiedAnalyzerResults getClassResults() {
         return classResults;
+    }
+
+    public Map<String, Object> getClassMetrics() {
+        Map<String, Object> classMetricsAsMap = new LinkedHashMap<>();
+        for (MetricValue<?> classValue : classValues) {
+            classMetricsAsMap.put(classValue.getMetricCode(), classValue.getValue());
+        }
+        return classMetricsAsMap;
     }
 
     @Override

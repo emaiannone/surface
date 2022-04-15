@@ -10,13 +10,19 @@ import java.nio.file.Path;
 
 public abstract class ProjectsControl {
     private final String[] metricsCodes;
+    private final String exportFormat;
 
-    public ProjectsControl(String[] metricsCodes) {
+    public ProjectsControl(String[] metricsCodes, String exportFormat) {
         this.metricsCodes = metricsCodes;
+        this.exportFormat = exportFormat;
     }
 
     public String[] getMetricsCodes() {
         return metricsCodes.clone();
+    }
+
+    public String getExportFormat() {
+        return exportFormat;
     }
 
     protected ProjectMetricsResults processProject(Path projectAbsolutePath) {

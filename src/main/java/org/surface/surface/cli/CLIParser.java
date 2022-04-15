@@ -15,8 +15,8 @@ public class CLIParser {
     private static final String[] DEFAULT_METRICS = new String[]{"CA", "CM"};
     // Current working directory as default
     private static final String DEFAULT_PROJECT = "";
-    // csv as default
-    private static final String DEFAULT_EXPORT = "csv";
+    // stdout as default
+    private static final String DEFAULT_EXPORT = "";
 
     public SurfaceInput parse(String[] args) throws ParseException {
         // Accepted CLI options
@@ -50,7 +50,7 @@ public class CLIParser {
             export = commandLine.getOptionValue(CLIOptions.EXPORT);
         } else {
             export = DEFAULT_EXPORT;
-            System.out.println("* No specified export format: using " + export + " file.");
+            System.out.println("* No specified export format: printing to stdout.");
         }
         return new SurfaceInput(metricsCodes, remoteProjects, project, export);
     }

@@ -22,11 +22,12 @@ public class Surface {
 
         Path remoteProjectsAbsolutePath = surfaceInput.getRemoteProjectsAbsolutePath();
         if (remoteProjectsAbsolutePath != null) {
-            RemoteSnapshotsProjectsControl remoteSnapshotsProjectsControl = new RemoteSnapshotsProjectsControl(metricsCodes, remoteProjectsAbsolutePath, exportFormat);
+            RemoteSnapshotsProjectsControl remoteSnapshotsProjectsControl = new RemoteSnapshotsProjectsControl(metricsCodes, exportFormat, remoteProjectsAbsolutePath);
             remoteSnapshotsProjectsControl.run();
         } else {
             Path projectAbsolutePath = surfaceInput.getProjectAbsolutePath();
-            SingleLocalProjectControl singleLocalProjectControl = new SingleLocalProjectControl(metricsCodes, projectAbsolutePath);
+            // TODO Add destination export file
+            SingleLocalProjectControl singleLocalProjectControl = new SingleLocalProjectControl(metricsCodes, exportFormat, projectAbsolutePath);
             singleLocalProjectControl.run();
         }
     }

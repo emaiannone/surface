@@ -12,6 +12,7 @@ import com.github.javaparser.resolution.Resolvable;
 import com.github.javaparser.resolution.declarations.ResolvedValueDeclaration;
 import org.surface.surface.results.ClassifiedAnalyzerResults;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,8 +25,8 @@ import java.util.stream.Collectors;
 public class ClassifiedAnalyzer extends ClassAnalyzer {
     private final List<Pattern> patterns;
 
-    public ClassifiedAnalyzer(ClassOrInterfaceDeclaration classDeclaration) {
-        super(classDeclaration);
+    public ClassifiedAnalyzer(ClassOrInterfaceDeclaration classDeclaration, Path filepath) {
+        super(classDeclaration, filepath);
         this.patterns = ClassifiedPatterns.getInstance().getPatterns();
     }
 
@@ -38,7 +39,7 @@ public class ClassifiedAnalyzer extends ClassAnalyzer {
      * if the analysis does not find any classified method, the results map will only contain the classified attributes (key).
      */
     public ClassifiedAnalyzerResults analyze() {
-        ClassifiedAnalyzerResults results = new ClassifiedAnalyzerResults(getClassDeclaration());
+        ClassifiedAnalyzerResults results = new ClassifiedAnalyzerResults(getClassDeclaration(), getFilepath());
         Set<VariableDeclarator> classifiedAttributes = getClassifiedAttributes(new HashSet<>(getClassDeclaration().getFields()));
         if (classifiedAttributes.size() > 0) {
             Map<VariableDeclarator, Set<MethodDeclaration>> classifiedMethodsMap = getUsageClassifiedMethods(classifiedAttributes);
