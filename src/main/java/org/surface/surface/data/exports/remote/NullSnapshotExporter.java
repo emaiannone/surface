@@ -7,7 +7,7 @@ public class NullSnapshotExporter implements SnapshotExporter {
     public static final String CODE = "";
 
     @Override
-    public boolean export(Snapshot snapshot, ProjectMetricsResults projectMetricsResults, String[] metricsCodes) {
+    public boolean export(Snapshot snapshot, ProjectMetricsResults projectMetricsResults, String[] metricsCodes, String outFile) {
         return true;
     }
 }

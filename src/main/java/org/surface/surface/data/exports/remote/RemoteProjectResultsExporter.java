@@ -16,8 +16,8 @@ public class RemoteProjectResultsExporter {
         this.metricsCodes = metricsCodes;
     }
 
-    public boolean exportAs(String exportFormat) throws IOException {
+    public boolean export(String exportFormat, String outFile) throws IOException {
         SnapshotExporter snapshotExporter = new SnapshotExporterFactory().getExporter(exportFormat);
-        return snapshotExporter.export(snapshot, projectMetricsResults, metricsCodes);
+        return snapshotExporter.export(snapshot, projectMetricsResults, metricsCodes, outFile);
     }
 }

@@ -22,8 +22,8 @@ public class RemoteSnapshotsProjectsControl extends ProjectsControl {
     private final Path remoteProjectsAbsolutePath;
     public static final String BASE_DIR = "/tmp";
 
-    public RemoteSnapshotsProjectsControl(String[] metricsCodes, String exportFormat, Path remoteProjectsAbsolutePath) {
-        super(metricsCodes, exportFormat);
+    public RemoteSnapshotsProjectsControl(String[] metricsCodes, String exportFormat, String outFile, Path remoteProjectsAbsolutePath) {
+        super(metricsCodes, exportFormat, outFile);
         this.remoteProjectsAbsolutePath = remoteProjectsAbsolutePath;
     }
 
@@ -70,7 +70,7 @@ public class RemoteSnapshotsProjectsControl extends ProjectsControl {
                         // Export
                         RemoteProjectResultsExporter remoteProjectResultsExporter = new RemoteProjectResultsExporter(repoSnapshot, projectMetricsResults, getMetricsCodes());
                         try {
-                            remoteProjectResultsExporter.exportAs(getExportFormat());
+                            remoteProjectResultsExporter.export(getExportFormat(), getOutFile());
                         } catch (IOException e) {
                             System.out.println("* Could not export results: skipping commit.");
                             e.printStackTrace();

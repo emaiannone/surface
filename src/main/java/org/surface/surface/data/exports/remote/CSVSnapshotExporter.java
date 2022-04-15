@@ -26,9 +26,10 @@ public class CSVSnapshotExporter implements SnapshotExporter {
     };
 
     @Override
-    public boolean export(Snapshot snapshot, ProjectMetricsResults projectMetricsResults, String[] metricsCodes) throws IOException {
+    public boolean export(Snapshot snapshot, ProjectMetricsResults projectMetricsResults, String[] metricsCodes, String outFile) throws IOException {
         String projectId = snapshot.getProjectId();
-        Path exportFilePath = Paths.get(projectId + "_results.csv");
+        Path destination = Paths.get(outFile);
+        Path exportFilePath = Paths.get(destination.getParent().toString(), projectId + destination.getFileName().toString());
 
         List<Object> record = new ArrayList<>();
         record.add(projectId);

@@ -18,7 +18,7 @@ public class JSONExporter implements ResultsExporter {
     public static final String CODE = "json";
 
     @Override
-    public boolean export(ProjectMetricsResults projectMetricsResults) throws IOException {
+    public boolean export(ProjectMetricsResults projectMetricsResults, String outFile) throws IOException {
         Map<String, Object> output = new LinkedHashMap<>();
         output.put("path", projectMetricsResults.getProjectRoot().toString());
         output.put("metrics", projectMetricsResults.getProjectMetrics());
@@ -32,7 +32,7 @@ public class JSONExporter implements ResultsExporter {
         }
         output.put("classes", classes);
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        try (FileWriter fw = new FileWriter(Paths.get("surface_results.json").toFile())) {
+        try (FileWriter fw = new FileWriter(Paths.get(outFile).toFile())) {
             gson.toJson(output, fw);
         }
         return true;

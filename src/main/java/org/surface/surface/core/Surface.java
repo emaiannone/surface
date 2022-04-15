@@ -18,16 +18,16 @@ public class Surface {
         System.out.println("* Going to compute the following metrics: " + Arrays.toString(metricsCodes) + ".");
 
         String exportFormat = surfaceInput.getExportFormat();
-        System.out.println("* Going to export as " + exportFormat + " file.");
+        String outFile = surfaceInput.getOutFile();
+        System.out.println("* Going to export as " + exportFormat + " to file " + outFile + ".");
 
         Path remoteProjectsAbsolutePath = surfaceInput.getRemoteProjectsAbsolutePath();
         if (remoteProjectsAbsolutePath != null) {
-            RemoteSnapshotsProjectsControl remoteSnapshotsProjectsControl = new RemoteSnapshotsProjectsControl(metricsCodes, exportFormat, remoteProjectsAbsolutePath);
+            RemoteSnapshotsProjectsControl remoteSnapshotsProjectsControl = new RemoteSnapshotsProjectsControl(metricsCodes, exportFormat, outFile, remoteProjectsAbsolutePath);
             remoteSnapshotsProjectsControl.run();
         } else {
             Path projectAbsolutePath = surfaceInput.getProjectAbsolutePath();
-            // TODO Add destination export file
-            SingleLocalProjectControl singleLocalProjectControl = new SingleLocalProjectControl(metricsCodes, exportFormat, projectAbsolutePath);
+            SingleLocalProjectControl singleLocalProjectControl = new SingleLocalProjectControl(metricsCodes, exportFormat, outFile, projectAbsolutePath);
             singleLocalProjectControl.run();
         }
     }

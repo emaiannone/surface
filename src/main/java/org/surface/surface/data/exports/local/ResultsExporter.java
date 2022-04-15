@@ -5,6 +5,6 @@ import org.surface.surface.results.ProjectMetricsResults;
 import java.io.IOException;
 
 public interface ResultsExporter {
-    boolean export(ProjectMetricsResults projectMetricsResults) throws IOException;
+    boolean export(ProjectMetricsResults projectMetricsResults, String outFile) throws IOException;
 
 }

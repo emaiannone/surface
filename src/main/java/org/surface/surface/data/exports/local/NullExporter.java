@@ -6,7 +6,7 @@ public class NullExporter implements ResultsExporter {
     public static final String CODE = "";
 
     @Override
-    public boolean export(ProjectMetricsResults projectMetricsResults) {
+    public boolean export(ProjectMetricsResults projectMetricsResults, String outFile) {
         return true;
     }
 }

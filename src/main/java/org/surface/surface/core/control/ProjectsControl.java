@@ -11,10 +11,12 @@ import java.nio.file.Path;
 public abstract class ProjectsControl {
     private final String[] metricsCodes;
     private final String exportFormat;
+    private final String outFile;
 
-    public ProjectsControl(String[] metricsCodes, String exportFormat) {
+    public ProjectsControl(String[] metricsCodes, String exportFormat, String outFile) {
         this.metricsCodes = metricsCodes;
         this.exportFormat = exportFormat;
+        this.outFile = outFile;
     }
 
     public String[] getMetricsCodes() {
@@ -23,6 +25,10 @@ public abstract class ProjectsControl {
 
     public String getExportFormat() {
         return exportFormat;
+    }
+
+    public String getOutFile() {
+        return outFile;
     }
 
     protected ProjectMetricsResults processProject(Path projectAbsolutePath) {

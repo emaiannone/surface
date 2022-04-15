@@ -11,8 +11,8 @@ public class LocalProjectResultsExporter {
         this.projectMetricsResults = projectMetricsResults;
     }
 
-    public boolean exportAs(String exportFormat) throws IOException {
+    public boolean export(String exportFormat, String outFile) throws IOException {
         ResultsExporter exporter = new ExporterFactory().getExporter(exportFormat);
-        return exporter.export(projectMetricsResults);
+        return exporter.export(projectMetricsResults, outFile);
     }
 }

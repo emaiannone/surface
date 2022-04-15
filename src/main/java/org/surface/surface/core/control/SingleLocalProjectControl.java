@@ -9,8 +9,8 @@ import java.nio.file.Path;
 public class SingleLocalProjectControl extends ProjectsControl {
     private final Path projectAbsolutePath;
 
-    public SingleLocalProjectControl(String[] metricsCodes, String exportFormat, Path projectAbsolutePath) {
-        super(metricsCodes, exportFormat);
+    public SingleLocalProjectControl(String[] metricsCodes, String exportFormat, String outFile, Path projectAbsolutePath) {
+        super(metricsCodes, exportFormat, outFile);
         this.projectAbsolutePath = projectAbsolutePath;
     }
 
@@ -26,7 +26,7 @@ public class SingleLocalProjectControl extends ProjectsControl {
         // Export
         LocalProjectResultsExporter localProjectResultsExporter = new LocalProjectResultsExporter(projectMetricsResults);
         try {
-            localProjectResultsExporter.exportAs(getExportFormat());
+            localProjectResultsExporter.export(getExportFormat(), getOutFile());
         } catch (IOException e) {
             System.out.println("* Could not export results.");
             e.printStackTrace();

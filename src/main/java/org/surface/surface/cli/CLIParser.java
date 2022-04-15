@@ -45,13 +45,19 @@ public class CLIParser {
             System.out.println("* No specified project root: using Current Working Directory.");
         }
 
-        String export;
+        String export, outFile = null;
         if (commandLine.hasOption(CLIOptions.EXPORT)) {
             export = commandLine.getOptionValue(CLIOptions.EXPORT);
+            if (commandLine.hasOption(CLIOptions.OUT_FILE)) {
+                outFile = commandLine.getOptionValue(CLIOptions.OUT_FILE);
+            } else {
+                System.err.println("* Need a destination file to export the results (using -" + CLIOptions.OUT_FILE + " option): exiting.");
+                System.exit(1);
+            }
         } else {
             export = DEFAULT_EXPORT;
             System.out.println("* No specified export format: printing to stdout.");
         }
-        return new SurfaceInput(metricsCodes, remoteProjects, project, export);
+        return new SurfaceInput(metricsCodes, remoteProjects, project, export, outFile);
     }
 }
