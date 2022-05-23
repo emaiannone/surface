@@ -1,21 +1,22 @@
 package org.surface.surface;
 
 import org.apache.commons.cli.ParseException;
-import org.surface.surface.cli.CLIParser;
+import org.surface.surface.cli.CLIArgumentsParser;
 import org.surface.surface.core.Surface;
-import org.surface.surface.core.SurfaceInput;
+import org.surface.surface.core.RunSetting;
 
 public class CLIStarter {
     public static void main(String[] args) {
-        CLIParser cliParser = new CLIParser();
-        SurfaceInput surfaceInput = null;
+        CLIArgumentsParser cliArgumentsParser = new CLIArgumentsParser();
+        RunSetting runSetting = null;
         try {
-            surfaceInput = cliParser.parse(args);
+            runSetting = cliArgumentsParser.parse(args);
         } catch (ParseException e) {
             e.printStackTrace();
+            System.err.println("Exiting...");
             System.exit(1);
         }
-        Surface surface = new Surface(surfaceInput);
+        Surface surface = new Surface(runSetting);
         surface.run();
     }
 }

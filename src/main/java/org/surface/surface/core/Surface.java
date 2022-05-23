@@ -7,26 +7,26 @@ import java.nio.file.Path;
 import java.util.Arrays;
 
 public class Surface {
-    private final SurfaceInput surfaceInput;
+    private final RunSetting runSetting;
 
-    public Surface(SurfaceInput surfaceInput) {
-        this.surfaceInput = surfaceInput;
+    public Surface(RunSetting runSetting) {
+        this.runSetting = runSetting;
     }
 
     public void run() {
-        String[] metricsCodes = surfaceInput.getMetricsCodes();
+        String[] metricsCodes = runSetting.getMetricsCodes();
         System.out.println("* Going to compute the following metrics: " + Arrays.toString(metricsCodes) + ".");
 
-        String exportFormat = surfaceInput.getExportFormat();
-        String outFile = surfaceInput.getOutFile();
+        String exportFormat = runSetting.getExportFormat();
+        String outFile = runSetting.getOutFile();
         System.out.println("* Going to export as " + exportFormat + " to file " + outFile + ".");
 
-        Path remoteProjectsAbsolutePath = surfaceInput.getRemoteProjectsAbsolutePath();
+        Path remoteProjectsAbsolutePath = runSetting.getRemoteProjectsAbsolutePath();
         if (remoteProjectsAbsolutePath != null) {
             RemoteSnapshotsProjectsControl remoteSnapshotsProjectsControl = new RemoteSnapshotsProjectsControl(metricsCodes, exportFormat, outFile, remoteProjectsAbsolutePath);
             remoteSnapshotsProjectsControl.run();
         } else {
-            Path projectAbsolutePath = surfaceInput.getProjectAbsolutePath();
+            Path projectAbsolutePath = runSetting.getProjectAbsolutePath();
             SingleLocalProjectControl singleLocalProjectControl = new SingleLocalProjectControl(metricsCodes, exportFormat, outFile, projectAbsolutePath);
             singleLocalProjectControl.run();
         }
