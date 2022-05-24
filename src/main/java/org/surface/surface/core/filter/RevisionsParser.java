@@ -1,10 +1,10 @@
-package org.surface.surface.cli;
+package org.surface.surface.core.filter;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class RevisionsValidator {
+public class RevisionsParser {
 
-    public String[] getRevisionsFromRange(String revisionRange) {
+    public static String[] getRevisionsFromRange(String revisionRange) {
         String[] parts = revisionRange.split("\\.\\.");
         if (StringUtils.countMatches(revisionRange, '.') != 2 || parts.length != 2) {
             throw new IllegalArgumentException("The revision range must fulfill the expected format (\"<START-SHA>..<END-SHA>\").");
@@ -17,7 +17,7 @@ public class RevisionsValidator {
         }
     }
 
-    public boolean isValidRevision(String revision) {
+    public static boolean isValidRevision(String revision) {
         String revisionRegex = "[a-zA-Z\\d]+";
         return revision.matches(revisionRegex);
     }

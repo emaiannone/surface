@@ -1,34 +1,33 @@
-package org.surface.surface.core.control;
+package org.surface.surface.core.runner;
 
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.ResetCommand;
-import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.util.FileUtils;
-import org.surface.surface.data.bean.Snapshot;
-import org.surface.surface.data.exports.remote.RemoteProjectResultsExporter;
-import org.surface.surface.data.imports.CSVSnapshotsImporter;
-import org.surface.surface.results.ProjectMetricsResults;
+import org.surface.surface.core.filter.RevisionFilter;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-public class RemoteSnapshotsProjectsControl extends ProjectsControl {
-    private final Path remoteProjectsAbsolutePath;
-    public static final String BASE_DIR = "/tmp";
+public class RemoteGitAnalysisRunner extends AnalysisRunner {
+    private final File cloneDir;
+    private final RevisionFilter revisionFilter;
 
-    public RemoteSnapshotsProjectsControl(String[] metricsCodes, String exportFormat, String outFile, Path remoteProjectsAbsolutePath) {
-        super(metricsCodes, exportFormat, outFile);
-        this.remoteProjectsAbsolutePath = remoteProjectsAbsolutePath;
+    public RemoteGitAnalysisRunner(List<String> metrics, String target, File outFile, String filesRegex, File cloneDir, RevisionFilter revisionFilter) {
+        super(metrics, target, outFile, filesRegex);
+        this.cloneDir = cloneDir;
+        this.revisionFilter = revisionFilter;
+    }
+
+    public File getCloneDir() {
+        return cloneDir;
+    }
+
+    public RevisionFilter getRevisionFilter() {
+        return revisionFilter;
     }
 
     @Override
     public void run() {
+        /* TODO Legacy code: reimplement
         System.out.println("* Using " + remoteProjectsAbsolutePath + " file for cloning and analyzing repositories.");
         List<Snapshot> snapshots;
         try {
@@ -66,7 +65,7 @@ public class RemoteSnapshotsProjectsControl extends ProjectsControl {
                     }
                     try {
                         // Analyze and compute metrics
-                        ProjectMetricsResults projectMetricsResults = super.processProject(destinationDir.toPath());
+                        ProjectMetricsResults projectMetricsResults = super.analyzeProject(destinationDir.toPath());
                         // Export
                         RemoteProjectResultsExporter remoteProjectResultsExporter = new RemoteProjectResultsExporter(repoSnapshot, projectMetricsResults, getMetricsCodes());
                         try {
@@ -88,6 +87,7 @@ public class RemoteSnapshotsProjectsControl extends ProjectsControl {
             // Delete after finishing
             delete(destinationDir);
         }
+         */
     }
 
     private void delete(File dir) {

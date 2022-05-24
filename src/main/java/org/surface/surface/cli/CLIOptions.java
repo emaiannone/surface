@@ -44,15 +44,15 @@ public class CLIOptions extends Options {
 
         Option range = Option.builder(RANGE)
                 .hasArg(true)
-                .desc("Revisions (commits) range on which to run SURFACE. Format: \"<START-SHA>..<END-SHA>\", where <START-SHA> must be reachable from <END-SHA> (i.e., is in its ancestor path in the main branch). Evaluated only when -" + TARGET + " is a remote URL. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + ALL + " and -" + AT + " options. If none is specified, the analyses will be run on the repository's HEAD.")
+                .desc("Revisions (commits) range on which to run SURFACE. Format: \"<START-SHA>..<END-SHA>\", where <START-SHA> must be reachable from <END-SHA> (i.e., is in its ancestor path in the main branch). Evaluated only when -" + TARGET + " is a remote URL. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + ALL + " and -" + AT + " options. If none is specified, the analyses will be run on the repository's current state.")
                 .build();
         Option all = Option.builder(ALL)
                 .hasArg(false)
-                .desc("Flag enabling the analysis of the entire project's history range on which to run SURFACE. Format: \"<START-SHA>..<END-SHA>\", where <START-SHA> must be reachable from <END-SHA> (i.e., is in its ancestor path in the main branch). Evaluated only when -" + TARGET + " is a remote URL. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + " and -" + AT + " options. If none is specified, the analyses will be run on the repository's HEAD.")
+                .desc("Flag enabling the analysis of the entire project's history range on which to run SURFACE. Format: \"<START-SHA>..<END-SHA>\", where <START-SHA> must be reachable from <END-SHA> (i.e., is in its ancestor path in the main branch). Evaluated only when -" + TARGET + " is a remote URL. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + " and -" + AT + " options. If none is specified, the analyses will be run on the repository's current state.")
                 .build();
         Option at = Option.builder(AT)
                 .hasArg(true)
-                .desc("Revision (commit) on which to run SURFACE. Format: \"<SHA>\", where <SHA> is part of the main branch. Evaluated only when -" + TARGET + " is a remote URL.Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + " and -" + ALL + " options. If none is specified, the analyses will be run on the repository's HEAD.")
+                .desc("Revision (commit) on which to run SURFACE. Format: \"<SHA>\", where <SHA> is part of the main branch. Evaluated only when -" + TARGET + " is a remote URL.Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + " and -" + ALL + " options. If none is specified, the analyses will be run on the repository's current state.")
                 .build();
         OptionGroup revisionGroup = new OptionGroup()
                 .addOption(range)

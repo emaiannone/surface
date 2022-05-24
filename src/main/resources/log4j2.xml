@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn">
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout>
+                <LevelPatternSelector defaultPattern="%-5p| %m%n">
+                    <PatternMatch key="DEBUG" pattern="%-5p| [%c at L%L] %m%n"/>
+                </LevelPatternSelector>
+            </PatternLayout>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Root level="all">
+            <AppenderRef ref="console"/>
+        </Root>
+    </Loggers>
+</Configuration>
