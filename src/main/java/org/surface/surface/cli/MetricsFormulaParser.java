@@ -4,7 +4,6 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.surface.surface.core.metrics.classlevel.ca.CA;
 import org.surface.surface.core.metrics.classlevel.cai.CAI;
-import org.surface.surface.core.metrics.classlevel.ccva.CCVA;
 import org.surface.surface.core.metrics.classlevel.civa.CIVA;
 import org.surface.surface.core.metrics.classlevel.cm.CM;
 import org.surface.surface.core.metrics.classlevel.cma.CMA;

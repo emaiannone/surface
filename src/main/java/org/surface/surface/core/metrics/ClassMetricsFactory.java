@@ -57,7 +57,7 @@ public class ClassMetricsFactory implements MetricsFactory<ClassMetric<?>> {
                 case CAI.CODE:
                     classMetric = metricsStructure.getCai();
                     break;
-                // Add other metrics here
+                // NOTE Add other metrics here
             }
             if (classMetric != null) {
                 classMetrics.add(classMetric);

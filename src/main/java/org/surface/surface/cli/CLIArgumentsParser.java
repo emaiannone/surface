@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.surface.surface.core.RevisionMode;
 import org.surface.surface.core.RunMode;
 import org.surface.surface.core.RunSetting;
-import org.surface.surface.core.filter.RevisionsParser;
+import org.surface.surface.core.filters.RevisionsParser;
 
 import java.io.File;
 import java.nio.file.Path;

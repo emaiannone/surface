@@ -47,7 +47,7 @@ public class ProjectMetricsFactory implements MetricsFactory<ProjectMetric<?>> {
                 case CSCR.CODE:
                     projectMetric = metricsStructure.getCscr();
                     break;
-                // Add other metrics here
+                // NOTE Add other metrics here
             }
             if (projectMetric != null) {
                 projectMetrics.add(projectMetric);

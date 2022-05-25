@@ -2,8 +2,8 @@ package org.surface.surface.core;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.surface.surface.core.runner.AnalysisRunner;
-import org.surface.surface.core.runner.AnalysisRunnerFactory;
+import org.surface.surface.core.runners.AnalysisRunner;
+import org.surface.surface.core.runners.AnalysisRunnerFactory;
 
 import java.io.IOException;
 
