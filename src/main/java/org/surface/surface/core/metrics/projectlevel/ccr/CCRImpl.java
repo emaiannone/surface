@@ -1,8 +1,8 @@
 package org.surface.surface.core.metrics.projectlevel.ccr;
 
+import org.surface.surface.core.inspection.results.ProjectInspectorResults;
 import org.surface.surface.core.metrics.projectlevel.cc.CC;
-import org.surface.surface.results.ProjectAnalyzerResults;
-import org.surface.surface.results.values.DoubleMetricValue;
+import org.surface.surface.core.metrics.results.values.DoubleMetricValue;
 
 public class CCRImpl extends CCR {
     private final CC cc;
@@ -12,7 +12,7 @@ public class CCRImpl extends CCR {
     }
 
     @Override
-    public DoubleMetricValue compute(ProjectAnalyzerResults projectResults) {
+    public DoubleMetricValue compute(ProjectInspectorResults projectResults) {
         int numClasses = projectResults.getResults().size();
         int ccValue = cc.compute(projectResults).getValue();
         double value = numClasses != 0.0 ? (double) ccValue / numClasses : 0.0;

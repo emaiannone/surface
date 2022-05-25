@@ -1,10 +1,10 @@
 package org.surface.surface.core.metrics.api;
 
-import org.surface.surface.results.AnalyzerResults;
-import org.surface.surface.results.values.MetricValue;
+import org.surface.surface.core.inspection.results.InspectorResults;
+import org.surface.surface.core.metrics.results.values.MetricValue;
 
 // T is for the parameters type (AnalyzerResults implementor) and U is for the type of the MetricResult returned
-public abstract class Metric<T extends AnalyzerResults, U extends MetricValue<?>> {
+public abstract class Metric<T extends InspectorResults, U extends MetricValue<?>> {
     private String name;
     private String code;
 

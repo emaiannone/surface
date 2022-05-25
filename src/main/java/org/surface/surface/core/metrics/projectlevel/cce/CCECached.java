@@ -1,8 +1,8 @@
 package org.surface.surface.core.metrics.projectlevel.cce;
 
+import org.surface.surface.core.inspection.results.ProjectInspectorResults;
 import org.surface.surface.core.metrics.projectlevel.cc.CC;
-import org.surface.surface.results.ProjectAnalyzerResults;
-import org.surface.surface.results.values.DoubleMetricValue;
+import org.surface.surface.core.metrics.results.values.DoubleMetricValue;
 
 public class CCECached extends CCE {
     private final CCEImpl cce;
@@ -14,7 +14,7 @@ public class CCECached extends CCE {
     }
 
     @Override
-    public DoubleMetricValue compute(ProjectAnalyzerResults projectResults) {
+    public DoubleMetricValue compute(ProjectInspectorResults projectResults) {
         if (cachedResult == null) {
             cachedResult = cce.compute(projectResults);
         }

@@ -1,9 +1,9 @@
 package org.surface.surface.core.metrics.projectlevel.cce;
 
+import org.surface.surface.core.inspection.results.ClassInspectorResults;
+import org.surface.surface.core.inspection.results.ProjectInspectorResults;
 import org.surface.surface.core.metrics.projectlevel.cc.CC;
-import org.surface.surface.results.ClassifiedAnalyzerResults;
-import org.surface.surface.results.ProjectAnalyzerResults;
-import org.surface.surface.results.values.DoubleMetricValue;
+import org.surface.surface.core.metrics.results.values.DoubleMetricValue;
 
 public class CCEImpl extends CCE {
     private final CC cc;
@@ -13,9 +13,9 @@ public class CCEImpl extends CCE {
     }
 
     @Override
-    public DoubleMetricValue compute(ProjectAnalyzerResults projectResults) {
+    public DoubleMetricValue compute(ProjectInspectorResults projectResults) {
         int nonFinalCC = 0;
-        for (ClassifiedAnalyzerResults classResults : projectResults) {
+        for (ClassInspectorResults classResults : projectResults) {
             if (classResults.isCritical() && !classResults.isFinal()) {
                 nonFinalCC++;
             }

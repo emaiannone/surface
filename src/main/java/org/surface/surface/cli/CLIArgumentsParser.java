@@ -11,6 +11,7 @@ import org.surface.surface.core.RunSetting;
 import org.surface.surface.core.filter.RevisionsParser;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -48,11 +49,11 @@ public class CLIArgumentsParser {
 
         // Parse Output File
         String outFileValue = commandLine.getOptionValue(CLIOptions.OUT_FILE);
-        File outFile = Paths.get(outFileValue).toAbsolutePath().toFile();
-        if (!FilenameUtils.getExtension(outFile.getName()).equalsIgnoreCase("json")) {
+        Path outFilePath = Paths.get(outFileValue).toAbsolutePath();
+        if (!FilenameUtils.getExtension(outFilePath.toFile().getName()).equalsIgnoreCase("json")) {
             throw new IllegalArgumentException("The output file must have extension .json.");
         }
-        LOGGER.info("* Going to export results in file: " + outFile.getAbsolutePath());
+        LOGGER.info("* Going to export results in file: " + outFilePath);
 
         // Parse the Revision group
         RevisionMode revisionMode = null;
@@ -88,17 +89,18 @@ public class CLIArgumentsParser {
         }
 
         // Parse the Clone Directory
-        File cloneDir = null;
+        Path cloneDirPath = null;
         if (runMode == RunMode.REMOTE_GIT || runMode == RunMode.FLEXIBLE) {
             String cloneDirValue = commandLine.getOptionValue(CLIOptions.CLONE_DIR);
             if (cloneDirValue == null) {
                 throw new IllegalArgumentException("The path where to clone the remote repositories must be indicated.");
             }
-            cloneDir = Paths.get(cloneDirValue).toAbsolutePath().toFile();
-            if (!cloneDir.exists() || !cloneDir.isDirectory()) {
+            cloneDirPath = Paths.get(cloneDirValue).toAbsolutePath();
+            File cloneDir = cloneDirPath.toFile();
+            if (!cloneDirPath.toFile().exists() || !cloneDir.isDirectory()) {
                 throw new IllegalArgumentException("The path where to clone the remote repositories must point to an existent directory.");
             }
-            LOGGER.info("* Going to clone in the following directory: " + cloneDir.getAbsolutePath());
+            LOGGER.info("* Going to clone in the following directory: " + cloneDirPath);
         }
 
         // Parse Files regex
@@ -116,6 +118,6 @@ public class CLIArgumentsParser {
             LOGGER.info("* Going to analyze all .java files found");
         }
 
-        return new RunSetting(selectedMetrics, new ImmutablePair<>(runMode, target), outFile, filesRegex, cloneDir, new ImmutablePair<>(revisionMode, revisionValue));
+        return new RunSetting(selectedMetrics, new ImmutablePair<>(runMode, target), outFilePath, filesRegex, cloneDirPath, new ImmutablePair<>(revisionMode, revisionValue));
     }
 }

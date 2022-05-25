@@ -18,9 +18,9 @@ public class Surface {
     }
 
     public void run() {
+        LOGGER.info("* Setting up SURFACE");
         AnalysisRunnerFactory runnerFactory = new AnalysisRunnerFactory();
         AnalysisRunner analysisRunner = runnerFactory.getAnalysisRunner(runSetting);
-        LOGGER.debug(analysisRunner);
         try {
             LOGGER.info("* Launching SURFACE");
             analysisRunner.run();

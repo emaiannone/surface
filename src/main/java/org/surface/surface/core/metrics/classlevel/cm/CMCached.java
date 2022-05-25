@@ -1,7 +1,7 @@
 package org.surface.surface.core.metrics.classlevel.cm;
 
-import org.surface.surface.results.ClassifiedAnalyzerResults;
-import org.surface.surface.results.values.IntMetricValue;
+import org.surface.surface.core.inspection.results.ClassInspectorResults;
+import org.surface.surface.core.metrics.results.values.IntMetricValue;
 
 public class CMCached extends CM {
     private final CMImpl classifiedMethods;
@@ -13,7 +13,7 @@ public class CMCached extends CM {
     }
 
     @Override
-    public IntMetricValue compute(ClassifiedAnalyzerResults classResults) {
+    public IntMetricValue compute(ClassInspectorResults classResults) {
         if (cachedResult == null) {
             cachedResult = classifiedMethods.compute(classResults);
         }

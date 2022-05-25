@@ -1,20 +1,18 @@
-package org.surface.surface.results;
+package org.surface.surface.core.metrics.results;
 
-import org.surface.surface.results.values.MetricValue;
+import com.google.common.collect.Lists;
+import org.surface.surface.core.inspection.results.ClassInspectorResults;
+import org.surface.surface.core.metrics.results.values.MetricValue;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ClassMetricsResults implements MetricsResults, Iterable<MetricValue<?>> {
-    private final ClassifiedAnalyzerResults classResults;
+    private final ClassInspectorResults classResults;
     private final List<MetricValue<?>> classValues;
 
-    public ClassMetricsResults(ClassifiedAnalyzerResults classResults) {
+    public ClassMetricsResults(ClassInspectorResults classResults) {
         this.classResults = classResults;
         this.classValues = new ArrayList<>();
     }
@@ -36,11 +34,15 @@ public class ClassMetricsResults implements MetricsResults, Iterable<MetricValue
         return classResults.getClassName();
     }
 
+    public String getFullyQualifiedClassName() {
+        return classResults.getFullyQualifiedClassName();
+    }
+
     public Path getFilepath() {
         return classResults.getFilepath();
     }
 
-    public ClassifiedAnalyzerResults getClassResults() {
+    public ClassInspectorResults getClassResults() {
         return classResults;
     }
 
@@ -54,13 +56,14 @@ public class ClassMetricsResults implements MetricsResults, Iterable<MetricValue
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder("Class: " + getClassName());
-        for (MetricValue<?> r : this) {
-            builder.append("\n");
-            builder.append(r.getMetricCode());
-            builder.append(" = ");
-            builder.append(r.getValue());
-        }
+        StringBuilder builder = new StringBuilder("Class: " + getFullyQualifiedClassName());
+        builder.append(" (");
+        List<String> metricStrings = Lists.newArrayList(iterator())
+                .stream()
+                .map(m -> m.getMetricCode() + "=" + m.getValue())
+                .collect(Collectors.toList());
+        builder.append(String.join(", ", metricStrings));
+        builder.append(")");
         return builder.toString();
     }
 }

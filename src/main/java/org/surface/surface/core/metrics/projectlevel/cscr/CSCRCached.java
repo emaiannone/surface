@@ -1,7 +1,7 @@
 package org.surface.surface.core.metrics.projectlevel.cscr;
 
-import org.surface.surface.results.ProjectAnalyzerResults;
-import org.surface.surface.results.values.DoubleMetricValue;
+import org.surface.surface.core.inspection.results.ProjectInspectorResults;
+import org.surface.surface.core.metrics.results.values.DoubleMetricValue;
 
 public class CSCRCached extends CSCR {
     private final CSCRImpl cscr;
@@ -13,7 +13,7 @@ public class CSCRCached extends CSCR {
     }
 
     @Override
-    public DoubleMetricValue compute(ProjectAnalyzerResults projectResults) {
+    public DoubleMetricValue compute(ProjectInspectorResults projectResults) {
         if (cachedResult == null) {
             cachedResult = cscr.compute(projectResults);
         }

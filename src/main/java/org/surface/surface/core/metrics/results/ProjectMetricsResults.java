@@ -1,7 +1,7 @@
-package org.surface.surface.results;
+package org.surface.surface.core.metrics.results;
 
 import com.github.javaparser.utils.ProjectRoot;
-import org.surface.surface.results.values.MetricValue;
+import org.surface.surface.core.metrics.results.values.MetricValue;
 
 import java.nio.file.Path;
 import java.util.*;
@@ -14,7 +14,7 @@ public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetr
 
     public ProjectMetricsResults(ProjectRoot projectRoot) {
         this.projectRoot = projectRoot;
-        this.classMetricsResults = new HashSet<>();
+        this.classMetricsResults = new LinkedHashSet<>();
         this.projectValues = new ArrayList<>();
     }
 
@@ -73,16 +73,18 @@ public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetr
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder("Project: " + projectRoot.getRoot().getFileName());
-        for (MetricValue<?> projectMetric : projectValues) {
-            builder.append("\n");
-            builder.append(projectMetric.getMetricCode());
-            builder.append(" = ");
-            builder.append(projectMetric.getValue());
-        }
+        StringBuilder builder = new StringBuilder("Project: " + projectRoot.getRoot().toAbsolutePath());
+        builder.append(" (");
+        List<String> metricStrings = projectValues
+                .stream()
+                .map(m -> m.getMetricCode() + "=" + m.getValue())
+                .collect(Collectors.toList());
+        builder.append(String.join(", ", metricStrings));
+        builder.append(")");
+
         for (ClassMetricsResults entries : this) {
             if (entries.getClassValues().size() > 0) {
-                builder.append("\n\n");
+                builder.append("\n");
                 builder.append(entries);
             }
         }

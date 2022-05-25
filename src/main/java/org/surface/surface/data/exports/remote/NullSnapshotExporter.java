@@ -1,7 +1,7 @@
 package org.surface.surface.data.exports.remote;
 
+import org.surface.surface.core.metrics.results.ProjectMetricsResults;
 import org.surface.surface.data.bean.Snapshot;
-import org.surface.surface.results.ProjectMetricsResults;
 
 public class NullSnapshotExporter implements SnapshotExporter {
     public static final String CODE = "";

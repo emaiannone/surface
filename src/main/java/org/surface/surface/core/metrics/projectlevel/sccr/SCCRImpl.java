@@ -1,9 +1,9 @@
 package org.surface.surface.core.metrics.projectlevel.sccr;
 
+import org.surface.surface.core.inspection.results.ClassInspectorResults;
+import org.surface.surface.core.inspection.results.ProjectInspectorResults;
 import org.surface.surface.core.metrics.projectlevel.cc.CC;
-import org.surface.surface.results.ClassifiedAnalyzerResults;
-import org.surface.surface.results.ProjectAnalyzerResults;
-import org.surface.surface.results.values.DoubleMetricValue;
+import org.surface.surface.core.metrics.results.values.DoubleMetricValue;
 
 public class SCCRImpl extends SCCR {
     private final CC cc;
@@ -13,10 +13,10 @@ public class SCCRImpl extends SCCR {
     }
 
     @Override
-    public DoubleMetricValue compute(ProjectAnalyzerResults projectResults) {
+    public DoubleMetricValue compute(ProjectInspectorResults projectResults) {
         int ccValue = cc.compute(projectResults).getValue();
         int serializedClassifiedClasses = 0;
-        for (ClassifiedAnalyzerResults classResults : projectResults.getCriticalClasses()) {
+        for (ClassInspectorResults classResults : projectResults.getCriticalClasses()) {
             if (classResults.isSerializable()) {
                 serializedClassifiedClasses++;
             }

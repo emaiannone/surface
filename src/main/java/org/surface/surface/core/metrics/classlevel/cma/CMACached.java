@@ -1,8 +1,8 @@
 package org.surface.surface.core.metrics.classlevel.cma;
 
+import org.surface.surface.core.inspection.results.ClassInspectorResults;
 import org.surface.surface.core.metrics.classlevel.cm.CM;
-import org.surface.surface.results.ClassifiedAnalyzerResults;
-import org.surface.surface.results.values.DoubleMetricValue;
+import org.surface.surface.core.metrics.results.values.DoubleMetricValue;
 
 public class CMACached extends CMA {
     private final CMAImpl cma;
@@ -14,7 +14,7 @@ public class CMACached extends CMA {
     }
 
     @Override
-    public DoubleMetricValue compute(ClassifiedAnalyzerResults classResults) {
+    public DoubleMetricValue compute(ClassInspectorResults classResults) {
         if (cachedResult == null) {
             cachedResult = cma.compute(classResults);
         }

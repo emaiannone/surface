@@ -1,9 +1,9 @@
 package org.surface.surface.core.metrics.classlevel.ccva;
 
 import com.github.javaparser.ast.body.FieldDeclaration;
+import org.surface.surface.core.inspection.results.ClassInspectorResults;
 import org.surface.surface.core.metrics.classlevel.ca.CA;
-import org.surface.surface.results.ClassifiedAnalyzerResults;
-import org.surface.surface.results.values.DoubleMetricValue;
+import org.surface.surface.core.metrics.results.values.DoubleMetricValue;
 
 import java.util.Set;
 
@@ -15,7 +15,7 @@ public class CCVAImpl extends CCVA {
     }
 
     @Override
-    public DoubleMetricValue compute(ClassifiedAnalyzerResults classResults) {
+    public DoubleMetricValue compute(ClassInspectorResults classResults) {
         int nonPrivateStatic = 0;
         Set<FieldDeclaration> correspondingFieldDeclarations = classResults.getCorrespondingFieldDeclarations();
         for (FieldDeclaration correspondingFieldDecl : correspondingFieldDeclarations) {

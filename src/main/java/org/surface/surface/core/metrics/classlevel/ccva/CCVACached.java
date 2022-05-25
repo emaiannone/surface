@@ -1,8 +1,8 @@
 package org.surface.surface.core.metrics.classlevel.ccva;
 
+import org.surface.surface.core.inspection.results.ClassInspectorResults;
 import org.surface.surface.core.metrics.classlevel.ca.CA;
-import org.surface.surface.results.ClassifiedAnalyzerResults;
-import org.surface.surface.results.values.DoubleMetricValue;
+import org.surface.surface.core.metrics.results.values.DoubleMetricValue;
 
 public class CCVACached extends CCVA {
     private final CCVAImpl ccva;
@@ -14,7 +14,7 @@ public class CCVACached extends CCVA {
     }
 
     @Override
-    public DoubleMetricValue compute(ClassifiedAnalyzerResults classResults) {
+    public DoubleMetricValue compute(ClassInspectorResults classResults) {
         if (cachedResult == null) {
             cachedResult = ccva.compute(classResults);
         }

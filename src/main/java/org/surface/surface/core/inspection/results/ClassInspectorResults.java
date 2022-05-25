@@ -1,4 +1,4 @@
-package org.surface.surface.results;
+package org.surface.surface.core.inspection.results;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
@@ -11,7 +11,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ClassifiedAnalyzerResults implements AnalyzerResults {
+public class ClassInspectorResults implements InspectorResults {
     private final ClassOrInterfaceDeclaration classOrInterfaceDeclaration;
     // TODO Create a ClassifiedAttribute class, having VariableDeclarator and FieldDeclaration
     // TODO I don't like Usage and Other classified methods names... consider an alternative and clearer naming
@@ -23,11 +23,11 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults {
     private Set<FieldDeclaration> correspondingFieldDeclarations;
     private List<ResolvedReferenceType> superClasses;
 
-    public ClassifiedAnalyzerResults(ClassOrInterfaceDeclaration classOrInterfaceDeclaration, Path filepath) {
+    public ClassInspectorResults(ClassOrInterfaceDeclaration classOrInterfaceDeclaration, Path filepath) {
         this.classOrInterfaceDeclaration = classOrInterfaceDeclaration;
         this.filepath = filepath;
         this.classifiedAttributesAndMethods = new HashMap<>();
-        this.otherClassifiedMethods = new HashSet<>();
+        this.otherClassifiedMethods = new LinkedHashSet<>();
         this.correspondingFieldDeclarations = null;
         this.superClasses = null;
     }
@@ -57,7 +57,7 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults {
     }
 
     public Set<MethodDeclaration> getAllMethods() {
-        return Collections.unmodifiableSet(new HashSet<>(classOrInterfaceDeclaration.getMethods()));
+        return Collections.unmodifiableSet(new LinkedHashSet<>(classOrInterfaceDeclaration.getMethods()));
     }
 
     public Map<VariableDeclarator, Set<MethodDeclaration>> getClassifiedAttributesAndMethods() {
@@ -69,7 +69,7 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults {
     }
 
     public Set<MethodDeclaration> getAllClassifiedMethods() {
-        Set<MethodDeclaration> allClassifiedMethods = new HashSet<>(getUsageClassifiedMethods());
+        Set<MethodDeclaration> allClassifiedMethods = new LinkedHashSet<>(getUsageClassifiedMethods());
         allClassifiedMethods.addAll(otherClassifiedMethods);
         return Collections.unmodifiableSet(allClassifiedMethods);
     }
@@ -124,7 +124,7 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults {
         if (this.correspondingFieldDeclarations != null) {
             return this.correspondingFieldDeclarations;
         }
-        this.correspondingFieldDeclarations = new HashSet<>();
+        this.correspondingFieldDeclarations = new LinkedHashSet<>();
         for (VariableDeclarator classifiedAttribute : getClassifiedAttributes()) {
             try {
                 FieldDeclaration correspondingFieldDecl = classifiedAttribute.resolve().asField().toAst().orElse(null);
@@ -163,14 +163,15 @@ public class ClassifiedAnalyzerResults implements AnalyzerResults {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder("Class: " + classOrInterfaceDeclaration.getNameAsString());
+        StringBuilder builder = new StringBuilder("Class: " + getFullyQualifiedClassName());
+        builder.append("\n\tClassified Attributes: ");
+        List<String> classifiedAttributesStrings = new ArrayList<>();
         for (Map.Entry<VariableDeclarator, Set<MethodDeclaration>> e : getClassifiedAttributesAndMethods().entrySet()) {
-            builder.append("\n");
-            builder.append(e.getKey().getNameAsString());
-            builder.append(" -> ");
-            builder.append(e.getValue().stream().map(m -> m.getSignature().toString()).collect(Collectors.toSet()));
+            classifiedAttributesStrings.add("\n" + e.getKey().getNameAsString() + " -> " + e.getValue().stream().map(m -> m.getSignature().toString()).collect(Collectors.toList()));
         }
-        builder.append("\nOther Classified Methods: ").append(otherClassifiedMethods.stream().map(m -> m.getSignature().toString()).collect(Collectors.toSet()));
+        builder.append(String.join(", ", classifiedAttributesStrings));
+        List<String> otherMethodsString = otherClassifiedMethods.stream().map(m -> m.getSignature().toString()).collect(Collectors.toList());
+        builder.append("\n\tOther Classified Methods: ").append(otherMethodsString);
         return builder.toString();
     }
 }

@@ -1,4 +1,4 @@
-package org.surface.surface.core.analysis;
+package org.surface.surface.core.inspection;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -10,44 +10,42 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
 import com.github.javaparser.resolution.Resolvable;
 import com.github.javaparser.resolution.declarations.ResolvedValueDeclaration;
-import org.surface.surface.results.ClassifiedAnalyzerResults;
+import org.surface.surface.core.inspection.results.ClassInspectorResults;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class ClassifiedAnalyzer extends ClassAnalyzer {
+public class ClassInspector extends Inspector {
+    private final ClassOrInterfaceDeclaration classDeclaration;
+    private final Path filepath;
     private final List<Pattern> patterns;
 
-    public ClassifiedAnalyzer(ClassOrInterfaceDeclaration classDeclaration, Path filepath) {
-        super(classDeclaration, filepath);
+    public ClassInspector(ClassOrInterfaceDeclaration classDeclaration, Path filepath) {
+        this.classDeclaration = classDeclaration;
+        this.filepath = filepath;
         this.patterns = ClassifiedPatterns.getInstance().getPatterns();
     }
 
     /**
-     * Analyze the class given to the constructor in search of classified attributes and their related classified methods.
+     * Inspect the class given to the constructor in search of classified attributes and their related classified methods.
      *
-     * @return the object representing the results of the analysis of the given class.
-     * The results is always not null.
-     * If the analysis does not find any classified attribute, the results map will have no content at all.
-     * if the analysis does not find any classified method, the results map will only contain the classified attributes (key).
+     * @return the object representing the results of the inspection of the given class.
+     * The results are always not null.
+     * If the inspection does not find any classified attribute, the results map will have no content at all.
+     * if the inspection does not find any classified method, the results map will only contain the classified attributes (key).
      */
-    public ClassifiedAnalyzerResults analyze() {
-        ClassifiedAnalyzerResults results = new ClassifiedAnalyzerResults(getClassDeclaration(), getFilepath());
-        Set<VariableDeclarator> classifiedAttributes = getClassifiedAttributes(new HashSet<>(getClassDeclaration().getFields()));
+    public ClassInspectorResults inspect() {
+        ClassInspectorResults results = new ClassInspectorResults(classDeclaration, filepath);
+        Set<VariableDeclarator> classifiedAttributes = getClassifiedAttributes(new LinkedHashSet<>(classDeclaration.getFields()));
         if (classifiedAttributes.size() > 0) {
             Map<VariableDeclarator, Set<MethodDeclaration>> classifiedMethodsMap = getUsageClassifiedMethods(classifiedAttributes);
             for (Map.Entry<VariableDeclarator, Set<MethodDeclaration>> variableDeclaratorSetEntry : classifiedMethodsMap.entrySet()) {
                 results.put(variableDeclaratorSetEntry.getKey(), variableDeclaratorSetEntry.getValue());
             }
             // Other classified methods (i.e., name match)
-            Set<MethodDeclaration> classifiedMethods = getOtherClassifiedMethods(new HashSet<>(getClassDeclaration().getMethods()));
+            Set<MethodDeclaration> classifiedMethods = getOtherClassifiedMethods(new LinkedHashSet<>(classDeclaration.getMethods()));
             classifiedMethods.forEach(results::addOtherClassifiedMethod);
         }
         results.setUsingReflection(isUsingReflection());
@@ -62,7 +60,7 @@ public class ClassifiedAnalyzer extends ClassAnalyzer {
     }
 
     /**
-     * Analyze the class given to the constructor in search of the classified methods that uses the given classified attributes.
+     * Inspect the class given to the constructor in search of the classified methods that uses the given classified attributes.
      *
      * @param classifiedAttributes the set of classified attribute for which search for methods that uses (read/write) them.
      * @return a {@link Map} containing for each classified attribute {@link VariableDeclarator} a set of its matched classified methods {@link MethodDeclaration}.
@@ -72,11 +70,11 @@ public class ClassifiedAnalyzer extends ClassAnalyzer {
         // All classified attributes start with an empty set of methods
         Map<VariableDeclarator, Set<MethodDeclaration>> resultMap = new HashMap<>();
         for (VariableDeclarator variableDeclarator : classifiedAttributes) {
-            resultMap.put(variableDeclarator, new HashSet<>());
+            resultMap.put(variableDeclarator, new LinkedHashSet<>());
         }
 
-        for (MethodDeclaration method : getClassDeclaration().getMethods()) {
-            Set<VariableDeclarator> unmatchedClassifiedAttrSet = new HashSet<>(classifiedAttributes);
+        for (MethodDeclaration method : classDeclaration.getMethods()) {
+            Set<VariableDeclarator> unmatchedClassifiedAttrSet = new LinkedHashSet<>(classifiedAttributes);
             List<NodeWithSimpleName<?>> usageNodes = new ArrayList<>();
             usageNodes.addAll(method.findAll(NameExpr.class));
             usageNodes.addAll(method.findAll(FieldAccessExpr.class));
@@ -120,7 +118,7 @@ public class ClassifiedAnalyzer extends ClassAnalyzer {
 
     private boolean isUsingReflection() {
         boolean usingReflection = false;
-        CompilationUnit compilationUnit = getClassDeclaration().findCompilationUnit().orElse(null);
+        CompilationUnit compilationUnit = classDeclaration.findCompilationUnit().orElse(null);
         if (compilationUnit != null) {
             usingReflection = compilationUnit.getImports()
                     .stream()

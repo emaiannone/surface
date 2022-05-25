@@ -4,7 +4,7 @@
         <Console name="console" target="SYSTEM_OUT">
             <PatternLayout>
                 <LevelPatternSelector defaultPattern="%-5p| %m%n">
-                    <PatternMatch key="DEBUG" pattern="%-5p| [%c at L%L] %m%n"/>
+                    <PatternMatch key="DEBUG" pattern="%-5p| [%c.java:%L] %m%n"/>
                 </LevelPatternSelector>
             </PatternLayout>
         </Console>

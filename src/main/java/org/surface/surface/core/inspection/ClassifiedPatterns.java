@@ -1,4 +1,4 @@
-package org.surface.surface.core.analysis;
+package org.surface.surface.core.inspection;
 
 import java.io.IOException;
 import java.io.InputStream;

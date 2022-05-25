@@ -2,10 +2,10 @@ package org.surface.surface.data.exports.remote;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.surface.surface.core.metrics.results.ProjectMetricsResults;
+import org.surface.surface.core.metrics.results.values.MetricValue;
+import org.surface.surface.core.metrics.results.values.NumericMetricValue;
 import org.surface.surface.data.bean.Snapshot;
-import org.surface.surface.results.ProjectMetricsResults;
-import org.surface.surface.results.values.MetricValue;
-import org.surface.surface.results.values.NumericMetricValue;
 
 import java.io.IOException;
 import java.nio.file.Files;

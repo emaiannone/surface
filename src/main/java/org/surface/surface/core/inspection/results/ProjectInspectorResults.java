@@ -1,34 +1,30 @@
-package org.surface.surface.results;
+package org.surface.surface.core.inspection.results;
 
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.utils.ProjectRoot;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public class ProjectAnalyzerResults implements AnalyzerResults, Iterable<ClassifiedAnalyzerResults> {
+public class ProjectInspectorResults implements InspectorResults, Iterable<ClassInspectorResults> {
     private final ProjectRoot projectRoot;
-    private final Set<ClassifiedAnalyzerResults> results;
+    private final Set<ClassInspectorResults> results;
 
-    public ProjectAnalyzerResults(ProjectRoot projectRoot) {
+    public ProjectInspectorResults(ProjectRoot projectRoot) {
         this.projectRoot = projectRoot;
-        this.results = new HashSet<>();
+        this.results = new LinkedHashSet<>();
     }
 
-    public void add(ClassifiedAnalyzerResults classResults) {
+    public void add(ClassInspectorResults classResults) {
         results.add(classResults);
     }
 
-    public Set<ClassifiedAnalyzerResults> getResults() {
+    public Set<ClassInspectorResults> getResults() {
         return Collections.unmodifiableSet(results);
     }
 
     @Override
-    public Iterator<ClassifiedAnalyzerResults> iterator() {
+    public Iterator<ClassInspectorResults> iterator() {
         return getResults().iterator();
     }
 
@@ -36,8 +32,8 @@ public class ProjectAnalyzerResults implements AnalyzerResults, Iterable<Classif
         return projectRoot;
     }
 
-    public ClassifiedAnalyzerResults getClassResults(String classQualifiedName) {
-        for (ClassifiedAnalyzerResults res : results) {
+    public ClassInspectorResults getClassResults(String classQualifiedName) {
+        for (ClassInspectorResults res : results) {
             if (res.getFullyQualifiedClassName().equals(classQualifiedName)) {
                 return res;
             }
@@ -48,14 +44,14 @@ public class ProjectAnalyzerResults implements AnalyzerResults, Iterable<Classif
     public Set<MethodDeclaration> getClassifiedMethods() {
         return Collections.unmodifiableSet(
                 results.stream()
-                        .map(ClassifiedAnalyzerResults::getAllClassifiedMethods)
+                        .map(ClassInspectorResults::getAllClassifiedMethods)
                         .flatMap(Collection::stream)
                         .collect(Collectors.toSet()));
     }
 
-    public Set<ClassifiedAnalyzerResults> getCriticalClasses() {
-        Set<ClassifiedAnalyzerResults> criticalClasses = new HashSet<>();
-        for (ClassifiedAnalyzerResults classResults : results) {
+    public Set<ClassInspectorResults> getCriticalClasses() {
+        Set<ClassInspectorResults> criticalClasses = new LinkedHashSet<>();
+        for (ClassInspectorResults classResults : results) {
             if (classResults.isCritical()) {
                 criticalClasses.add(classResults);
             }
@@ -65,8 +61,8 @@ public class ProjectAnalyzerResults implements AnalyzerResults, Iterable<Classif
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder("Project: " + projectRoot.getRoot().getFileName());
-        for (ClassifiedAnalyzerResults entries : results) {
+        StringBuilder builder = new StringBuilder("Project: " + projectRoot.getRoot().toAbsolutePath());
+        for (ClassInspectorResults entries : results) {
             builder.append("\n");
             builder.append(entries);
         }

@@ -1,7 +1,7 @@
 package org.surface.surface.core.metrics.classlevel.rp;
 
-import org.surface.surface.results.ClassifiedAnalyzerResults;
-import org.surface.surface.results.values.BooleanMetricValue;
+import org.surface.surface.core.inspection.results.ClassInspectorResults;
+import org.surface.surface.core.metrics.results.values.BooleanMetricValue;
 
 public class RPCached extends RP {
     private final RPImpl rp;
@@ -13,7 +13,7 @@ public class RPCached extends RP {
     }
 
     @Override
-    public BooleanMetricValue compute(ClassifiedAnalyzerResults classResults) {
+    public BooleanMetricValue compute(ClassInspectorResults classResults) {
         if (cachedResult == null) {
             cachedResult = rp.compute(classResults);
         }

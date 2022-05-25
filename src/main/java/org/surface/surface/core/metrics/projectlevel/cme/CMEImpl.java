@@ -1,15 +1,15 @@
 package org.surface.surface.core.metrics.projectlevel.cme;
 
 import com.github.javaparser.ast.body.MethodDeclaration;
-import org.surface.surface.results.ProjectAnalyzerResults;
-import org.surface.surface.results.values.DoubleMetricValue;
+import org.surface.surface.core.inspection.results.ProjectInspectorResults;
+import org.surface.surface.core.metrics.results.values.DoubleMetricValue;
 
 import java.util.Set;
 
 public class CMEImpl extends CME {
 
     @Override
-    public DoubleMetricValue compute(ProjectAnalyzerResults projectResults) {
+    public DoubleMetricValue compute(ProjectInspectorResults projectResults) {
         Set<MethodDeclaration> allClassifiedMethods = projectResults.getClassifiedMethods();
         int totalCM = allClassifiedMethods.size();
         long nonFinalCM = allClassifiedMethods.stream().filter(md -> !md.isFinal()).count();

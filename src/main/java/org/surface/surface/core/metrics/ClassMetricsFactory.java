@@ -28,7 +28,7 @@ public class ClassMetricsFactory implements MetricsFactory<ClassMetric<?>> {
         this.metricsStructure = new MetricsStructure();
     }
 
-    public List<ClassMetric<?>> getMetrics(String[] metricsCodes) {
+    public List<ClassMetric<?>> getMetrics(List<String> metricsCodes) {
         List<ClassMetric<?>> classMetrics = new ArrayList<>();
         for (String metricCode : metricsCodes) {
             ClassMetric<?> classMetric = null;

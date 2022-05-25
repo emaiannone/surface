@@ -1,9 +1,8 @@
 package org.surface.surface.core.metrics.classlevel.cai;
 
+import org.surface.surface.core.inspection.results.ClassInspectorResults;
 import org.surface.surface.core.metrics.classlevel.ca.CA;
-import org.surface.surface.core.metrics.classlevel.cm.CM;
-import org.surface.surface.results.ClassifiedAnalyzerResults;
-import org.surface.surface.results.values.DoubleMetricValue;
+import org.surface.surface.core.metrics.results.values.DoubleMetricValue;
 
 public class CAICached extends CAI {
     private final CAIImpl cai;
@@ -15,7 +14,7 @@ public class CAICached extends CAI {
     }
 
     @Override
-    public DoubleMetricValue compute(ClassifiedAnalyzerResults classResults) {
+    public DoubleMetricValue compute(ClassInspectorResults classResults) {
         if (cachedResult == null) {
             cachedResult = cai.compute(classResults);
         }

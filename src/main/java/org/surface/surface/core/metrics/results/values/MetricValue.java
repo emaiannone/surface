@@ -1,4 +1,4 @@
-package org.surface.surface.results.values;
+package org.surface.surface.core.metrics.results.values;
 
 public abstract class MetricValue<T> {
     private final String metricName;

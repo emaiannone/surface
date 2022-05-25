@@ -1,9 +1,9 @@
 package org.surface.surface.core.metrics.projectlevel.cscr;
 
 import com.github.javaparser.resolution.types.ResolvedReferenceType;
-import org.surface.surface.results.ClassifiedAnalyzerResults;
-import org.surface.surface.results.ProjectAnalyzerResults;
-import org.surface.surface.results.values.DoubleMetricValue;
+import org.surface.surface.core.inspection.results.ClassInspectorResults;
+import org.surface.surface.core.inspection.results.ProjectInspectorResults;
+import org.surface.surface.core.metrics.results.values.DoubleMetricValue;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,15 +12,15 @@ import java.util.Map;
 public class CSCRImpl extends CSCR {
 
     @Override
-    public DoubleMetricValue compute(ProjectAnalyzerResults projectResults) {
+    public DoubleMetricValue compute(ProjectInspectorResults projectResults) {
         Map<String, Double> values = new HashMap<>();
-        for (ClassifiedAnalyzerResults classResults : projectResults) {
+        for (ClassInspectorResults classResults : projectResults) {
             List<ResolvedReferenceType> superclasses = classResults.getSuperclasses();
             int totalSuperClasses = superclasses.size();
             // FQN name match seems weak... fine for now
             int criticalSuperClasses = 0;
             for (ResolvedReferenceType superclass : superclasses) {
-                ClassifiedAnalyzerResults superClassResults = projectResults.getClassResults(superclass.getQualifiedName());
+                ClassInspectorResults superClassResults = projectResults.getClassResults(superclass.getQualifiedName());
                 if (superClassResults != null && superClassResults.isCritical()) {
                     criticalSuperClasses++;
                 }
