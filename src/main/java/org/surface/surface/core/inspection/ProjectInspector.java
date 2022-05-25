@@ -58,7 +58,6 @@ public class ProjectInspector extends Inspector {
                                 LOGGER.debug("Ignoring interface {}", name);
                                 continue;
                             }
-                            LOGGER.debug("Found class: " + name);
                             ClassInspector classInspector = new ClassInspector(classOrInterfaceDecl, compilationUnit.getStorage().get().getPath());
                             ClassInspectorResults classResults = classInspector.inspect();
                             projectInspectorResults.add(classResults);

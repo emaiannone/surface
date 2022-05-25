@@ -1,11 +1,10 @@
 package org.surface.surface.out.exporters;
 
-import org.surface.surface.core.metrics.results.ProjectMetricsResults;
 import org.surface.surface.out.writers.Writer;
 
 import java.io.IOException;
 
-public abstract class ResultsExporter {
+public abstract class ResultsExporter<T> {
     private Writer writer;
 
     public ResultsExporter(Writer writer) {
@@ -20,5 +19,5 @@ public abstract class ResultsExporter {
         this.writer = writer;
     }
 
-    public abstract void export(ProjectMetricsResults projectMetricsResults) throws IOException;
+    public abstract void export(T projectMetricsResults) throws IOException;
 }

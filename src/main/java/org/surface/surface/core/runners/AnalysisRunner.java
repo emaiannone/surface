@@ -13,14 +13,14 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class AnalysisRunner {
+public abstract class AnalysisRunner<T> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final List<String> metrics;
     private final String target;
     private final Path outFilePath;
     private final String filesRegex;
-    private ResultsExporter resultsExporter;
+    private ResultsExporter<T> resultsExporter;
 
     public AnalysisRunner(List<String> metrics, String target, Path outFilePath, String filesRegex) {
         this.metrics = Objects.requireNonNull(metrics);
@@ -45,7 +45,7 @@ public abstract class AnalysisRunner {
         return filesRegex;
     }
 
-    public void setResultsExporter(ResultsExporter resultsExporter) {
+    public void setResultsExporter(ResultsExporter<T> resultsExporter) {
         this.resultsExporter = resultsExporter;
     }
 
@@ -61,7 +61,7 @@ public abstract class AnalysisRunner {
         return projectMetricsResults;
     }
 
-    protected void exportResults(ProjectMetricsResults projectMetricsResults) throws IOException {
+    protected void exportResults(T projectMetricsResults) throws IOException {
         LOGGER.info("* Exporting metrics results");
         try {
             resultsExporter.export(projectMetricsResults);
