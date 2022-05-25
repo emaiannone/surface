@@ -1,34 +1,28 @@
 package org.surface.surface.cli;
 
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.validator.routines.UrlValidator;
-import org.surface.surface.core.RunMode;
+import org.surface.surface.common.RunMode;
+import org.surface.surface.common.Utils;
 
 import java.io.File;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Objects;
 
 public class RunModeSelector {
 
     public static RunMode inferMode(String target) {
-        if (UrlValidator.getInstance().isValid(target) && target.contains("github.com")) {
+        if (Utils.isGitHubUrl(target)) {
             return RunMode.REMOTE_GIT;
         }
         try {
             File file = Paths.get(target).toAbsolutePath().toFile();
             if (file.exists()) {
                 if (file.isDirectory()) {
-                    boolean isGit = Arrays.stream(Objects.requireNonNull(file.listFiles())).anyMatch(dir -> dir.getName().equals(".git"));
-                    if (isGit) {
+                    if (Utils.isGitDirectory(file)) {
                         return RunMode.LOCAL_GIT;
                     }
                     return RunMode.LOCAL_DIR;
                 } else if (file.isFile()) {
-                    String extension = FilenameUtils.getExtension(file.getName());
-                    if (extension.equalsIgnoreCase("yml")
-                            || extension.equalsIgnoreCase("yaml")) {
+                    if (Utils.isYamlFile(file)) {
                         return RunMode.FLEXIBLE;
                     }
                 }

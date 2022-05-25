@@ -1,6 +1,6 @@
 package org.surface.surface.core.runners;
 
-import org.surface.surface.core.filters.RevisionFilter;
+import org.surface.surface.common.filters.RevisionFilter;
 
 import java.nio.file.Path;
 import java.util.List;

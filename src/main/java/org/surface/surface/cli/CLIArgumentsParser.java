@@ -1,14 +1,14 @@
 package org.surface.surface.cli;
 
 import org.apache.commons.cli.*;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.surface.surface.core.RevisionMode;
-import org.surface.surface.core.RunMode;
-import org.surface.surface.core.RunSetting;
-import org.surface.surface.core.filters.RevisionsParser;
+import org.surface.surface.common.RevisionMode;
+import org.surface.surface.common.RunMode;
+import org.surface.surface.common.RunSetting;
+import org.surface.surface.common.Utils;
+import org.surface.surface.common.filters.RevisionsParser;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -50,7 +50,7 @@ public class CLIArgumentsParser {
         // Parse Output File
         String outFileValue = commandLine.getOptionValue(CLIOptions.OUT_FILE);
         Path outFilePath = Paths.get(outFileValue).toAbsolutePath();
-        if (!FilenameUtils.getExtension(outFilePath.toFile().getName()).equalsIgnoreCase("json")) {
+        if (!Utils.isJsonFile(outFilePath.toFile())) {
             throw new IllegalArgumentException("The output file must have extension .json.");
         }
         LOGGER.info("* Going to export results in file: " + outFilePath);
@@ -73,7 +73,7 @@ public class CLIArgumentsParser {
                     }
                     case CLIOptions.AT: {
                         revisionValue = commandLine.getOptionValue(CLIOptions.AT);
-                        if (!RevisionsParser.isValidRevision(revisionValue)) {
+                        if (!Utils.isAlphaNumeric(revisionValue)) {
                             throw new IllegalArgumentException("The revision must an alphanumeric string.");
                         }
                         revisionMode = RevisionMode.SINGLE;

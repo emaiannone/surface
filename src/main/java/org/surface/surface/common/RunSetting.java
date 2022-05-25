@@ -1,4 +1,4 @@
-package org.surface.surface.core;
+package org.surface.surface.common;
 
 import org.apache.commons.lang3.tuple.Pair;
 

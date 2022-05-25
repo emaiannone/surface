@@ -1,6 +1,7 @@
-package org.surface.surface.core.filters;
+package org.surface.surface.common.filters;
 
 import org.apache.commons.lang3.StringUtils;
+import org.surface.surface.common.Utils;
 
 public class RevisionsParser {
 
@@ -9,16 +10,11 @@ public class RevisionsParser {
         if (StringUtils.countMatches(revisionRange, '.') != 2 || parts.length != 2) {
             throw new IllegalArgumentException("The revision range must fulfill the expected format (\"<START-SHA>..<END-SHA>\").");
         }
-        if (isValidRevision(parts[0]) && isValidRevision(parts[1])) {
+        if (Utils.isAlphaNumeric(parts[0]) && Utils.isAlphaNumeric(parts[1])) {
             return parts;
         } else {
             throw new IllegalArgumentException("The revisions must be alphanumeric strings.");
         }
-    }
-
-    public static boolean isValidRevision(String revision) {
-        String revisionRegex = "[a-zA-Z\\d]+";
-        return revision.matches(revisionRegex);
     }
 
 }

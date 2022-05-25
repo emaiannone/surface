@@ -1,9 +1,10 @@
-package org.surface.surface.core.filters;
+package org.surface.surface.common.filters;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.surface.surface.core.RevisionMode;
+import org.surface.surface.common.RevisionMode;
+import org.surface.surface.common.Utils;
 
 public class RevisionFilterFactory {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -18,7 +19,7 @@ public class RevisionFilterFactory {
                 return new RangeRevisionFilter(range[0], range[1]);
             }
             case SINGLE: {
-                if (RevisionsParser.isValidRevision(revision.getValue())) {
+                if (Utils.isAlphaNumeric(revision.getValue())) {
                     return new SingleRevisionFilter(revision.getValue());
                 }
                 return null;

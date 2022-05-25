@@ -1,8 +1,8 @@
 package org.surface.surface.core.runners;
 
-import org.surface.surface.core.RunSetting;
-import org.surface.surface.core.filters.RevisionFilter;
-import org.surface.surface.core.filters.RevisionFilterFactory;
+import org.surface.surface.common.RunSetting;
+import org.surface.surface.common.filters.RevisionFilter;
+import org.surface.surface.common.filters.RevisionFilterFactory;
 
 public class AnalysisRunnerFactory {
     public AnalysisRunner getAnalysisRunner(RunSetting runSetting) {

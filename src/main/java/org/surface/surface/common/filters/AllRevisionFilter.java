@@ -1,4 +1,4 @@
-package org.surface.surface.core.filters;
+package org.surface.surface.common.filters;
 
 import org.eclipse.jgit.api.Git;
 

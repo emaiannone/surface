@@ -87,7 +87,7 @@
                         <configuration>
                             <archive>
                                 <manifest>
-                                    <mainClass>org.surface.surface.CLIStarter</mainClass>
+                                    <mainClass>org.surface.surface.cli.CLIStarter</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>

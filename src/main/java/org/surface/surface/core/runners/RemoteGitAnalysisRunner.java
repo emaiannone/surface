@@ -1,7 +1,7 @@
 package org.surface.surface.core.runners;
 
 import org.eclipse.jgit.util.FileUtils;
-import org.surface.surface.core.filters.RevisionFilter;
+import org.surface.surface.common.filters.RevisionFilter;
 
 import java.io.File;
 import java.io.IOException;

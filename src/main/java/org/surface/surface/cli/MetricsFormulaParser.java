@@ -28,7 +28,7 @@ public class MetricsFormulaParser {
     private final List<Pair<String, String>> supportedMetrics;
 
     public MetricsFormulaParser() {
-        // All supported metrics must be added there to be recognized by the CLI parser
+        // NOTE All supported metrics must be added there to be recognized by the CLI parser
         supportedMetrics = new ArrayList<>();
         supportedMetrics.add(new ImmutablePair<>(CA.CODE, CA.NAME));
         supportedMetrics.add(new ImmutablePair<>(CM.CODE, CM.NAME));
