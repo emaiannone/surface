@@ -8,7 +8,6 @@ import org.surface.surface.common.RevisionMode;
 import org.surface.surface.common.RunMode;
 import org.surface.surface.common.RunSetting;
 import org.surface.surface.common.Utils;
-import org.surface.surface.common.filters.RevisionsParser;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -50,8 +49,8 @@ public class CLIArgumentsParser {
         // Parse Output File
         String outFileValue = commandLine.getOptionValue(CLIOptions.OUT_FILE);
         Path outFilePath = Paths.get(outFileValue).toAbsolutePath();
-        if (!Utils.isJsonFile(outFilePath.toFile())) {
-            throw new IllegalArgumentException("The output file must have extension .json.");
+        if (!Utils.hasJsonExtension(outFilePath)) {
+            throw new IllegalArgumentException("The supplied output file was " + outFileValue + ", but must have extension .json.");
         }
         LOGGER.info("* Going to export results in file: " + outFilePath);
 
@@ -61,13 +60,13 @@ public class CLIArgumentsParser {
         if (runMode == RunMode.LOCAL_GIT || runMode == RunMode.REMOTE_GIT) {
             String revisionModeSelected = options.getOptionGroup(options.getOption(CLIOptions.RANGE)).getSelected();
             if (revisionModeSelected == null) {
-                revisionMode = RevisionMode.CURRENT;
+                revisionMode = RevisionMode.HEAD;
             } else {
                 switch (revisionModeSelected) {
                     case CLIOptions.RANGE: {
                         revisionValue = commandLine.getOptionValue(CLIOptions.RANGE);
                         // Check only if the range has the expected format, not that the commits are valid
-                        String[] revisionsFromRange = RevisionsParser.getRevisionsFromRange(revisionValue);
+                        String[] revisionsFromRange = Utils.getRevisionsFromRange(revisionValue);
                         revisionMode = RevisionMode.RANGE;
                         break;
                     }

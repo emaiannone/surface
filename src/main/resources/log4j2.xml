@@ -3,8 +3,13 @@
     <Appenders>
         <Console name="console" target="SYSTEM_OUT">
             <PatternLayout>
-                <LevelPatternSelector defaultPattern="%-5p| %m%n">
-                    <PatternMatch key="DEBUG" pattern="%-5p| [%c.java:%L] %m%n"/>
+                <LevelPatternSelector>
+                    <PatternMatch key="INFO" pattern="%-5p| %m%n"/>
+                    <PatternMatch key="TRACE" pattern="%highlight{%-5p| %m [%c.java:%L]%n}"/>
+                    <PatternMatch key="DEBUG" pattern="%highlight{%-5p| %m [%c.java:%L]%n}"/>
+                    <PatternMatch key="WARN" pattern="%highlight{%-5p| %m%n}"/>
+                    <PatternMatch key="ERROR" pattern="%highlight{%-5p| %m%n}"/>
+                    <PatternMatch key="FATAL" pattern="%highlight{%-5p| %m%n}"/>
                 </LevelPatternSelector>
             </PatternLayout>
         </Console>

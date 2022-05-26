@@ -1,13 +1,15 @@
 package org.surface.surface.core.runners;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.surface.surface.common.RevisionMode;
 import org.surface.surface.common.Utils;
-import org.surface.surface.common.filters.RevisionFilter;
+import org.surface.surface.common.selectors.RevisionsSelector;
 import org.surface.surface.core.explorers.JavaFilesExplorer;
 import org.surface.surface.core.metrics.results.ProjectMetricsResults;
 import org.surface.surface.out.exporters.GitProjectResultsExporter;
@@ -26,83 +28,83 @@ import java.util.Set;
 public class LocalGitAnalysisRunner extends AnalysisRunner<Map<String, ProjectMetricsResults>> {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final RevisionFilter revisionFilter;
+    // TODO Don't like, should be made a class with subclasses, each with an overriden method that acts like selectRevision
+    private final Pair<RevisionMode, String> revision;
 
-    public LocalGitAnalysisRunner(List<String> metrics, String target, Path outFilePath, String filesRegex, RevisionFilter revisionFilter) {
+    public LocalGitAnalysisRunner(List<String> metrics, String target, Path outFilePath, String filesRegex, Pair<RevisionMode, String> revision) {
         super(metrics, target, outFilePath, filesRegex);
-        this.revisionFilter = revisionFilter;
+        this.revision = revision;
         Writer writer = new WriterFactory().getWriter(getOutFilePath());
         setResultsExporter(new GitProjectResultsExporter(writer));
     }
 
-    public RevisionFilter getRevisionFilter() {
-        return revisionFilter;
-    }
-
     @Override
-    public void run() throws IOException {
+    public void run() throws Exception {
         Map<String, ProjectMetricsResults> commitResults = new LinkedHashMap<>();
         Path targetDirPath = Paths.get(getTarget()).toAbsolutePath();
         File targetDir = targetDirPath.toFile();
         if (!Utils.isGitDirectory(targetDir)) {
-            throw new IllegalStateException("The target directory does not exist or is not a git directory.");
+            throw new IllegalStateException("* The target directory " + targetDir + " does not exist or is not a git directory.");
         }
         try (Git git = Git.open(targetDir)) {
             // Preventive stash not to lose any local change!
             try {
                 Set<String> uncommittedChanges = git.status().call().getUncommittedChanges();
                 if (uncommittedChanges.size() > 0) {
+                    LOGGER.debug("Successfully Created a stash of the current working tree in git repository " + targetDir);
                     git.stashCreate().call();
                 }
             } catch (GitAPIException e) {
-                LOGGER.info("Could not stash the current working tree in git repository " + targetDir, e);
+                LOGGER.error("* Could not stash the current working tree in git repository " + targetDir, e);
             }
 
-            // TODO If HEAD or SINGLE modes do not take the entire history
-            String defaultBranch = git.getRepository().getBranch();
-            Iterable<RevCommit> commits = null;
+            String defaultBranchName = git.getRepository().getBranch();
+            List<RevCommit> commits;
             try {
                 git.reset().setMode(ResetCommand.ResetType.HARD).call();
-                commits = git.log().call();
-            } catch (GitAPIException e) {
-                throw new IOException("Could not fetch history of git repository " + targetDir, e);
+                commits = RevisionsSelector.selectRevisions(git, revision);
+            } catch (Exception e) {
+                throw new Exception("Failed to fetch the history of git repository " + targetDir, e);
             }
-
-            if (commits != null) {
-                try {
-                    for (RevCommit commit : commits) {
-                        // TODO Filter commits depending on the filter
-                        LOGGER.debug("Analyzing commit {}", commit.getName());
-                        try {
-                            git.checkout().setName(commit.getName()).call();
-                        } catch (GitAPIException e) {
-                            LOGGER.info("Could not checkout to commit " + commit.getName() + " in git repository " + targetDir, e);
-                            continue;
-                        }
-                        List<Path> files = getFilesRegex() == null ?
-                                JavaFilesExplorer.selectFiles(targetDirPath) :
-                                JavaFilesExplorer.selectFiles(targetDirPath, getFilesRegex());
-                        commitResults.put(commit.getName(), super.analyze(targetDirPath, files));
-                        try {
-                            git.reset().setMode(ResetCommand.ResetType.HARD).call();
-                        } catch (GitAPIException e) {
-                            LOGGER.info("Could not restore the state of the git repository " + targetDir, e);
-                            break;
-                        }
-                    }
-                } finally {
+            LOGGER.info("* Going to analyze {} commits in git repository {}", commits.size(), targetDir);
+            try {
+                for (RevCommit commit : commits) {
+                    LOGGER.trace("Analyzing commit {}", commit.getName());
+                    // DEBUG remove
+                    if (true)
+                        continue;
                     try {
-                        git.checkout().setName(defaultBranch).call();
+                        git.checkout().setName(commit.getName()).call();
+                    } catch (GitAPIException e) {
+                        LOGGER.warn("* Failed checkout to commit " + commit.getName() + " in git repository " + targetDir + ": ignoring");
+                        continue;
+                    }
+                    List<Path> files = getFilesRegex() == null ?
+                            JavaFilesExplorer.selectFiles(targetDirPath) :
+                            JavaFilesExplorer.selectFiles(targetDirPath, getFilesRegex());
+                    commitResults.put(commit.getName(), super.analyze(targetDirPath, files));
+                    try {
+                        git.reset().setMode(ResetCommand.ResetType.HARD).call();
+                    } catch (GitAPIException e) {
+                        LOGGER.error("* Could not reset the state of git repository " + targetDir, e);
+                        break;
+                    }
+                }
+            } finally {
+                // Restore everything to the initial state
+                try {
+                    git.checkout().setName(defaultBranchName).call();
+                    if (git.stashList().call().size() > 0) {
                         git.stashApply().call();
                         git.stashDrop().call();
-                        LOGGER.info("* Successfully restored the previous state of the git repository " + targetDir);
-                    } catch (GitAPIException e) {
-                        LOGGER.error("* Could not restore the previous state of the git repository " + targetDir);
+                        LOGGER.debug("* Successfully restored the previous state of the git repository " + targetDir);
                     }
+                } catch (GitAPIException e) {
+                    LOGGER.error("* Failed to restore previous state of the git repository " + targetDir);
                 }
             }
         } catch (IOException e) {
-            throw new IOException("Could not open git repository " + targetDir, e);
+            throw new IOException("* Could not open git repository " + targetDir, e);
         }
         exportResults(commitResults);
     }

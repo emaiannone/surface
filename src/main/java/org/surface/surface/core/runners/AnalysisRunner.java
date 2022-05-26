@@ -62,15 +62,15 @@ public abstract class AnalysisRunner<T> {
     }
 
     protected void exportResults(T projectMetricsResults) throws IOException {
-        LOGGER.info("* Exporting metrics results");
+        LOGGER.info("* Exporting results to {}", getOutFilePath());
         try {
             resultsExporter.export(projectMetricsResults);
-            LOGGER.info("* Exporting completed");
+            LOGGER.info("* Exporting completed to {}", getOutFilePath());
         } catch (IOException e) {
-            LOGGER.info("* Exporting failed");
+            LOGGER.info("* Exporting failed to {}", getOutFilePath());
             throw e;
         }
     }
 
-    public abstract void run() throws IOException;
+    public abstract void run() throws Exception;
 }

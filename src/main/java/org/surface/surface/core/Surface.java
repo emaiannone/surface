@@ -6,8 +6,6 @@ import org.surface.surface.common.RunSetting;
 import org.surface.surface.core.runners.AnalysisRunner;
 import org.surface.surface.core.runners.AnalysisRunnerFactory;
 
-import java.io.IOException;
-
 public class Surface {
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -20,12 +18,14 @@ public class Surface {
     public void run() {
         LOGGER.info("* Setting up SURFACE");
         AnalysisRunnerFactory runnerFactory = new AnalysisRunnerFactory();
-        AnalysisRunner analysisRunner = runnerFactory.getAnalysisRunner(runSetting);
+        AnalysisRunner<?> analysisRunner = runnerFactory.getAnalysisRunner(runSetting);
         try {
             LOGGER.info("* Launching SURFACE");
             analysisRunner.run();
-        } catch (IOException e) {
-            LOGGER.error(e);
+        } catch (Exception e) {
+            LOGGER.fatal("Aborting SURFACE", e);
+        } finally {
+            LOGGER.info("* Exiting SURFACE");
         }
     }
 }
