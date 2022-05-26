@@ -34,7 +34,7 @@ public class ProjectInspector extends Inspector {
     public ProjectInspectorResults inspect() throws IOException {
         ProjectInspectorResults projectInspectorResults = new ProjectInspectorResults(projectRoot);
         try {
-            LOGGER.info("* Preliminary Inspection started");
+            LOGGER.debug("* Preliminary Inspection started");
             // A SourceRoot is a subdirectory of ProjectRoot containing a root package structure (e.g., src/main/java, src/test/java, target/classes)
             // QUESTION How are non-traditional root package structure but still with Java files handled?
             for (SourceRoot sourceRoot : projectRoot.getSourceRoots()) {
@@ -55,7 +55,6 @@ public class ProjectInspector extends Inspector {
                             // Consider classes only
                             String name = classOrInterfaceDecl.getFullyQualifiedName().orElse(classOrInterfaceDecl.getNameAsString());
                             if (classOrInterfaceDecl.isInterface()) {
-                                LOGGER.debug("Ignoring interface {}", name);
                                 continue;
                             }
                             ClassInspector classInspector = new ClassInspector(classOrInterfaceDecl, compilationUnit.getStorage().get().getPath());
@@ -65,8 +64,8 @@ public class ProjectInspector extends Inspector {
                     }
                 }
             }
-            LOGGER.info("* Preliminary Inspection ended");
-            LOGGER.debug("Preliminary Inspection results:\n\t{}", projectInspectorResults.toString().replaceAll("\n", "\n\t"));
+            LOGGER.debug("* Preliminary Inspection ended");
+            LOGGER.trace("Preliminary Inspection results:\n\t{}", projectInspectorResults.toString().replaceAll("\n", "\n\t"));
             return projectInspectorResults;
         } finally {
             // Release! Sadly, the library does not manage well its internal cache, so we have to do this manual clear

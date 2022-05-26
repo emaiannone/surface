@@ -14,8 +14,8 @@ public class CLIStarter {
         try {
             runSetting = CLIArgumentsParser.parse(args);
         } catch (ParseException e) {
-            LOGGER.error(e);
-            LOGGER.error("Exiting...");
+            LOGGER.error("* Failed to parse some command line arguments", e);
+            LOGGER.info("* Exiting...");
             System.exit(1);
         }
         Surface surface = new Surface(runSetting);

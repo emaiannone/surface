@@ -8,27 +8,28 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class JavaFilesExplorer {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static List<Path> selectFiles(Path startDir) throws IOException {
+    public static List<Path> selectFiles(Path startDir, String regex) throws IOException {
+        final Pattern compiledRegex;
+        Pattern compiledRegexTmp;
+        try {
+            compiledRegexTmp = Pattern.compile(regex);
+        } catch (Exception e) {
+            compiledRegexTmp = Pattern.compile(".*", Pattern.DOTALL);
+        }
+        compiledRegex = compiledRegexTmp;
         try (Stream<Path> fileStream = Files.walk(startDir)) {
-            List<Path> files = fileStream.filter(f -> Utils.isJavaFile(f.toFile()))
+            List<Path> files = fileStream
+                    .filter(f -> Utils.isJavaFile(f.toFile()))
+                    .filter(f -> compiledRegex.matcher(f.toFile().toString()).find())
                     .collect(Collectors.toList());
-            LOGGER.debug("All Java files found: {}", files);
             return files;
         }
-    }
-
-    public static List<Path> selectFiles(Path startDir, String regex) throws IOException {
-        List<Path> files = selectFiles(startDir)
-                .stream()
-                .filter(p -> p.getFileName().toString().matches(regex))
-                .collect(Collectors.toList());
-        LOGGER.debug("Java files post regex filter: {}", files);
-        return files;
     }
 }

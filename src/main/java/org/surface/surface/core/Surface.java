@@ -23,7 +23,8 @@ public class Surface {
             LOGGER.info("* Launching SURFACE");
             analysisRunner.run();
         } catch (Exception e) {
-            LOGGER.fatal("Aborting SURFACE", e);
+            LOGGER.fatal("An unrecoverable error was raised. Aborting SURFACE", e);
+            System.exit(1);
         } finally {
             LOGGER.info("* Exiting SURFACE");
         }

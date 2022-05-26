@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn">
+<Configuration status="WARN">
     <Appenders>
         <Console name="console" target="SYSTEM_OUT">
             <PatternLayout>
                 <LevelPatternSelector>
-                    <PatternMatch key="INFO" pattern="%-5p| %m%n"/>
                     <PatternMatch key="TRACE" pattern="%highlight{%-5p| %m [%c.java:%L]%n}"/>
                     <PatternMatch key="DEBUG" pattern="%highlight{%-5p| %m [%c.java:%L]%n}"/>
+                    <PatternMatch key="INFO" pattern="%-5p| %m%n"/>
                     <PatternMatch key="WARN" pattern="%highlight{%-5p| %m%n}"/>
                     <PatternMatch key="ERROR" pattern="%highlight{%-5p| %m%n}"/>
                     <PatternMatch key="FATAL" pattern="%highlight{%-5p| %m%n}"/>
@@ -15,7 +15,7 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Root level="all">
+        <Root level="INFO">
             <AppenderRef ref="console"/>
         </Root>
     </Loggers>

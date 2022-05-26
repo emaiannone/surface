@@ -31,9 +31,8 @@ public class LocalDirectoryAnalysisRunner extends AnalysisRunner<ProjectMetricsR
         if (!Utils.isDirectory(targetDir)) {
             throw new IllegalStateException("The target directory does not exist or is not a directory.");
         }
-        List<Path> files = getFilesRegex() == null ?
-                JavaFilesExplorer.selectFiles(targetDirPath) :
-                JavaFilesExplorer.selectFiles(targetDirPath, getFilesRegex());
+        List<Path> files = JavaFilesExplorer.selectFiles(targetDirPath, getFilesRegex());
+        LOGGER.debug("Java files found: {}", files);
         ProjectMetricsResults projectMetricsResults = super.analyze(targetDirPath, files);
         exportResults(projectMetricsResults);
     }

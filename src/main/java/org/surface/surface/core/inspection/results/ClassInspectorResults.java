@@ -163,11 +163,13 @@ public class ClassInspectorResults implements InspectorResults {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder("Class: " + getFullyQualifiedClassName());
-        builder.append("\n\tClassified Attributes: ");
+        StringBuilder builder = new StringBuilder("Classified Attributes of " + getFullyQualifiedClassName());
         List<String> classifiedAttributesStrings = new ArrayList<>();
         for (Map.Entry<VariableDeclarator, Set<MethodDeclaration>> e : getClassifiedAttributesAndMethods().entrySet()) {
-            classifiedAttributesStrings.add("\n" + e.getKey().getNameAsString() + " -> " + e.getValue().stream().map(m -> m.getSignature().toString()).collect(Collectors.toList()));
+            classifiedAttributesStrings.add("\n\t" + e.getKey().getNameAsString() + " -> " + e.getValue().stream()
+                    .map(m -> m.getSignature().toString())
+                    .collect(Collectors.toList())
+            );
         }
         builder.append(String.join(", ", classifiedAttributesStrings));
         List<String> otherMethodsString = otherClassifiedMethods.stream().map(m -> m.getSignature().toString()).collect(Collectors.toList());
