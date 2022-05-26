@@ -76,6 +76,13 @@
             <artifactId>javaparser-symbol-solver-core</artifactId>
             <version>3.24.2</version>
         </dependency>
+
+        <!-- Needed to remove the warning caused by JGit internal logger -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+            <version>1.7.36</version>
+        </dependency>
     </dependencies>
 
     <build>

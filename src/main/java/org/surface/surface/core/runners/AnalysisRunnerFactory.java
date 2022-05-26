@@ -13,15 +13,15 @@ public class AnalysisRunnerFactory {
             }
             case LOCAL_GIT: {
                 RevisionSelector revisionSelector = new RevisionSelectorFactory().selectRevisionSelector(runSetting.getRevision());
-                return new LocalGitAnalysisRunner(runSetting.getMetrics(), runSetting.getTargetValue(), runSetting.getOutFilePath(), runSetting.getFilesRegex(), revisionSelector);
+                return new LocalGitAnalysisRunner(runSetting.getMetrics(), runSetting.getTargetValue(), runSetting.getOutFilePath(), runSetting.getFilesRegex(), runSetting.getWorkDirPath(), revisionSelector);
             }
             case REMOTE_GIT: {
                 RevisionSelector revisionSelector = new RevisionSelectorFactory().selectRevisionSelector(runSetting.getRevision());
-                return new RemoteGitAnalysisRunner(runSetting.getMetrics(), runSetting.getTargetValue(), runSetting.getOutFilePath(), runSetting.getFilesRegex(), runSetting.getCloneDirPath(), revisionSelector);
+                return new RemoteGitAnalysisRunner(runSetting.getMetrics(), runSetting.getTargetValue(), runSetting.getOutFilePath(), runSetting.getFilesRegex(), runSetting.getWorkDirPath(), revisionSelector);
             }
             case FLEXIBLE: {
                 RevisionSelector revisionSelector = new RevisionSelectorFactory().selectRevisionSelector(runSetting.getRevision());
-                return new FlexibleAnalysisRunner(runSetting.getMetrics(), runSetting.getTargetValue(), runSetting.getOutFilePath(), runSetting.getFilesRegex(), runSetting.getCloneDirPath(), revisionSelector);
+                return new FlexibleAnalysisRunner(runSetting.getMetrics(), runSetting.getTargetValue(), runSetting.getOutFilePath(), runSetting.getFilesRegex(), runSetting.getWorkDirPath(), revisionSelector);
             }
             default:
                 throw new IllegalArgumentException("The run mode + " + runSetting.getRunMode() + " is invalid: the analysis cannot be run.");

@@ -3,10 +3,8 @@ package org.surface.surface.common;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
-import org.eclipse.jgit.util.FileUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Objects;
@@ -72,14 +70,5 @@ public class Utils {
     public static boolean isAlphaNumeric(String string) {
         String revisionRegex = "[a-zA-Z\\d]+";
         return string.matches(revisionRegex);
-    }
-
-    private void deleteFilesInDir(File dir) {
-        if (isDirectory(dir)) {
-            try {
-                FileUtils.delete(dir, FileUtils.RECURSIVE);
-            } catch (IOException ignored) {
-            }
-        }
     }
 }

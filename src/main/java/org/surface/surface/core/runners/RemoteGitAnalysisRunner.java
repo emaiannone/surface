@@ -11,12 +11,12 @@ import java.util.List;
 import java.util.Map;
 
 public class RemoteGitAnalysisRunner extends AnalysisRunner<Map<String, ProjectMetricsResults>> {
-    private final Path cloneDirPath;
+    private final Path workDirPath;
     private final RevisionSelector revisionSelector;
 
-    public RemoteGitAnalysisRunner(List<String> metrics, String target, Path outFilePath, String filesRegex, Path cloneDirPath, RevisionSelector revisionSelector) {
+    public RemoteGitAnalysisRunner(List<String> metrics, String target, Path outFilePath, String filesRegex, Path workDirPath, RevisionSelector revisionSelector) {
         super(metrics, target, outFilePath, filesRegex);
-        this.cloneDirPath = cloneDirPath;
+        this.workDirPath = workDirPath;
         this.revisionSelector = revisionSelector;
         Writer writer = new WriterFactory().getWriter(getOutFilePath());
         setResultsExporter(new GitProjectResultsExporter(writer));

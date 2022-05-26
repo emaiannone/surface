@@ -9,7 +9,6 @@ import org.surface.surface.common.RunMode;
 import org.surface.surface.common.RunSetting;
 import org.surface.surface.common.Utils;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -87,19 +86,18 @@ public class CLIArgumentsParser {
             LOGGER.info("* Going to analyze the following revision: " + revisionMode);
         }
 
-        // Parse the Clone Directory
-        Path cloneDirPath = null;
-        if (runMode == RunMode.REMOTE_GIT || runMode == RunMode.FLEXIBLE) {
-            String cloneDirValue = commandLine.getOptionValue(CLIOptions.CLONE_DIR);
-            if (cloneDirValue == null) {
-                throw new IllegalArgumentException("The path where to clone the remote repositories must be indicated.");
+        // Parse the Working Directory
+        Path workDirPath = null;
+        if (runMode != RunMode.LOCAL_DIR) {
+            String workDirValue = commandLine.getOptionValue(CLIOptions.WORK_DIR);
+            if (workDirValue == null) {
+                throw new IllegalArgumentException("The path where to copy or clone the repositories must be indicated.");
             }
-            cloneDirPath = Paths.get(cloneDirValue).toAbsolutePath();
-            File cloneDir = cloneDirPath.toFile();
-            if (!cloneDirPath.toFile().exists() || !cloneDir.isDirectory()) {
-                throw new IllegalArgumentException("The path where to clone the remote repositories must point to an existent directory.");
+            workDirPath = Paths.get(workDirValue).toAbsolutePath();
+            if (!workDirPath.toFile().isDirectory()) {
+                throw new IllegalArgumentException("The path where to copy or clone the repositories must point to a directory.");
             }
-            LOGGER.info("* Going to clone in the following directory: " + cloneDirPath);
+            LOGGER.info("* Going to clone in the following directory: " + workDirPath);
         }
 
         // Parse Files regex
@@ -117,6 +115,6 @@ public class CLIArgumentsParser {
             LOGGER.info("* Going to analyze all .java files found");
         }
 
-        return new RunSetting(selectedMetrics, new ImmutablePair<>(runMode, target), outFilePath, filesRegex, cloneDirPath, new ImmutablePair<>(revisionMode, revisionValue));
+        return new RunSetting(selectedMetrics, new ImmutablePair<>(runMode, target), outFilePath, filesRegex, workDirPath, new ImmutablePair<>(revisionMode, revisionValue));
     }
 }

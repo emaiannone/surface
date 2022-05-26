@@ -17,7 +17,7 @@ public class CLIOptions extends Options {
     public static final String ALL = "all";
     public static final String AT = "at";
 
-    public static final String CLONE_DIR = "cloneDir";
+    public static final String WORK_DIR = "workDir";
 
     public static final String FILES = "files";
 
@@ -33,7 +33,7 @@ public class CLIOptions extends Options {
         Option target = Option.builder(TARGET)
                 .hasArg(true)
                 .required(true)
-                .desc("Path to either (i) a local non-git directory (LOCAL), (ii) a local git directory (LOCAL_GIT), (iii) a remote URL to a GitHub repository (REMOTE_GIT), or (iv) a local path to a YAML file (FLEXIBLE). SURFACE behaves differently depending on the type of target: (LOCAL) it scans the specified directory recursively to search for .java files to analyze; (LOCAL_GIT) it behaves like in LOCAL but allows the selection of specific revisions; (REMOTE_GIT) it clones the GitHub repository inside the directory indicated by the -" + CLONE_DIR + " option and runs the analysis on it, also allowing the selection of specific revisions; (FLEXIBLE) parses the YAML that dictates how SURFACE must operate. The specification of the YAML file for FLEXIBLE mode are reported in the README at https://github.com/emaiannone/surface. All the directories cloned during the execution of SURFACE will be deleted at the end (either successful or erroneous).")
+                .desc("Path to either (i) a local non-git directory (LOCAL), (ii) a local git directory (LOCAL_GIT), (iii) a remote URL to a GitHub repository (REMOTE_GIT), or (iv) a local path to a YAML file (FLEXIBLE). SURFACE behaves differently depending on the type of target: (LOCAL) it scans the specified directory recursively to search for .java files to analyze; (LOCAL_GIT) it behaves like in LOCAL but allows the selection of specific revisions; (REMOTE_GIT) it clones the GitHub repository inside the directory indicated by the -" + WORK_DIR + " option and runs the analysis on it, also allowing the selection of specific revisions; (FLEXIBLE) parses the YAML that dictates how SURFACE must operate. The specification of the YAML file for FLEXIBLE mode are reported in the README at https://github.com/emaiannone/surface. All the directories cloned during the execution of SURFACE will be deleted at the end (either successful or erroneous).")
                 .build();
 
         Option outFile = Option.builder(OUT_FILE)
@@ -60,9 +60,9 @@ public class CLIOptions extends Options {
                 .addOption(at);
         revisionGroup.setRequired(false);
 
-        Option cloneDir = Option.builder(CLONE_DIR)
+        Option cloneDir = Option.builder(WORK_DIR)
                 .hasArg(true)
-                .desc("Path to a local directory where the cloned repositories will be placed. Evaluated only in REMOTE_GIT and FLEXIBLE modes. In the latter case, it acts as the default directory where to clone all the remote projects, if not specified differently in the YAML file.")
+                .desc("Path to a local directory where repositories will be copied (LOCAL_GIT or FLEXIBLE) or cloned (REMOTE_GIT or FLEXIBLE). Not evaluated in LOCAL_DIR mode. In FLEXIBLE mode it is the default directory where all remote repositories are cloned if not specified differently in the YAML file.")
                 .build();
 
         Option files = Option.builder(FILES)

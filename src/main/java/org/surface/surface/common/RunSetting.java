@@ -11,15 +11,15 @@ public class RunSetting {
     private final Pair<RunMode, String> target;
     private final Path outFilePath;
     private final String filesRegex;
-    private final Path cloneDirPath;
+    private final Path workDirPath;
     private final Pair<RevisionMode, String> revision;
 
-    public RunSetting(List<String> metrics, Pair<RunMode, String> target, Path outFilePath, String filesRegex, Path cloneDirPath, Pair<RevisionMode, String> revision) {
+    public RunSetting(List<String> metrics, Pair<RunMode, String> target, Path outFilePath, String filesRegex, Path workDirPath, Pair<RevisionMode, String> revision) {
         this.metrics = Objects.requireNonNull(metrics);
         this.target = Objects.requireNonNull(target);
         this.outFilePath = Objects.requireNonNull(outFilePath);
         this.filesRegex = filesRegex;
-        this.cloneDirPath = cloneDirPath;
+        this.workDirPath = workDirPath;
         this.revision = revision;
     }
 
@@ -47,8 +47,8 @@ public class RunSetting {
         return filesRegex;
     }
 
-    public Path getCloneDirPath() {
-        return cloneDirPath;
+    public Path getWorkDirPath() {
+        return workDirPath;
     }
 
     public Pair<RevisionMode, String> getRevision() {

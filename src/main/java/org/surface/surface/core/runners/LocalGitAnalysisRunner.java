@@ -4,6 +4,7 @@ import me.tongfei.progressbar.ConsoleProgressBarConsumer;
 import me.tongfei.progressbar.ProgressBar;
 import me.tongfei.progressbar.ProgressBarBuilder;
 import me.tongfei.progressbar.ProgressBarStyle;
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jgit.api.Git;
@@ -27,10 +28,12 @@ import java.util.*;
 public class LocalGitAnalysisRunner extends AnalysisRunner<Map<String, ProjectMetricsResults>> {
     private static final Logger LOGGER = LogManager.getLogger();
 
+    private final Path workDirPath;
     private final RevisionSelector revisionSelector;
 
-    public LocalGitAnalysisRunner(List<String> metrics, String target, Path outFilePath, String filesRegex, RevisionSelector revisionSelector) {
+    public LocalGitAnalysisRunner(List<String> metrics, String target, Path outFilePath, String filesRegex, Path workDirPath, RevisionSelector revisionSelector) {
         super(metrics, target, outFilePath, filesRegex);
+        this.workDirPath = workDirPath;
         this.revisionSelector = revisionSelector;
         Writer writer = new WriterFactory().getWriter(getOutFilePath());
         setResultsExporter(new GitProjectResultsExporter(writer));
@@ -44,23 +47,18 @@ public class LocalGitAnalysisRunner extends AnalysisRunner<Map<String, ProjectMe
         if (!Utils.isGitDirectory(targetDir)) {
             throw new IllegalStateException("* The target directory " + targetDir + " does not exist or is not a git directory.");
         }
-        
-        String stashName = "SURFACE_" + UUID.randomUUID();
-        try (Git git = Git.open(targetDir)) {
-            // Preventive stash not to lose any local change!
-            try {
-                unlock(git);
-                Set<String> uncommittedChanges = git.status().call().getUncommittedChanges();
-                if (uncommittedChanges.size() > 0) {
-                    LOGGER.info("* Creating stash to keep safe the working tree in git repository " + targetDir);
-                    git.stashCreate().setRef(stashName).call();
-                }
-            } catch (GitAPIException e) {
-                LOGGER.error("* Could not create a stash of the working tree in git repository " + targetDir, e);
-            }
-            String initialHead = git.getRepository().getBranch();
-            Runtime.getRuntime().addShutdownHook(new SigIntHandler(git, initialHead, stashName));
 
+        // Copy the repository into the Working Directory
+        Path tmpDirPath = Paths.get(workDirPath.toString(), "SURFACE_TMP");
+        clearTmpDirectory(tmpDirPath);
+        Path repoDirPath = Paths.get(tmpDirPath.toString(), targetDir.getName());
+        repoDirPath.toFile().mkdirs();
+        // In case of interrupts, clear the temporary directory
+        Runtime.getRuntime().addShutdownHook(new SigIntHandler(tmpDirPath));
+        FileUtils.copyDirectory(targetDir, repoDirPath.toFile());
+
+        List<String> notProcessedCommits = new ArrayList<>();
+        try (Git git = Git.open(repoDirPath.toFile())) {
             List<RevCommit> commits;
             try {
                 resetHard(git);
@@ -78,44 +76,31 @@ public class LocalGitAnalysisRunner extends AnalysisRunner<Map<String, ProjectMe
                     .setMaxRenderedLength(150)
                     .setConsumer(new ConsoleProgressBarConsumer(System.out, 141))
                     //.setConsumer(new DelegatingProgressBarConsumer(LOGGER::info, 141))
+                    //.setUpdateIntervalMillis(1)
                     .build()) {
                 for (RevCommit commit : commits) {
                     try {
-
                         git.checkout().setName(commit.getName()).call();
                     } catch (GitAPIException e) {
-                        // TODO In addition, collect these warns and print them at the end of the loop
-                        LOGGER.warn("* Failed checkout to commit " + commit.getName() + " in git repository " + targetDir + ": ignoring");
+                        notProcessedCommits.add(commit.getName());
                         continue;
                     }
-                    List<Path> files = JavaFilesExplorer.selectFiles(targetDirPath, getFilesRegex());
+                    List<Path> files = JavaFilesExplorer.selectFiles(repoDirPath, getFilesRegex());
                     LOGGER.debug("Java files found: {}", files);
                     progressBar.setExtraMessage("Inspecting " + commit.getName().substring(0, 8) + " (" + files.size() + " files)");
                     progressBar.step();
-                    commitResults.put(commit.getName(), super.analyze(targetDirPath, files));
-                    try {
-                        resetHard(git);
-                    } catch (GitAPIException e) {
-                        break;
-                    }
+                    commitResults.put(commit.getName(), super.analyze(repoDirPath, files));
                 }
-            } finally {
-                // Restore everything to the initial state
-                restore(git, initialHead, stashName);
             }
         } catch (IOException e) {
             throw new IOException("* Could not open git repository " + targetDir, e);
+        } finally {
+            if (notProcessedCommits.size() > 0) {
+                LOGGER.warn("* Failed to process the following commits: " + notProcessedCommits);
+            }
+            clearTmpDirectory(tmpDirPath);
         }
         exportResults(commitResults);
-    }
-
-    private void unlock(Git git) {
-        for (File file : git.getRepository().getDirectory().listFiles()) {
-            if (file.getName().endsWith(".lock")) {
-                LOGGER.warn("* Found {} file: deleting it to operate safely", file.getName());
-                file.delete();
-            }
-        }
     }
 
     private void resetHard(Git git) throws Exception {
@@ -127,40 +112,25 @@ public class LocalGitAnalysisRunner extends AnalysisRunner<Map<String, ProjectMe
         }
     }
 
-    private void restore(Git git, String commit, String stashName) throws Exception {
-        try {
-            unlock(git);
-            git.checkout().setName(commit).call();
-            if (git.stashList().call().size() > 0) {
-                git.stashApply().setStashRef(stashName).call();
-                git.stashDrop().call();
-            }
-            LOGGER.info("* Successfully restored the previous state of the git repository " + git.getRepository().getDirectory().toPath());
-        } catch (Exception e) {
-            LOGGER.error("* Failed to restore previous state of the git repository " + git.getRepository().getDirectory().toPath());
-            throw e;
+    private void clearTmpDirectory(Path tmpDirPath) throws IOException {
+        if (tmpDirPath.toFile().exists()) {
+            FileUtils.deleteDirectory(tmpDirPath.toFile());
         }
     }
 
     private class SigIntHandler extends Thread {
-        private final Git git;
-        private final String initialHead;
-        private final String stashName;
+        private final Path tmpDirPath;
 
-        private SigIntHandler(Git git, String initialHead, String stashName) {
-            this.git = git;
-            this.initialHead = initialHead;
-            this.stashName = stashName;
+        private SigIntHandler(Path tmpDirPath) {
+            this.tmpDirPath = tmpDirPath;
         }
 
         @Override
         public void run() {
-            System.out.println();
-            LOGGER.warn("* Received shutdown signal");
             try {
-                restore(git, initialHead, stashName);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+                clearTmpDirectory(tmpDirPath);
+            } catch (IOException e) {
+                LOGGER.warn("* Could not delete the working directory");
             }
         }
     }
