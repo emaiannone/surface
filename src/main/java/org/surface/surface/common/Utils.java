@@ -6,7 +6,9 @@ import org.apache.commons.validator.routines.UrlValidator;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 public class Utils {
@@ -58,17 +60,25 @@ public class Utils {
     public static String[] getRevisionsFromRange(String revisionRange) {
         String[] parts = revisionRange.split("\\.\\.");
         if (StringUtils.countMatches(revisionRange, '.') != 2 || parts.length != 2) {
-            throw new IllegalArgumentException("The revision range must fulfill the expected format (\"<START-SHA>..<END-SHA>\").");
+            throw new IllegalArgumentException("The revision range must fulfill the format (\"<START-SHA>..<END-SHA>\").");
         }
-        if (Utils.isAlphaNumeric(parts[0]) && Utils.isAlphaNumeric(parts[1])) {
-            return parts;
-        } else {
-            throw new IllegalArgumentException("The revisions must be alphanumeric strings.");
+        if (!Utils.isAlphaNumeric(parts[0]) || !Utils.isAlphaNumeric(parts[1])) {
+            throw new IllegalArgumentException("Both the revisions in the range must be alphanumeric strings.");
         }
+        return parts;
     }
 
     public static boolean isAlphaNumeric(String string) {
         String revisionRegex = "[a-zA-Z\\d]+";
         return string.matches(revisionRegex);
+    }
+
+    public static List<String> getExceptionMessageChain(Throwable throwable) {
+        List<String> result = new ArrayList<>();
+        while (throwable != null) {
+            result.add(throwable.getMessage());
+            throwable = throwable.getCause();
+        }
+        return result;
     }
 }

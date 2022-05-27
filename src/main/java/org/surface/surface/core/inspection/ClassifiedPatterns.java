@@ -26,8 +26,7 @@ public class ClassifiedPatterns {
                     patterns.add(pattern);
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignored) {
         }
     }
 

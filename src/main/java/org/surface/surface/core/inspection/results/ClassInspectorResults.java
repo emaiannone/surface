@@ -26,7 +26,7 @@ public class ClassInspectorResults implements InspectorResults {
     public ClassInspectorResults(ClassOrInterfaceDeclaration classOrInterfaceDeclaration, Path filepath) {
         this.classOrInterfaceDeclaration = classOrInterfaceDeclaration;
         this.filepath = filepath;
-        this.classifiedAttributesAndMethods = new HashMap<>();
+        this.classifiedAttributesAndMethods = new LinkedHashMap<>();
         this.otherClassifiedMethods = new LinkedHashSet<>();
         this.correspondingFieldDeclarations = null;
         this.superClasses = null;
@@ -89,7 +89,6 @@ public class ClassInspectorResults implements InspectorResults {
     public Set<MethodDeclaration> getOtherClassifiedMethods() {
         return Collections.unmodifiableSet(otherClassifiedMethods);
     }
-
 
     public List<ResolvedReferenceType> getSuperclasses() {
         // If already computed, return it
@@ -161,16 +160,39 @@ public class ClassInspectorResults implements InspectorResults {
         return false;
     }
 
+    public Set<String> getClassifiedAttributesNames() {
+        return getClassifiedAttributes()
+                .stream()
+                .map(VariableDeclarator::getNameAsString)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    public Set<String> getAllClassifiedMethodsNames() {
+        return getAllClassifiedMethods()
+                .stream()
+                .map(m -> m.getSignature().toString())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    public Map<String, Set<String>> getClassifiedAttributesAndMethodsNames() {
+        Map<String, Set<String>> res = new LinkedHashMap<>();
+        for (Map.Entry<VariableDeclarator, Set<MethodDeclaration>> entry : getClassifiedAttributesAndMethods().entrySet()) {
+            String attributeName = entry.getKey().getNameAsString();
+            LinkedHashSet<String> methodNames = entry.getValue()
+                    .stream()
+                    .map(m -> m.getSignature().toString())
+                    .collect(Collectors.toCollection(LinkedHashSet::new));
+            res.put(attributeName, methodNames);
+        }
+        return res;
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder("Classified Attributes of " + getFullyQualifiedClassName());
         List<String> classifiedAttributesStrings = new ArrayList<>();
-        for (Map.Entry<VariableDeclarator, Set<MethodDeclaration>> e : getClassifiedAttributesAndMethods().entrySet()) {
-            classifiedAttributesStrings.add("\n\t" + e.getKey().getNameAsString() + " -> " + e.getValue().stream()
-                    .map(m -> m.getSignature().toString())
-                    .collect(Collectors.toList())
-            );
-        }
+        getClassifiedAttributesAndMethodsNames()
+                .forEach((key, value) -> classifiedAttributesStrings.add("\n\t" + key + " -> " + value));
         builder.append(String.join(", ", classifiedAttributesStrings));
         List<String> otherMethodsString = otherClassifiedMethods.stream().map(m -> m.getSignature().toString()).collect(Collectors.toList());
         builder.append("\n\tOther Classified Methods: ").append(otherMethodsString);

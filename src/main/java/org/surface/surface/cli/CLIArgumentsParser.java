@@ -65,7 +65,7 @@ public class CLIArgumentsParser {
                     case CLIOptions.RANGE: {
                         revisionValue = commandLine.getOptionValue(CLIOptions.RANGE);
                         // Check only if the range has the expected format, not that the commits are valid
-                        String[] revisionsFromRange = Utils.getRevisionsFromRange(revisionValue);
+                        String[] range = Utils.getRevisionsFromRange(revisionValue);
                         revisionMode = RevisionMode.RANGE;
                         break;
                     }

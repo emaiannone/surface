@@ -5,7 +5,7 @@ import org.surface.surface.core.inspection.results.ClassInspectorResults;
 import org.surface.surface.core.inspection.results.ProjectInspectorResults;
 import org.surface.surface.core.metrics.results.values.DoubleMetricValue;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +13,7 @@ public class CSCRImpl extends CSCR {
 
     @Override
     public DoubleMetricValue compute(ProjectInspectorResults projectResults) {
-        Map<String, Double> values = new HashMap<>();
+        Map<String, Double> values = new LinkedHashMap<>();
         for (ClassInspectorResults classResults : projectResults) {
             List<ResolvedReferenceType> superclasses = classResults.getSuperclasses();
             int totalSuperClasses = superclasses.size();

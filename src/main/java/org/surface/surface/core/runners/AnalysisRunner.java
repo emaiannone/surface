@@ -50,14 +50,14 @@ public abstract class AnalysisRunner<T> {
     }
 
     protected ProjectMetricsResults analyze(Path targetDir, List<Path> allowedFiles) throws IOException {
-        LOGGER.debug("* Going to inspect {} files in {}", allowedFiles.size(), targetDir);
+        LOGGER.debug("Going to inspect {} files in {}", allowedFiles.size(), targetDir);
         ProjectInspector projectInspector = new ProjectInspector(targetDir, allowedFiles);
         ProjectInspectorResults projectInspectorResults = projectInspector.inspect();
         ProjectMetricsCalculator projectMetricsCalculator = new ProjectMetricsCalculator(projectInspectorResults);
         LOGGER.debug("* Metrics computation started");
         ProjectMetricsResults projectMetricsResults = projectMetricsCalculator.calculate(metrics);
         LOGGER.debug("* Metrics computation ended");
-        LOGGER.debug("Metrics results:\n\t{}", projectMetricsResults.toString().replaceAll("\n", "\n\t"));
+        LOGGER.trace("Metrics results:\n\t{}", projectMetricsResults.toString().replaceAll("\n", "\n\t"));
         return projectMetricsResults;
     }
 

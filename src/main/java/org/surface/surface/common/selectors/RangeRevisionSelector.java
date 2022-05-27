@@ -28,6 +28,9 @@ public class RangeRevisionSelector extends RevisionSelector {
         String[] range = Utils.getRevisionsFromRange(getRevisionString());
         ObjectId from = git.getRepository().resolve(range[0]);
         ObjectId to = git.getRepository().resolve(range[1]);
+        if (from == null || to == null) {
+            throw new IllegalStateException("One of the revisions in the range does not point to an existing snapshot");
+        }
         Iterable<RevCommit> commitsIter = git.log().addRange(from, to).call();
         commitsIter.spliterator().forEachRemaining(commits::add);
         return commits;

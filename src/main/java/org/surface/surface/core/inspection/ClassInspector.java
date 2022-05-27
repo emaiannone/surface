@@ -68,7 +68,7 @@ public class ClassInspector extends Inspector {
      */
     private Map<VariableDeclarator, Set<MethodDeclaration>> getUsageClassifiedMethods(Set<VariableDeclarator> classifiedAttributes) {
         // All classified attributes start with an empty set of methods
-        Map<VariableDeclarator, Set<MethodDeclaration>> resultMap = new HashMap<>();
+        Map<VariableDeclarator, Set<MethodDeclaration>> resultMap = new LinkedHashMap<>();
         for (VariableDeclarator variableDeclarator : classifiedAttributes) {
             resultMap.put(variableDeclarator, new LinkedHashSet<>());
         }

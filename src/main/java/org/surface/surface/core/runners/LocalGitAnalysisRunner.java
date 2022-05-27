@@ -36,7 +36,7 @@ public class LocalGitAnalysisRunner extends AnalysisRunner<Map<String, ProjectMe
         this.workDirPath = workDirPath;
         this.revisionSelector = revisionSelector;
         Writer writer = new WriterFactory().getWriter(getOutFilePath());
-        setResultsExporter(new GitProjectResultsExporter(writer));
+        setResultsExporter(new GitProjectResultsExporter(writer, null));
     }
 
     @Override
@@ -62,9 +62,13 @@ public class LocalGitAnalysisRunner extends AnalysisRunner<Map<String, ProjectMe
             List<RevCommit> commits;
             try {
                 resetHard(git);
+            } catch (GitAPIException e) {
+                throw new RuntimeException("The reset of git repository " + git.getRepository().getDirectory().getName() + "failed", e);
+            }
+            try {
                 commits = revisionSelector.selectRevisions(git);
             } catch (Exception e) {
-                throw new Exception("Failed to fetch the history of git repository " + targetDir, e);
+                throw new Exception("Failed to fetch the required revisions from git repository " + targetDir, e);
             }
             Collections.reverse(commits);
             int numCommits = commits.size();
@@ -78,6 +82,7 @@ public class LocalGitAnalysisRunner extends AnalysisRunner<Map<String, ProjectMe
                     //.setConsumer(new DelegatingProgressBarConsumer(LOGGER::info, 141))
                     //.setUpdateIntervalMillis(1)
                     .build()) {
+                // TODO Goes out of memory! Why?
                 for (RevCommit commit : commits) {
                     try {
                         git.checkout().setName(commit.getName()).call();
@@ -103,13 +108,8 @@ public class LocalGitAnalysisRunner extends AnalysisRunner<Map<String, ProjectMe
         exportResults(commitResults);
     }
 
-    private void resetHard(Git git) throws Exception {
-        try {
-            git.reset().setMode(ResetCommand.ResetType.HARD).call();
-        } catch (Exception e) {
-            LOGGER.error("* Could not reset the state of git repository " + git.getRepository().getDirectory().getName(), e);
-            throw e;
-        }
+    private void resetHard(Git git) throws GitAPIException {
+        git.reset().setMode(ResetCommand.ResetType.HARD).call();
     }
 
     private void clearTmpDirectory(Path tmpDirPath) throws IOException {

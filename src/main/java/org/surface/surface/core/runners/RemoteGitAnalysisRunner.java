@@ -19,7 +19,7 @@ public class RemoteGitAnalysisRunner extends AnalysisRunner<Map<String, ProjectM
         this.workDirPath = workDirPath;
         this.revisionSelector = revisionSelector;
         Writer writer = new WriterFactory().getWriter(getOutFilePath());
-        setResultsExporter(new GitProjectResultsExporter(writer));
+        setResultsExporter(new GitProjectResultsExporter(writer, target));
     }
 
     @Override

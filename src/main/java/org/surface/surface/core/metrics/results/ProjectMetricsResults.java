@@ -8,22 +8,30 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetricsResults> {
-    private final ProjectRoot projectRoot;
+    private final Path projectRoot;
     private final Set<ClassMetricsResults> classMetricsResults;
-    private final List<MetricValue<?>> projectValues;
+    private final List<MetricValue<?>> metricValues;
 
     public ProjectMetricsResults(ProjectRoot projectRoot) {
-        this.projectRoot = projectRoot;
+        this.projectRoot = projectRoot.getRoot();
         this.classMetricsResults = new LinkedHashSet<>();
-        this.projectValues = new ArrayList<>();
+        this.metricValues = new ArrayList<>();
     }
 
-    public Path getProjectRoot() {
-        return projectRoot.getRoot();
+    public void add(ClassMetricsResults classResults) {
+        this.classMetricsResults.add(classResults);
     }
 
-    public List<MetricValue<?>> getProjectValues() {
-        return Collections.unmodifiableList(projectValues);
+    public void add(MetricValue<?> projectValue) {
+        metricValues.add(projectValue);
+    }
+
+    public String getProjectName() {
+        return projectRoot.getFileName().toString();
+    }
+
+    public Path getProjectPath() {
+        return projectRoot.toAbsolutePath();
     }
 
     public Set<ClassMetricsResults> getClassMetricsResults() {
@@ -35,19 +43,15 @@ public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetr
         return getClassMetricsResults().iterator();
     }
 
-    public void add(ClassMetricsResults classResults) {
-        this.classMetricsResults.add(classResults);
-    }
-
-    public void add(MetricValue<?> projectValue) {
-        projectValues.add(projectValue);
+    public List<MetricValue<?>> getMetricValues() {
+        return Collections.unmodifiableList(metricValues);
     }
 
     public Map<String, List<MetricValue<?>>> classMetricsGroupedByCode() {
         Map<String, List<MetricValue<?>>> map = new LinkedHashMap<>();
         for (String classMetricsCode : getClassMetricsCodes()) {
             List<MetricValue<?>> collect = classMetricsResults.stream()
-                    .flatMap(mr -> mr.getClassValues().stream())
+                    .flatMap(mr -> mr.getMetricValues().stream())
                     .filter(mr -> mr.getMetricCode().equals(classMetricsCode))
                     .collect(Collectors.toList());
             map.put(classMetricsCode, collect);
@@ -55,27 +59,40 @@ public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetr
         return map;
     }
 
-    public Map<String, Object> getProjectMetrics() {
-        Map<String, Object> projectMetricsAsMap = new LinkedHashMap<>();
-        for (MetricValue<?> projectValue : projectValues) {
-            projectMetricsAsMap.put(projectValue.getMetricCode(), projectValue.getValue());
+    public Map<String, Object> getMetrics() {
+        Map<String, Object> metricsAsMap = new LinkedHashMap<>();
+        for (MetricValue<?> projectValue : metricValues) {
+            metricsAsMap.put(projectValue.getMetricCode(), projectValue.getValue());
         }
-        return projectMetricsAsMap;
+        return metricsAsMap;
     }
 
     private List<String> getClassMetricsCodes() {
         return classMetricsResults.stream()
-                .flatMap(mr -> mr.getClassValues().stream())
+                .flatMap(mr -> mr.getMetricValues().stream())
                 .map(MetricValue::getMetricCode)
                 .distinct()
                 .collect(Collectors.toList());
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("name", getProjectName());
+        map.put("path", getProjectPath().toString());
+        map.put("metrics", getMetrics());
+        List<Map<?, ?>> classes = new ArrayList<>();
+        for (ClassMetricsResults classMetricsResult : getClassMetricsResults()) {
+            classes.add(classMetricsResult.toMap(getProjectPath()));
+        }
+        map.put("classes", classes);
+        return map;
     }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder("Project: " + projectRoot.getRoot().toAbsolutePath());
         builder.append(" (");
-        List<String> metricStrings = projectValues
+        List<String> metricStrings = metricValues
                 .stream()
                 .map(m -> m.getMetricCode() + "=" + m.getValue())
                 .collect(Collectors.toList());
@@ -83,7 +100,7 @@ public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetr
         builder.append(")");
 
         for (ClassMetricsResults entries : this) {
-            if (entries.getClassValues().size() > 0) {
+            if (entries.getMetricValues().size() > 0) {
                 builder.append("\n");
                 builder.append(entries);
             }
