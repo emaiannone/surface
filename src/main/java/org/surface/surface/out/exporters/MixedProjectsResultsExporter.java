@@ -6,9 +6,9 @@ import org.surface.surface.out.writers.Writer;
 import java.io.IOException;
 import java.util.Map;
 
-public class HybridProjectsResultsExporter extends ResultsExporter<Map<String, Map<String, ProjectMetricsResults>>> {
+public class MixedProjectsResultsExporter extends ResultsExporter<Map<String, Map<String, ProjectMetricsResults>>> {
 
-    public HybridProjectsResultsExporter(Writer writer) {
+    public MixedProjectsResultsExporter(Writer writer) {
         super(writer);
     }
 

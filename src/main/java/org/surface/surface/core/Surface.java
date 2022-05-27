@@ -4,8 +4,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.surface.surface.common.RunSetting;
 import org.surface.surface.common.Utils;
-import org.surface.surface.core.runners.AnalysisRunner;
-import org.surface.surface.core.runners.AnalysisRunnerFactory;
+import org.surface.surface.core.runners.AnalysisModeFactory;
+import org.surface.surface.core.runners.ModeRunner;
 
 import java.util.List;
 
@@ -20,11 +20,11 @@ public class Surface {
 
     public void run() {
         LOGGER.info("* Setting up SURFACE");
-        AnalysisRunnerFactory runnerFactory = new AnalysisRunnerFactory();
-        AnalysisRunner<?> analysisRunner = runnerFactory.getAnalysisRunner(runSetting);
+        AnalysisModeFactory runnerFactory = new AnalysisModeFactory();
+        ModeRunner<?> modeRunner = runnerFactory.getModeRunner(runSetting);
         try {
             LOGGER.info("* Launching SURFACE");
-            analysisRunner.run();
+            modeRunner.run();
         } catch (Exception e) {
             List<String> messages = Utils.getExceptionMessageChain(e);
             LOGGER.error("* Exiting SURFACE due to an unrecoverable error");

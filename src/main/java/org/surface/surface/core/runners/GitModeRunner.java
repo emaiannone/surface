@@ -12,7 +12,7 @@ import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.surface.surface.common.selectors.RevisionSelector;
-import org.surface.surface.core.explorers.JavaFilesExplorer;
+import org.surface.surface.core.analysis.ProjectAnalyzer;
 import org.surface.surface.core.metrics.results.ProjectMetricsResults;
 
 import java.io.IOException;
@@ -20,7 +20,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-public abstract class GitAnalysisRunner extends AnalysisRunner<Map<String, ProjectMetricsResults>> {
+public abstract class GitModeRunner extends ModeRunner<Map<String, ProjectMetricsResults>> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private static final String SURFACE_TMP = "SURFACE_TMP";
@@ -28,7 +28,7 @@ public abstract class GitAnalysisRunner extends AnalysisRunner<Map<String, Proje
     private final Path workDirPath;
     private final RevisionSelector revisionSelector;
 
-    GitAnalysisRunner(List<String> metrics, String target, Path outFilePath, String filesRegex, Path workDirPath, RevisionSelector revisionSelector) {
+    GitModeRunner(List<String> metrics, String target, Path outFilePath, String filesRegex, Path workDirPath, RevisionSelector revisionSelector) {
         super(metrics, target, outFilePath, filesRegex);
         this.workDirPath = workDirPath;
         this.revisionSelector = revisionSelector;
@@ -54,11 +54,12 @@ public abstract class GitAnalysisRunner extends AnalysisRunner<Map<String, Proje
 
     @Override
     public void run() throws Exception {
-        Map<String, ProjectMetricsResults> allResults = new LinkedHashMap<>();
-
         // Depends on the specific thing to do
         Path tmpDirPath = prepareTmpDir();
         Path repoDirPath = Paths.get(tmpDirPath.toString(), getProjectName());
+
+        // TODO Extract the logic (from here? with all the private methods?) that will be used many times by FlexibleMode into HistoryAnalyzer.
+        Map<String, ProjectMetricsResults> allResults = new LinkedHashMap<>();
 
         // In case of interrupts, clear the temporary directory
         SigIntHandler sigIntHandler = new SigIntHandler(tmpDirPath);
@@ -96,11 +97,11 @@ public abstract class GitAnalysisRunner extends AnalysisRunner<Map<String, Proje
                         notProcessedCommits.add(commit.getName());
                         continue;
                     }
-                    List<Path> files = JavaFilesExplorer.selectFiles(repoDirPath, getFilesRegex());
-                    LOGGER.debug("Java files found: {}", files);
-                    progressBar.setExtraMessage("Inspecting " + commit.getName().substring(0, 8) + " (" + files.size() + " files)");
+                    progressBar.setExtraMessage("Inspecting " + commit.getName().substring(0, 8));
                     progressBar.step();
-                    allResults.put(commit.getName(), super.analyze(repoDirPath, files));
+                    ProjectAnalyzer projectAnalyzer = new ProjectAnalyzer(repoDirPath, getFilesRegex(), getMetrics());
+                    ProjectMetricsResults projectMetricsResults = projectAnalyzer.analyze();
+                    allResults.put(commit.getName(), projectMetricsResults);
                 }
             }
         } catch (IOException e) {
