@@ -4,7 +4,7 @@ import org.surface.surface.common.RunSetting;
 import org.surface.surface.common.selectors.RevisionSelector;
 import org.surface.surface.common.selectors.RevisionSelectorFactory;
 
-public class AnalysisModeFactory {
+public class ModeRunnerFactory {
 
     public ModeRunner<?> getModeRunner(RunSetting runSetting) {
         switch (runSetting.getRunMode()) {
