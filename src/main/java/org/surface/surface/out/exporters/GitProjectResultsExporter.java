@@ -12,6 +12,13 @@ import java.util.Map;
 public class GitProjectResultsExporter extends ResultsExporter<Map<String, ProjectMetricsResults>> {
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public static final String PROJECT_NAME = "projectName";
+    public static final String LOCAL_PATH = "localPath";
+    public static final String REMOTE_PATH = "remotePath";
+    public static final String NAME = "name";
+    public static final String PATH = "path";
+    public static final String REVISIONS = "revisions";
+
     private final String remotePath;
 
     public GitProjectResultsExporter(Writer writer, String remotePath) {
@@ -24,18 +31,18 @@ public class GitProjectResultsExporter extends ResultsExporter<Map<String, Proje
         Map<String, Object> content = new LinkedHashMap<>();
         Map<String, Object> revisions = new LinkedHashMap<>();
         Map.Entry<String, ProjectMetricsResults> first = projectMetricsResults.entrySet().iterator().next();
-        content.put("projectName", first.getValue().getProjectName());
-        content.put("localPath", first.getValue().getProjectPath().toString());
+        content.put(PROJECT_NAME, first.getValue().getProjectName());
+        content.put(LOCAL_PATH, first.getValue().getProjectPath().toString());
         if (remotePath != null) {
-            content.put("remotePath", remotePath);
+            content.put(REMOTE_PATH, remotePath);
         }
         for (Map.Entry<String, ProjectMetricsResults> entry : projectMetricsResults.entrySet()) {
             Map<String, Object> projectResults = entry.getValue().toMap();
-            projectResults.remove("name");
-            projectResults.remove("path");
+            projectResults.remove(NAME);
+            projectResults.remove(PATH);
             revisions.put(entry.getKey(), projectResults);
         }
-        content.put("revisions", revisions);
+        content.put(REVISIONS, revisions);
         LOGGER.trace("Results exported: {}", content);
         getResultsWriter().write(content);
     }

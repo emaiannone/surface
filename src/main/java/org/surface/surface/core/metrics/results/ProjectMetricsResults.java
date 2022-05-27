@@ -8,6 +8,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetricsResults> {
+    public static final String NAME = "name";
+    public static final String PATH = "path";
+    public static final String METRICS = "metrics";
+    public static final String CLASSES = "classes";
     private final Path projectRoot;
     private final Set<ClassMetricsResults> classMetricsResults;
     private final List<MetricValue<?>> metricValues;
@@ -77,14 +81,14 @@ public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetr
 
     public Map<String, Object> toMap() {
         Map<String, Object> map = new LinkedHashMap<>();
-        map.put("name", getProjectName());
-        map.put("path", getProjectPath().toString());
-        map.put("metrics", getMetrics());
+        map.put(NAME, getProjectName());
+        map.put(PATH, getProjectPath().toString());
+        map.put(METRICS, getMetrics());
         List<Map<?, ?>> classes = new ArrayList<>();
         for (ClassMetricsResults classMetricsResult : getClassMetricsResults()) {
             classes.add(classMetricsResult.toMap(getProjectPath()));
         }
-        map.put("classes", classes);
+        map.put(CLASSES, classes);
         return map;
     }
 

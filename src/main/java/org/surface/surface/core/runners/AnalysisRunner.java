@@ -10,6 +10,7 @@ import org.surface.surface.out.exporters.ResultsExporter;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,6 +36,10 @@ public abstract class AnalysisRunner<T> {
 
     public String getTarget() {
         return target;
+    }
+
+    public Path getTargetPath() {
+        return Paths.get(target).toAbsolutePath();
     }
 
     public Path getOutFilePath() {

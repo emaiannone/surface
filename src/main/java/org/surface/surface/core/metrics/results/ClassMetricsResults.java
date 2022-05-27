@@ -9,6 +9,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ClassMetricsResults implements MetricsResults, Iterable<MetricValue<?>> {
+    public static final String CLASS_NAME = "className";
+    public static final String FILE_PATH = "filePath";
+    public static final String METRICS = "metrics";
+
     private final String classFullyQualifiedName;
     private final Path filePath;
     private final Map<String, Set<String>> classifiedAttributesAndMethodsNames;
@@ -59,9 +63,9 @@ public class ClassMetricsResults implements MetricsResults, Iterable<MetricValue
 
     public Map<String, Object> toMap(Path basePath) {
         Map<String, Object> map = new LinkedHashMap<>();
-        map.put("className", getClassFullyQualifiedName());
-        map.put("filePath", getFilePath(basePath).toString());
-        map.put("metrics", getMetrics());
+        map.put(CLASS_NAME, getClassFullyQualifiedName());
+        map.put(FILE_PATH, getFilePath(basePath).toString());
+        map.put(METRICS, getMetrics());
         return map;
     }
 
