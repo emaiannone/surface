@@ -23,7 +23,7 @@ public abstract class AnalysisRunner<T> {
     private final String filesRegex;
     private ResultsExporter<T> resultsExporter;
 
-    public AnalysisRunner(List<String> metrics, String target, Path outFilePath, String filesRegex) {
+    AnalysisRunner(List<String> metrics, String target, Path outFilePath, String filesRegex) {
         this.metrics = Objects.requireNonNull(metrics);
         this.target = Objects.requireNonNull(target);
         this.outFilePath = Objects.requireNonNull(outFilePath);
@@ -34,27 +34,27 @@ public abstract class AnalysisRunner<T> {
         return metrics;
     }
 
-    public String getTarget() {
+    String getTarget() {
         return target;
     }
 
-    public Path getTargetPath() {
+    Path getTargetPath() {
         return Paths.get(target).toAbsolutePath();
     }
 
-    public Path getOutFilePath() {
+    Path getOutFilePath() {
         return outFilePath;
     }
 
-    public String getFilesRegex() {
+    String getFilesRegex() {
         return filesRegex;
     }
 
-    public void setResultsExporter(ResultsExporter<T> resultsExporter) {
+    void setResultsExporter(ResultsExporter<T> resultsExporter) {
         this.resultsExporter = resultsExporter;
     }
 
-    protected ProjectMetricsResults analyze(Path targetDir, List<Path> allowedFiles) throws IOException {
+    ProjectMetricsResults analyze(Path targetDir, List<Path> allowedFiles) throws IOException {
         LOGGER.debug("Going to inspect {} files in {}", allowedFiles.size(), targetDir);
         ProjectInspector projectInspector = new ProjectInspector(targetDir, allowedFiles);
         ProjectInspectorResults projectInspectorResults = projectInspector.inspect();
@@ -66,7 +66,7 @@ public abstract class AnalysisRunner<T> {
         return projectMetricsResults;
     }
 
-    protected void exportResults(T projectMetricsResults) throws IOException {
+    void exportResults(T projectMetricsResults) throws IOException {
         LOGGER.info("* Exporting results to {}", getOutFilePath());
         try {
             resultsExporter.export(projectMetricsResults);

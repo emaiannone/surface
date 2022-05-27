@@ -7,7 +7,7 @@ public abstract class SCCR extends ProjectMetric<DoubleMetricValue> {
     public static final String NAME = "Serializable Critical Classes Ratio";
     public static final String CODE = "SCCR";
 
-    protected SCCR() {
+    SCCR() {
         setName(NAME);
         setCode(CODE);
     }

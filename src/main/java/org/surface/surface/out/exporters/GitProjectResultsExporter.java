@@ -12,12 +12,12 @@ import java.util.Map;
 public class GitProjectResultsExporter extends ResultsExporter<Map<String, ProjectMetricsResults>> {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static final String PROJECT_NAME = "projectName";
-    public static final String LOCAL_PATH = "localPath";
-    public static final String REMOTE_PATH = "remotePath";
-    public static final String NAME = "name";
-    public static final String PATH = "path";
-    public static final String REVISIONS = "revisions";
+    private static final String PROJECT_NAME = "projectName";
+    private static final String LOCAL_PATH = "localPath";
+    private static final String REMOTE_PATH = "remotePath";
+    private static final String NAME = "name";
+    private static final String PATH = "path";
+    private static final String REVISIONS = "revisions";
 
     private final String remotePath;
 

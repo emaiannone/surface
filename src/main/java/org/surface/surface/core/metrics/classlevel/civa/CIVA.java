@@ -7,7 +7,7 @@ public abstract class CIVA extends ClassMetric<DoubleMetricValue> {
     public static final String NAME = "Classified Instance Variables Accessibility";
     public static final String CODE = "CIVA";
 
-    protected CIVA() {
+    CIVA() {
         setName(NAME);
         setCode(CODE);
     }

@@ -76,7 +76,7 @@ public class ClassMetricsFactory implements MetricsFactory<ClassMetric<?>> {
         private final CMR cmr;
         private final CAI cai;
 
-        public MetricsStructure() {
+        MetricsStructure() {
             // Create here all existing metrics and compose them
             this.ca = new CACached();
             this.cm = new CMCached();
@@ -88,35 +88,35 @@ public class ClassMetricsFactory implements MetricsFactory<ClassMetric<?>> {
             this.cai = new CAICached(ca);
         }
 
-        public CA getCa() {
+        CA getCa() {
             return ca;
         }
 
-        public CM getCm() {
+        CM getCm() {
             return cm;
         }
 
-        public RP getRp() {
+        RP getRp() {
             return rp;
         }
 
-        public CIVA getCiva() {
+        CIVA getCiva() {
             return civa;
         }
 
-        public CCVA getCcva() {
+        CCVA getCcva() {
             return ccva;
         }
 
-        public CMA getCma() {
+        CMA getCma() {
             return cma;
         }
 
-        public CMR getCmr() {
+        CMR getCmr() {
             return cmr;
         }
 
-        public CAI getCai() {
+        CAI getCai() {
             return cai;
         }
     }

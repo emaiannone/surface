@@ -5,7 +5,7 @@ public abstract class MetricValue<T> {
     private final String metricCode;
     private final T value;
 
-    public MetricValue(String metricName, String metricCode, T value) {
+    MetricValue(String metricName, String metricCode, T value) {
         this.metricName = metricName;
         this.metricCode = metricCode;
         this.value = value;

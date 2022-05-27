@@ -11,11 +11,11 @@ public abstract class RevisionSelector {
 
     private final String revisionString;
 
-    public RevisionSelector(String revisionString) {
+    RevisionSelector(String revisionString) {
         this.revisionString = revisionString;
     }
 
-    public String getRevisionString() {
+    String getRevisionString() {
         return revisionString;
     }
 

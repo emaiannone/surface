@@ -7,11 +7,11 @@ import java.io.IOException;
 public abstract class ResultsExporter<T> {
     private Writer writer;
 
-    public ResultsExporter(Writer writer) {
+    ResultsExporter(Writer writer) {
         this.writer = writer;
     }
 
-    public Writer getResultsWriter() {
+    Writer getResultsWriter() {
         return writer;
     }
 

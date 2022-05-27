@@ -7,7 +7,7 @@ public abstract class CME extends ProjectMetric<DoubleMetricValue> {
     public static final String NAME = "Critical Methods Extensibility";
     public static final String CODE = "CME";
 
-    protected CME() {
+    CME() {
         setName(NAME);
         setCode(CODE);
     }

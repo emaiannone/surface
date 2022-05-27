@@ -7,7 +7,7 @@ public abstract class CC extends ProjectMetric<IntMetricValue> {
     public static final String NAME = "Critical Classes";
     public static final String CODE = "CC";
 
-    protected CC() {
+    CC() {
         setName(NAME);
         setCode(CODE);
     }

@@ -7,7 +7,7 @@ public abstract class CAI extends ClassMetric<DoubleMetricValue> {
     public static final String NAME = "Classified Attributes Interactions";
     public static final String CODE = "CAI";
 
-    protected CAI() {
+    CAI() {
         setName(NAME);
         setCode(CODE);
     }

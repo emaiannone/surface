@@ -12,14 +12,14 @@ import java.util.List;
 import java.util.Objects;
 
 public class Utils {
-    public static final String DOT_GIT = ".git";
-    public static final String YML = "yml";
-    public static final String YAML = "yaml";
-    public static final String JAVA = "java";
-    public static final String JSON = "json";
-    public static final String GITHUB = "github.com";
+    private static final String DOT_GIT = ".git";
+    private static final String YML = "yml";
+    private static final String YAML = "yaml";
+    private static final String JAVA = "java";
+    private static final String JSON = "json";
+    private static final String GITHUB = "github.com";
 
-    public static boolean isFile(File file) {
+    private static boolean isFile(File file) {
         return file.exists() && file.isFile();
     }
 
@@ -32,7 +32,7 @@ public class Utils {
                 Arrays.stream(Objects.requireNonNull(file.listFiles())).anyMatch(dir -> dir.getName().equals(DOT_GIT));
     }
 
-    public static boolean hasYamlExtension(Path path) {
+    private static boolean hasYamlExtension(Path path) {
         String ext = FilenameUtils.getExtension(path.toString());
         return ext.equalsIgnoreCase(YAML) || ext.equalsIgnoreCase(YML);
     }

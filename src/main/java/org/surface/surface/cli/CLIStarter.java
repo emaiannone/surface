@@ -8,7 +8,7 @@ import org.surface.surface.core.Surface;
 
 import java.util.List;
 
-public class CLIStarter {
+class CLIStarter {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public static void main(String[] args) {

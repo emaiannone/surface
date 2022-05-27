@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-public class CLIArgumentsParser {
+class CLIArgumentsParser {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private static List<String> parseMetrics(String[] metricsFormula) {

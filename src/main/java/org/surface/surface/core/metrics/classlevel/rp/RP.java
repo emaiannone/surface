@@ -7,7 +7,7 @@ public abstract class RP extends ClassMetric<BooleanMetricValue> {
     public static final String NAME = "Reflection Package";
     public static final String CODE = "RP";
 
-    protected RP() {
+    RP() {
         setName(NAME);
         setCode(CODE);
     }

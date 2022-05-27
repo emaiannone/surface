@@ -7,7 +7,7 @@ public abstract class CSCR extends ProjectMetric<DoubleMetricValue> {
     public static final String NAME = "Critical SuperClasses Ratios";
     public static final String CODE = "CSCR";
 
-    protected CSCR() {
+    CSCR() {
         setName(NAME);
         setCode(CODE);
     }

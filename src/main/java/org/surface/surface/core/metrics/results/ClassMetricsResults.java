@@ -9,9 +9,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ClassMetricsResults implements MetricsResults, Iterable<MetricValue<?>> {
-    public static final String CLASS_NAME = "className";
-    public static final String FILE_PATH = "filePath";
-    public static final String METRICS = "metrics";
+    private static final String CLASS_NAME = "className";
+    private static final String FILE_PATH = "filePath";
+    private static final String METRICS = "metrics";
 
     private final String classFullyQualifiedName;
     private final Path filePath;
@@ -29,11 +29,11 @@ public class ClassMetricsResults implements MetricsResults, Iterable<MetricValue
         metricValues.add(classValue);
     }
 
-    public String getClassFullyQualifiedName() {
+    private String getClassFullyQualifiedName() {
         return classFullyQualifiedName;
     }
 
-    public Path getFilePath(Path basePath) {
+    private Path getFilePath(Path basePath) {
         if (basePath != null) {
             return basePath.relativize(filePath);
         }
@@ -53,7 +53,7 @@ public class ClassMetricsResults implements MetricsResults, Iterable<MetricValue
         return getMetricValues().iterator();
     }
 
-    public Map<String, Object> getMetrics() {
+    private Map<String, Object> getMetrics() {
         Map<String, Object> metricsAsMap = new LinkedHashMap<>();
         for (MetricValue<?> classValue : metricValues) {
             metricsAsMap.put(classValue.getMetricCode(), classValue.getValue());

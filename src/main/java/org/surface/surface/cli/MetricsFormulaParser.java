@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class MetricsFormulaParser {
+class MetricsFormulaParser {
 
     private static final String ALL = "ALL";
     private final List<Pair<String, String>> supportedMetrics;

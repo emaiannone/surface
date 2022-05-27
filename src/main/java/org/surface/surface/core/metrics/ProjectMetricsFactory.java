@@ -64,7 +64,7 @@ public class ProjectMetricsFactory implements MetricsFactory<ProjectMetric<?>> {
         private final CME cme;
         private final CSCR cscr;
 
-        public MetricsStructure() {
+        MetricsStructure() {
             // Create here all existing metrics and compose them
             this.cc = new CCCached();
             this.ccr = new CCRCached(cc);
@@ -74,27 +74,27 @@ public class ProjectMetricsFactory implements MetricsFactory<ProjectMetric<?>> {
             this.cscr = new CSCRCached();
         }
 
-        public CC getCc() {
+        CC getCc() {
             return cc;
         }
 
-        public CCR getCcr() {
+        CCR getCcr() {
             return ccr;
         }
 
-        public SCCR getSccr() {
+        SCCR getSccr() {
             return sccr;
         }
 
-        public CCE getCce() {
+        CCE getCce() {
             return cce;
         }
 
-        public CME getCme() {
+        CME getCme() {
             return cme;
         }
 
-        public CSCR getCscr() {
+        CSCR getCscr() {
             return cscr;
         }
     }

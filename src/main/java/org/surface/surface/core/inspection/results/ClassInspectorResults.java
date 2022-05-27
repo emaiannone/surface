@@ -44,7 +44,7 @@ public class ClassInspectorResults implements InspectorResults {
         this.usingReflection = usingReflection;
     }
 
-    public String getClassName() {
+    private String getClassName() {
         return classOrInterfaceDeclaration.getNameAsString();
     }
 
@@ -60,7 +60,7 @@ public class ClassInspectorResults implements InspectorResults {
         return Collections.unmodifiableSet(new LinkedHashSet<>(classOrInterfaceDeclaration.getMethods()));
     }
 
-    public Map<VariableDeclarator, Set<MethodDeclaration>> getClassifiedAttributesAndMethods() {
+    private Map<VariableDeclarator, Set<MethodDeclaration>> getClassifiedAttributesAndMethods() {
         return Collections.unmodifiableMap(classifiedAttributesAndMethods);
     }
 

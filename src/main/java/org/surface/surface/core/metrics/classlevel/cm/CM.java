@@ -7,7 +7,7 @@ public abstract class CM extends ClassMetric<IntMetricValue> {
     public static final String NAME = "Classified Methods";
     public static final String CODE = "CM";
 
-    protected CM() {
+    CM() {
         setName(NAME);
         setCode(CODE);
     }

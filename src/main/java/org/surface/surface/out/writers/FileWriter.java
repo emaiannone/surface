@@ -2,14 +2,14 @@ package org.surface.surface.out.writers;
 
 import java.nio.file.Path;
 
-public abstract class FileWriter implements Writer {
+abstract class FileWriter implements Writer {
     private Path outFilePath;
 
-    public FileWriter(Path outFilePath) {
+    FileWriter(Path outFilePath) {
         this.outFilePath = outFilePath;
     }
 
-    public Path getOutFilePath() {
+    Path getOutFilePath() {
         return outFilePath;
     }
 

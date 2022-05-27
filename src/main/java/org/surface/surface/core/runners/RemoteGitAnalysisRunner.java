@@ -16,7 +16,7 @@ import java.util.List;
 public class RemoteGitAnalysisRunner extends GitAnalysisRunner {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public RemoteGitAnalysisRunner(List<String> metrics, String target, Path outFilePath, String filesRegex, Path workDirPath, RevisionSelector revisionSelector) {
+    RemoteGitAnalysisRunner(List<String> metrics, String target, Path outFilePath, String filesRegex, Path workDirPath, RevisionSelector revisionSelector) {
         super(metrics, target, outFilePath, filesRegex, workDirPath, revisionSelector);
         Writer writer = new WriterFactory().getWriter(getOutFilePath());
         setResultsExporter(new GitProjectResultsExporter(writer, target));

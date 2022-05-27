@@ -23,18 +23,18 @@ import java.util.*;
 public abstract class GitAnalysisRunner extends AnalysisRunner<Map<String, ProjectMetricsResults>> {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static final String SURFACE_TMP = "SURFACE_TMP";
+    private static final String SURFACE_TMP = "SURFACE_TMP";
 
     private final Path workDirPath;
     private final RevisionSelector revisionSelector;
 
-    public GitAnalysisRunner(List<String> metrics, String target, Path outFilePath, String filesRegex, Path workDirPath, RevisionSelector revisionSelector) {
+    GitAnalysisRunner(List<String> metrics, String target, Path outFilePath, String filesRegex, Path workDirPath, RevisionSelector revisionSelector) {
         super(metrics, target, outFilePath, filesRegex);
         this.workDirPath = workDirPath;
         this.revisionSelector = revisionSelector;
     }
 
-    public String getProjectName() {
+    private String getProjectName() {
         return getTargetPath().getFileName().toString();
     }
 
@@ -42,16 +42,12 @@ public abstract class GitAnalysisRunner extends AnalysisRunner<Map<String, Proje
         return workDirPath;
     }
 
-    protected Path getTmpDirPath() {
+    Path getTmpDirPath() {
         return Paths.get(workDirPath.toString(), SURFACE_TMP);
     }
 
-    protected Path getRepoDirPath() {
+    Path getRepoDirPath() {
         return Paths.get(getTmpDirPath().toString(), getProjectName());
-    }
-
-    public List<RevCommit> selectRevisions(Git git) throws GitAPIException, IOException {
-        return revisionSelector.selectRevisions(git);
     }
 
     protected abstract Path prepareTmpDir();
@@ -77,7 +73,7 @@ public abstract class GitAnalysisRunner extends AnalysisRunner<Map<String, Proje
                 throw new RuntimeException("The reset of git repository " + git.getRepository().getDirectory().getName() + "failed", e);
             }
             try {
-                commits = selectRevisions(git);
+                commits = revisionSelector.selectRevisions(git);
             } catch (Exception e) {
                 throw new Exception("Failed to fetch the required revisions from git repository " + repoDirPath, e);
             }
@@ -119,11 +115,11 @@ public abstract class GitAnalysisRunner extends AnalysisRunner<Map<String, Proje
         exportResults(allResults);
     }
 
-    protected void resetHard(Git git) throws GitAPIException {
+    private void resetHard(Git git) throws GitAPIException {
         git.reset().setMode(ResetCommand.ResetType.HARD).call();
     }
 
-    protected void deleteTmpDirectory(Path tmpDirPath) throws IOException {
+    void deleteTmpDirectory(Path tmpDirPath) throws IOException {
         if (tmpDirPath.toFile().exists()) {
             FileUtils.deleteDirectory(tmpDirPath.toFile());
         }

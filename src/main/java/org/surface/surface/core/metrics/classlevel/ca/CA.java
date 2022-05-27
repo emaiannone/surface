@@ -7,7 +7,7 @@ public abstract class CA extends ClassMetric<IntMetricValue> {
     public static final String NAME = "Classified Attributes";
     public static final String CODE = "CA";
 
-    protected CA() {
+    CA() {
         setName(NAME);
         setCode(CODE);
     }

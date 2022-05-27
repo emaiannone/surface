@@ -17,7 +17,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class ClassInspector extends Inspector {
+class ClassInspector extends Inspector {
     private final ClassOrInterfaceDeclaration classDeclaration;
     private final Path filepath;
     private final List<Pattern> patterns;

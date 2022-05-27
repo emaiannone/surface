@@ -14,7 +14,7 @@ public abstract class Metric<T extends InspectorResults, U extends MetricValue<?
         this.name = name;
     }
 
-    public String getName() {
+    protected String getName() {
         return name;
     }
 
@@ -22,7 +22,7 @@ public abstract class Metric<T extends InspectorResults, U extends MetricValue<?
         this.code = code;
     }
 
-    public String getCode() {
+    protected String getCode() {
         return code;
     }
 

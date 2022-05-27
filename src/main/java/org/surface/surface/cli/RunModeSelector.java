@@ -7,7 +7,7 @@ import java.io.File;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 
-public class RunModeSelector {
+class RunModeSelector {
 
     public static RunMode inferMode(String target) {
         if (Utils.isGitHubUrl(target)) {
