@@ -1,10 +1,14 @@
 package org.surface.surface.core.runners;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.surface.surface.common.RevisionMode;
 import org.surface.surface.common.selectors.RevisionSelector;
+import org.surface.surface.common.selectors.RevisionSelectorFactory;
 import org.surface.surface.core.analysis.HistoryAnalyzer;
+import org.surface.surface.core.analysis.setup.SetupEnvironmentAction;
 import org.surface.surface.core.metrics.results.ProjectMetricsResults;
 
 import java.io.IOException;
@@ -16,39 +20,23 @@ import java.util.Map;
 public abstract class GitModeRunner extends ModeRunner<Map<String, ProjectMetricsResults>> {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private static final String SURFACE_TMP = "SURFACE_TMP";
-
-    private final Path workDirPath;
     private final RevisionSelector revisionSelector;
+    private SetupEnvironmentAction setupEnvironmentAction;
 
-    GitModeRunner(List<String> metrics, String target, Path outFilePath, String filesRegex, Path workDirPath, RevisionSelector revisionSelector) {
+    GitModeRunner(List<String> metrics, String target, Path outFilePath, String filesRegex, Pair<RevisionMode, String> revision) {
         super(metrics, target, outFilePath, filesRegex);
-        this.workDirPath = workDirPath;
-        this.revisionSelector = revisionSelector;
+        this.revisionSelector = new RevisionSelectorFactory().selectRevisionSelector(revision);
     }
 
-    private String getProjectName() {
-        return getTargetPath().getFileName().toString();
+    void setSetupEnvironmentAction(SetupEnvironmentAction setupEnvironmentAction) {
+        this.setupEnvironmentAction = setupEnvironmentAction;
     }
-
-    public Path getWorkDirPath() {
-        return workDirPath;
-    }
-
-    Path getTmpDirPath() {
-        return Paths.get(workDirPath.toString(), SURFACE_TMP);
-    }
-
-    Path getRepoDirPath() {
-        return Paths.get(getTmpDirPath().toString(), getProjectName());
-    }
-
-    protected abstract Path prepareTmpDir();
 
     @Override
     public void run() throws Exception {
+        // TODO Move this logic into HistoryAnalyzer
         // Depends on the specific thing to do
-        Path tmpDirPath = prepareTmpDir();
+        Path tmpDirPath = setupEnvironmentAction.setupEnvironment();
         Path repoDirPath = Paths.get(tmpDirPath.toString(), getProjectName());
 
         // In case of interrupts, clear the temporary directory
@@ -67,7 +55,7 @@ public abstract class GitModeRunner extends ModeRunner<Map<String, ProjectMetric
         exportResults(allResults);
     }
 
-    void deleteTmpDirectory(Path tmpDirPath) throws IOException {
+    private void deleteTmpDirectory(Path tmpDirPath) throws IOException {
         if (tmpDirPath.toFile().exists()) {
             FileUtils.deleteDirectory(tmpDirPath.toFile());
         }

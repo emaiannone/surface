@@ -24,6 +24,6 @@ public class FlexibleModeRunner extends ModeRunner<Map<String, Map<String, Proje
 
     @Override
     public void run() {
-        // TODO Read the YAML, interpret it, and decide WHICH and HOW MANY HistoryAnamyzer (new class) to instantiate
+        // TODO Read the YAML, interpret it, and decide WHICH and HOW MANY HistoryAnalyzer (new class) to instantiate
     }
 }

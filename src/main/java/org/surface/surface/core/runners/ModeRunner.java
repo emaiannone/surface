@@ -34,16 +34,16 @@ public abstract class ModeRunner<T> {
         return target;
     }
 
-    Path getTargetPath() {
-        return Paths.get(target).toAbsolutePath();
-    }
-
     Path getOutFilePath() {
         return outFilePath;
     }
 
     String getFilesRegex() {
         return filesRegex;
+    }
+
+    String getProjectName() {
+        return Paths.get(target).getFileName().toString();
     }
 
     void setResultsExporter(ResultsExporter<T> resultsExporter) {

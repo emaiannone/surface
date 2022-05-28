@@ -12,12 +12,10 @@ public class ModeRunnerFactory {
                 return new LocalDirectoryModeRunner(runSetting.getMetrics(), runSetting.getTargetValue(), runSetting.getOutFilePath(), runSetting.getFilesRegex());
             }
             case LOCAL_GIT: {
-                RevisionSelector revisionSelector = new RevisionSelectorFactory().selectRevisionSelector(runSetting.getRevision());
-                return new LocalGitModeRunner(runSetting.getMetrics(), runSetting.getTargetValue(), runSetting.getOutFilePath(), runSetting.getFilesRegex(), runSetting.getWorkDirPath(), revisionSelector);
+                return new LocalGitModeRunner(runSetting.getMetrics(), runSetting.getTargetValue(), runSetting.getOutFilePath(), runSetting.getFilesRegex(), runSetting.getRevision(), runSetting.getWorkDirPath());
             }
             case REMOTE_GIT: {
-                RevisionSelector revisionSelector = new RevisionSelectorFactory().selectRevisionSelector(runSetting.getRevision());
-                return new RemoteGitModeRunner(runSetting.getMetrics(), runSetting.getTargetValue(), runSetting.getOutFilePath(), runSetting.getFilesRegex(), runSetting.getWorkDirPath(), revisionSelector);
+                return new RemoteGitModeRunner(runSetting.getMetrics(), runSetting.getTargetValue(), runSetting.getOutFilePath(), runSetting.getFilesRegex(), runSetting.getRevision(), runSetting.getWorkDirPath());
             }
             case FLEXIBLE: {
                 RevisionSelector revisionSelector = new RevisionSelectorFactory().selectRevisionSelector(runSetting.getRevision());
