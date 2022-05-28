@@ -1,4 +1,4 @@
-package org.surface.surface.common.selectors;
+package org.surface.surface.core.analysis.selectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

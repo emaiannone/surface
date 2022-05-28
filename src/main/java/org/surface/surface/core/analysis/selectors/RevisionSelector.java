@@ -1,4 +1,4 @@
-package org.surface.surface.common.selectors;
+package org.surface.surface.core.analysis.selectors;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;

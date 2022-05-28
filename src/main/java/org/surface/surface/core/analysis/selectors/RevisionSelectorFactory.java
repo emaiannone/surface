@@ -1,4 +1,4 @@
-package org.surface.surface.common.selectors;
+package org.surface.surface.core.analysis.selectors;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.surface.surface.common.RevisionMode;

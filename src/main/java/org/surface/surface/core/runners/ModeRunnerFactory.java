@@ -1,8 +1,8 @@
 package org.surface.surface.core.runners;
 
 import org.surface.surface.common.RunSetting;
-import org.surface.surface.common.selectors.RevisionSelector;
-import org.surface.surface.common.selectors.RevisionSelectorFactory;
+import org.surface.surface.core.analysis.selectors.RevisionSelector;
+import org.surface.surface.core.analysis.selectors.RevisionSelectorFactory;
 
 public class ModeRunnerFactory {
 

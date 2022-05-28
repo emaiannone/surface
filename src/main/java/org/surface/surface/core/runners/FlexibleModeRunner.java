@@ -1,6 +1,6 @@
 package org.surface.surface.core.runners;
 
-import org.surface.surface.common.selectors.RevisionSelector;
+import org.surface.surface.core.analysis.selectors.RevisionSelector;
 import org.surface.surface.core.metrics.results.ProjectMetricsResults;
 import org.surface.surface.out.exporters.MixedProjectsResultsExporter;
 import org.surface.surface.out.writers.Writer;

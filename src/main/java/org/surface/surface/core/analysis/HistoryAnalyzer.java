@@ -10,7 +10,7 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.surface.surface.common.selectors.RevisionSelector;
+import org.surface.surface.core.analysis.selectors.RevisionSelector;
 import org.surface.surface.core.metrics.results.ProjectMetricsResults;
 
 import java.io.IOException;
