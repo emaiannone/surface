@@ -42,6 +42,7 @@ class CLIArgumentsParser {
         List<String> selectedMetrics = parseMetrics(commandLine.getOptionValues(CLIOptions.METRICS));
         LOGGER.info("* Going to compute the following metrics: {}", selectedMetrics);
         String target = commandLine.getOptionValue(CLIOptions.TARGET);
+        // TODO Extract the validation from inferMode here, and then move it elsewhere
         RunMode runMode = RunModeSelector.inferMode(target);
         LOGGER.info("* Going to run in the following mode: " + runMode);
 

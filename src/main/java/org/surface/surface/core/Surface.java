@@ -5,7 +5,6 @@ import org.apache.logging.log4j.Logger;
 import org.surface.surface.common.RunSetting;
 import org.surface.surface.common.Utils;
 import org.surface.surface.core.runners.ModeRunner;
-import org.surface.surface.core.runners.ModeRunnerFactory;
 
 import java.util.List;
 
@@ -20,8 +19,7 @@ public class Surface {
 
     public void run() {
         LOGGER.info("* Setting up SURFACE");
-        ModeRunnerFactory runnerFactory = new ModeRunnerFactory();
-        ModeRunner<?> modeRunner = runnerFactory.getModeRunner(runSetting);
+        ModeRunner<?> modeRunner = ModeRunner.newModeRunner(runSetting);
         try {
             LOGGER.info("* Launching SURFACE");
             modeRunner.run();

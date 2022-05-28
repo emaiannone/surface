@@ -37,7 +37,7 @@ public class CloneSetupEnvironmentAction extends SetupEnvironmentAction {
         } catch (GitAPIException e) {
             throw new RuntimeException("Failed to clone the remote git repository from " + getTarget() +
                     " into " + tmpDirPath +
-                    ". Please, try again or select a new destination.", e);
+                    ". Please, try a new remote URL or select a new destination where to clone it.", e);
         }
         return tmpDirPath;
     }

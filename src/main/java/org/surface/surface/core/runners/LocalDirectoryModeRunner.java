@@ -7,7 +7,6 @@ import org.surface.surface.core.analysis.SnapshotAnalyzer;
 import org.surface.surface.core.metrics.results.ProjectMetricsResults;
 import org.surface.surface.out.exporters.SimpleProjectResultsExporter;
 import org.surface.surface.out.writers.Writer;
-import org.surface.surface.out.writers.WriterFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -19,7 +18,7 @@ public class LocalDirectoryModeRunner extends ModeRunner<ProjectMetricsResults> 
 
     public LocalDirectoryModeRunner(List<String> metrics, String target, Path outFilePath, String filesRegex) {
         super(metrics, target, outFilePath, filesRegex);
-        Writer writer = new WriterFactory().getWriter(getOutFilePath());
+        Writer writer = Writer.newWriter(getOutFilePath());
         setResultsExporter(new SimpleProjectResultsExporter(writer));
     }
 
@@ -30,7 +29,7 @@ public class LocalDirectoryModeRunner extends ModeRunner<ProjectMetricsResults> 
             throw new IllegalStateException("The target directory does not exist or is not a directory.");
         }
 
-        SnapshotAnalyzer snapshotAnalyzer = new SnapshotAnalyzer(dirPath, getFilesRegex(), getMetrics());
+        SnapshotAnalyzer snapshotAnalyzer = new SnapshotAnalyzer(dirPath, getDefaultFilesRegex(), getMetrics());
         ProjectMetricsResults projectMetricsResults = snapshotAnalyzer.analyze();
         exportResults(projectMetricsResults);
     }

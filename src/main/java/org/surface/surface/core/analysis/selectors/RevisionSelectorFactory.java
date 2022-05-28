@@ -5,7 +5,7 @@ import org.surface.surface.common.RevisionMode;
 
 public class RevisionSelectorFactory {
 
-    public RevisionSelector selectRevisionSelector(Pair<RevisionMode, String> revision) {
+    static RevisionSelector newRevisionSelector(Pair<RevisionMode, String> revision) {
         if (revision.getKey() == null) {
             return null;
         }

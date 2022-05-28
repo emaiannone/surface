@@ -4,7 +4,7 @@ import org.surface.surface.common.RunSetting;
 
 public class ModeRunnerFactory {
 
-    public ModeRunner<?> getModeRunner(RunSetting runSetting) {
+    static ModeRunner<?> newModeRunner(RunSetting runSetting) {
         switch (runSetting.getRunMode()) {
             case LOCAL_DIR: {
                 return new LocalDirectoryModeRunner(runSetting.getMetrics(), runSetting.getTargetValue(), runSetting.getOutFilePath(), runSetting.getFilesRegex());
