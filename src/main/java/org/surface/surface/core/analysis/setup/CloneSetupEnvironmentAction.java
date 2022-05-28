@@ -1,5 +1,6 @@
 package org.surface.surface.core.analysis.setup;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jgit.api.Git;
@@ -20,7 +21,7 @@ public class CloneSetupEnvironmentAction extends SetupEnvironmentAction {
         // Clone the repository into the temporary directory
         Path tmpDirPath = getTmpDirPath();
         try {
-            deleteTmpDirectory(tmpDirPath);
+            FileUtils.deleteDirectory(tmpDirPath.toFile());
         } catch (IOException e) {
             throw new RuntimeException("Failed to delete the working directory " + tmpDirPath +
                     ". Please, try again or select a new destination.", e);

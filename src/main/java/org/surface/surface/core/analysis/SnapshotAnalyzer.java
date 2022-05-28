@@ -12,14 +12,14 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-public class ProjectAnalyzer {
+public class SnapshotAnalyzer {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final Path projectDirPath;
     private final String filesRegex;
     private final List<String> metrics;
 
-    public ProjectAnalyzer(Path projectDirPath, String filesRegex, List<String> metrics) {
+    public SnapshotAnalyzer(Path projectDirPath, String filesRegex, List<String> metrics) {
         this.projectDirPath = projectDirPath;
         this.filesRegex = filesRegex;
         this.metrics = metrics;

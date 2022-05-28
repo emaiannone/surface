@@ -1,8 +1,5 @@
 package org.surface.surface.core.analysis.setup;
 
-import org.apache.commons.io.FileUtils;
-
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -29,12 +26,6 @@ public abstract class SetupEnvironmentAction {
 
     Path getRepoDirPath() {
         return Paths.get(getTmpDirPath().toString(), projectName);
-    }
-
-    void deleteTmpDirectory(Path tmpDirPath) throws IOException {
-        if (tmpDirPath.toFile().exists()) {
-            FileUtils.deleteDirectory(tmpDirPath.toFile());
-        }
     }
 
     public abstract Path setupEnvironment();

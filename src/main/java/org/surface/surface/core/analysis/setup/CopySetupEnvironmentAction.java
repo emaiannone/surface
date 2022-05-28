@@ -23,7 +23,7 @@ public class CopySetupEnvironmentAction extends SetupEnvironmentAction {
 
         Path tmpDirPath = getTmpDirPath();
         try {
-            deleteTmpDirectory(tmpDirPath);
+            FileUtils.deleteDirectory(tmpDirPath.toFile());
         } catch (IOException e) {
             throw new RuntimeException("Failed to delete the working directory " + tmpDirPath +
                     ". Please, try again or select a new destination.", e);

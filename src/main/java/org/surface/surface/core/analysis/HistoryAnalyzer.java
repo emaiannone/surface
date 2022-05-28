@@ -4,6 +4,7 @@ import me.tongfei.progressbar.ConsoleProgressBarConsumer;
 import me.tongfei.progressbar.ProgressBar;
 import me.tongfei.progressbar.ProgressBarBuilder;
 import me.tongfei.progressbar.ProgressBarStyle;
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jgit.api.Git;
@@ -11,28 +12,38 @@ import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.surface.surface.core.analysis.selectors.RevisionSelector;
+import org.surface.surface.core.analysis.setup.SetupEnvironmentAction;
 import org.surface.surface.core.metrics.results.ProjectMetricsResults;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class HistoryAnalyzer {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final Path projectDirPath;
+    private final String projectName;
     private final String filesRegex;
     private final List<String> metrics;
     private final RevisionSelector revisionSelector;
+    private final SetupEnvironmentAction setupEnvironmentAction;
 
-    public HistoryAnalyzer(Path projectDirPath, String filesRegex, List<String> metrics, RevisionSelector revisionSelector) {
-        this.projectDirPath = projectDirPath;
+    public HistoryAnalyzer(String projectName, String filesRegex, List<String> metrics, RevisionSelector revisionSelector, SetupEnvironmentAction setupEnvironmentAction) {
+        this.projectName = projectName;
         this.filesRegex = filesRegex;
         this.metrics = metrics;
         this.revisionSelector = revisionSelector;
+        this.setupEnvironmentAction = setupEnvironmentAction;
     }
 
     public Map<String, ProjectMetricsResults> analyze() throws Exception {
+        Path tmpDirPath = setupEnvironmentAction.setupEnvironment();
+        Path projectDirPath = Paths.get(tmpDirPath.toString(), projectName);
+
+        SigIntHandler sigIntHandler = new SigIntHandler(tmpDirPath);
+        Runtime.getRuntime().addShutdownHook(sigIntHandler);
+
         Map<String, ProjectMetricsResults> allResults = new LinkedHashMap<>();
         List<String> notProcessedCommits = new ArrayList<>();
         try (Git git = Git.open(projectDirPath.toFile())) {
@@ -68,8 +79,8 @@ public class HistoryAnalyzer {
                     }
                     progressBar.setExtraMessage("Inspecting " + commit.getName().substring(0, 8));
                     progressBar.step();
-                    ProjectAnalyzer projectAnalyzer = new ProjectAnalyzer(projectDirPath, filesRegex, metrics);
-                    ProjectMetricsResults projectMetricsResults = projectAnalyzer.analyze();
+                    SnapshotAnalyzer snapshotAnalyzer = new SnapshotAnalyzer(projectDirPath, filesRegex, metrics);
+                    ProjectMetricsResults projectMetricsResults = snapshotAnalyzer.analyze();
                     allResults.put(commit.getName(), projectMetricsResults);
                 }
             }
@@ -79,11 +90,30 @@ public class HistoryAnalyzer {
             if (notProcessedCommits.size() > 0) {
                 LOGGER.warn("* Failed to process the following commits: " + notProcessedCommits);
             }
+            FileUtils.deleteDirectory(tmpDirPath.toFile());
+            Runtime.getRuntime().removeShutdownHook(sigIntHandler);
         }
         return allResults;
     }
 
     private void resetHard(Git git) throws GitAPIException {
         git.reset().setMode(ResetCommand.ResetType.HARD).call();
+    }
+
+    private static class SigIntHandler extends Thread {
+        private final Path tmpDirPath;
+
+        private SigIntHandler(Path tmpDirPath) {
+            this.tmpDirPath = tmpDirPath;
+        }
+
+        @Override
+        public void run() {
+            try {
+                FileUtils.deleteDirectory(tmpDirPath.toFile());
+            } catch (IOException e) {
+                LOGGER.warn("* Could not delete the working directory");
+            }
+        }
     }
 }
