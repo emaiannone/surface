@@ -8,8 +8,9 @@ import org.surface.surface.common.RevisionMode;
 import org.surface.surface.common.RunMode;
 import org.surface.surface.common.RunSetting;
 import org.surface.surface.common.Utils;
-import org.surface.surface.common.parsers.MetricsParser;
-import org.surface.surface.common.parsers.TargetParser;
+import org.surface.surface.core.parsers.MetricsParser;
+import org.surface.surface.core.parsers.OutFileParser;
+import org.surface.surface.core.parsers.TargetParser;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -47,13 +48,15 @@ class CLIArgumentsParser {
 
         // Parse Output File
         String outFileValue = commandLine.getOptionValue(CLIOptions.OUT_FILE);
-        Path outFilePath = Paths.get(outFileValue).toAbsolutePath();
-        if (!Utils.hasJsonExtension(outFilePath)) {
-            throw new IllegalArgumentException("The supplied output must have a supported extension.");
+        String outFileExtension;
+        try {
+            outFileExtension = OutFileParser.parseOutFilePath(outFileValue);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("The supplied output file path must point to a file of one of the supported type.", e);
         }
+        LOGGER.info("* Going to export results in file: " + outFileValue);
 
-        LOGGER.info("* Going to export results in file: " + outFilePath);
-
+        // TODO RevisionModeParser
         // Parse the Revision group
         RevisionMode revisionMode = null;
         String revisionValue = null;
@@ -87,6 +90,7 @@ class CLIArgumentsParser {
             LOGGER.info("* Going to analyze the following revision: " + revisionMode);
         }
 
+        // TODO WorkingDirectoryParser
         // Parse the Working Directory
         Path workDirPath = null;
         if (runMode != RunMode.LOCAL_DIR) {
@@ -101,6 +105,7 @@ class CLIArgumentsParser {
             LOGGER.info("* Going to clone in the following directory: " + workDirPath);
         }
 
+        // TODO FilesRegexParser
         // Parse Files regex
         String filesRegex = null;
         if (commandLine.hasOption(CLIOptions.FILES)) {
@@ -116,6 +121,6 @@ class CLIArgumentsParser {
             LOGGER.info("* Going to analyze all .java files found");
         }
 
-        return new RunSetting(selectedMetrics, new ImmutablePair<>(runMode, target), outFilePath, filesRegex, workDirPath, new ImmutablePair<>(revisionMode, revisionValue));
+        return new RunSetting(new ImmutablePair<>(runMode, target), selectedMetrics, new ImmutablePair<>(outFileValue, outFileExtension), filesRegex, workDirPath, new ImmutablePair<>(revisionMode, revisionValue));
     }
 }

@@ -30,6 +30,7 @@ public class ClassMetricsFactory implements MetricsFactory<ClassMetric<?>> {
 
     public List<ClassMetric<?>> getMetrics(List<String> metricsCodes) {
         List<ClassMetric<?>> classMetrics = new ArrayList<>();
+        // NOTE Any new metric must be added here to be supported
         for (String metricCode : metricsCodes) {
             ClassMetric<?> classMetric = null;
             switch (metricCode) {
@@ -57,7 +58,6 @@ public class ClassMetricsFactory implements MetricsFactory<ClassMetric<?>> {
                 case CAI.CODE:
                     classMetric = metricsStructure.getCai();
                     break;
-                // NOTE Add other metrics here
             }
             if (classMetric != null) {
                 classMetrics.add(classMetric);

@@ -1,4 +1,4 @@
-package org.surface.surface.common.parsers;
+package org.surface.surface.core.parsers;
 
 import org.apache.commons.validator.routines.UrlValidator;
 import org.surface.surface.common.RunMode;
@@ -32,12 +32,12 @@ public class TargetParser {
 
     public static boolean isLocalDirectory(String target) {
         File file = Paths.get(target).toAbsolutePath().toFile();
-        return (Utils.isDirectory(file) && !Utils.isGitDirectory(file));
+        return (file.isDirectory() && !Utils.isGitDirectory(file));
     }
 
     public static boolean isGitDirectory(String target) {
         File file = Paths.get(target).toAbsolutePath().toFile();
-        return (Utils.isDirectory(file) && Utils.isGitDirectory(file));
+        return (file.isDirectory() && Utils.isGitDirectory(file));
     }
 
     public static boolean isGitHubUrl(String target) {

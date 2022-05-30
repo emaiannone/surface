@@ -9,7 +9,6 @@ import org.surface.surface.core.analysis.selectors.RevisionSelector;
 import org.surface.surface.core.analysis.setup.SetupEnvironmentAction;
 import org.surface.surface.core.metrics.results.ProjectMetricsResults;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
@@ -20,8 +19,8 @@ public abstract class GitModeRunner extends ModeRunner<Map<String, ProjectMetric
     private final RevisionSelector revisionSelector;
     private SetupEnvironmentAction setupEnvironmentAction;
 
-    GitModeRunner(List<String> metrics, String target, Path outFilePath, String filesRegex, Pair<RevisionMode, String> revision) {
-        super(metrics, target, outFilePath, filesRegex);
+    GitModeRunner(List<String> metrics, String target, Pair<String, String> outFile, String filesRegex, Pair<RevisionMode, String> revision) {
+        super(metrics, target, outFile, filesRegex);
         this.revisionSelector = RevisionSelector.newRevisionSelector(revision);
     }
 

@@ -11,9 +11,9 @@ import java.util.List;
 
 class RemoteGitModeRunner extends GitModeRunner {
 
-    RemoteGitModeRunner(List<String> metrics, String target, Path outFilePath, String filesRegex, Pair<RevisionMode, String> revision, Path workDirPath) {
-        super(metrics, target, outFilePath, filesRegex, revision);
-        Writer writer = Writer.newWriter(getOutFilePath());
+    RemoteGitModeRunner(List<String> metrics, String target, Pair<String, String> outFile, String filesRegex, Pair<RevisionMode, String> revision, Path workDirPath) {
+        super(metrics, target, outFile, filesRegex, revision);
+        Writer writer = Writer.newWriter(getOutFilePath(), getOutFileExtension());
         setResultsExporter(new GitProjectResultsExporter(writer, target));
         setSetupEnvironmentAction(new CloneSetupEnvironmentAction(getProjectName(), target, workDirPath));
     }

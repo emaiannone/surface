@@ -1,8 +1,8 @@
 package org.surface.surface.core.runners;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.surface.surface.common.Utils;
 import org.surface.surface.core.analysis.SnapshotAnalyzer;
 import org.surface.surface.core.metrics.results.ProjectMetricsResults;
 import org.surface.surface.core.out.exporters.SimpleProjectResultsExporter;
@@ -16,16 +16,16 @@ import java.util.List;
 public class LocalDirectoryModeRunner extends ModeRunner<ProjectMetricsResults> {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public LocalDirectoryModeRunner(List<String> metrics, String target, Path outFilePath, String filesRegex) {
-        super(metrics, target, outFilePath, filesRegex);
-        Writer writer = Writer.newWriter(getOutFilePath());
+    public LocalDirectoryModeRunner(List<String> metrics, String target, Pair<String, String> outFile, String filesRegex) {
+        super(metrics, target, outFile, filesRegex);
+        Writer writer = Writer.newWriter(getOutFilePath(), getOutFileExtension());
         setResultsExporter(new SimpleProjectResultsExporter(writer));
     }
 
     @Override
     public void run() throws IOException {
         Path dirPath = Paths.get(getTarget()).toAbsolutePath();
-        if (!Utils.isDirectory(dirPath.toFile())) {
+        if (!dirPath.toFile().isDirectory()) {
             throw new IllegalStateException("The target directory does not exist or is not a directory.");
         }
 

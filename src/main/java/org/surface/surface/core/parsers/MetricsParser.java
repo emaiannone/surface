@@ -1,4 +1,4 @@
-package org.surface.surface.common.parsers;
+package org.surface.surface.core.parsers;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;

@@ -8,11 +8,12 @@ import org.apache.logging.log4j.Logger;
 import org.surface.surface.common.RevisionMode;
 import org.surface.surface.common.RunMode;
 import org.surface.surface.common.Utils;
-import org.surface.surface.common.parsers.TargetParser;
 import org.surface.surface.core.analysis.selectors.RevisionSelector;
 import org.surface.surface.core.metrics.results.ProjectMetricsResults;
 import org.surface.surface.core.out.exporters.MixedProjectsResultsExporter;
 import org.surface.surface.core.out.writers.Writer;
+import org.surface.surface.core.parsers.MetricsParser;
+import org.surface.surface.core.parsers.TargetParser;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -27,11 +28,11 @@ public class FlexibleModeRunner extends ModeRunner<Map<String, Map<String, Proje
     private final Path workDirPath;
     private final RevisionSelector defaultRevisionSelector;
 
-    FlexibleModeRunner(List<String> metrics, String target, Path outFilePath, String filesRegex, Pair<RevisionMode, String> revision, Path workDirPath) {
-        super(metrics, target, outFilePath, filesRegex);
+    FlexibleModeRunner(List<String> metrics, String target, Pair<String, String> outFile, String filesRegex, Pair<RevisionMode, String> revision, Path workDirPath) {
+        super(metrics, target, outFile, filesRegex);
         this.workDirPath = workDirPath;
         this.defaultRevisionSelector = RevisionSelector.newRevisionSelector(revision);
-        Writer writer = Writer.newWriter(getOutFilePath());
+        Writer writer = Writer.newWriter(getOutFilePath(), getOutFileExtension());
         setResultsExporter(new MixedProjectsResultsExporter(writer));
     }
 
@@ -48,30 +49,42 @@ public class FlexibleModeRunner extends ModeRunner<Map<String, Map<String, Proje
         Map<String, Map<String, ProjectMetricsResults>> fullResults = new LinkedHashMap<>();
         for (int i = 0, projectsSize = projects.size(); i < projectsSize; i++) {
             ProjectConfiguration project = projects.get(i);
-            if (project.id == null || project.id.equals("")) {
+
+            String projectId = project.id;
+            if (projectId == null || projectId.equals("")) {
                 LOGGER.warn("* Project #{} has an invalid ID. Assigning the default project name.", i);
-                project.id = project.getDefaultProjectName();
+                projectId = project.getDefaultProjectName();
             }
 
             RunMode runMode;
             try {
                 runMode = TargetParser.parseTargetString(project.location);
             } catch (IllegalArgumentException e) {
-                LOGGER.warn("* Project #{} has an invalid 'location' field. Ignoring it.", i);
+                LOGGER.warn("* Project #{} has an invalid 'location' field. The project will be ignored.", i);
                 continue;
             }
 
-            // TODO Keep validating the other parts
-            // TODO Run history analyzer and collect the results. Progressively, export to the outFile
+            List<String> metrics;
+            try {
+                metrics = MetricsParser.parseMetricsString(project.metrics.split(","));
+            } catch (IllegalArgumentException e) {
+                LOGGER.warn("* Project #{} has an invalid 'metrics' field. The project will be ignored.", i);
+                continue;
+            }
 
-            System.out.println(project.location);
-            System.out.println(project.metrics);
+            // TODO Keep validating the other parts (see CLIArgumentParser)
+            // TODO Build the history analyzer, run it collect the results. Progressively, export to the outFile (just call exportResults())
+            System.out.println(projectId);
+            System.out.println(runMode);
+            System.out.println(metrics);
         }
     }
 
     private static class Configuration {
         public List<ProjectConfiguration> projects;
-        public Configuration() {}
+
+        public Configuration() {
+        }
     }
 
     private static class ProjectConfiguration {
@@ -81,7 +94,9 @@ public class FlexibleModeRunner extends ModeRunner<Map<String, Map<String, Proje
         public String metrics;
         public String filesRegex;
         public List<RevisionConfiguration> revisions;
-        public ProjectConfiguration() {}
+
+        public ProjectConfiguration() {
+        }
 
         String getDefaultProjectName() {
             return Paths.get(location).getFileName().toString();
@@ -92,6 +107,8 @@ public class FlexibleModeRunner extends ModeRunner<Map<String, Map<String, Proje
         public String at;
         public String range;
         public Boolean all;
-        public RevisionConfiguration() {}
+
+        public RevisionConfiguration() {
+        }
     }
 }

@@ -15,18 +15,9 @@ public class Utils {
     private static final String YML = "yml";
     private static final String YAML = "yaml";
     private static final String JAVA = "java";
-    private static final String JSON = "json";
-
-    private static boolean isFile(File file) {
-        return file.exists() && file.isFile();
-    }
-
-    public static boolean isDirectory(File file) {
-        return file.exists() && file.isDirectory();
-    }
 
     public static boolean isGitDirectory(File file) {
-        return isDirectory(file) &&
+        return file.isDirectory() &&
                 Arrays.stream(Objects.requireNonNull(file.listFiles())).anyMatch(dir -> dir.getName().equals(DOT_GIT));
     }
 
@@ -36,19 +27,11 @@ public class Utils {
     }
 
     public static boolean isYamlFile(File file) {
-        return isFile(file) && hasYamlExtension(file.toPath());
-    }
-
-    public static boolean hasJsonExtension(Path path) {
-        return FilenameUtils.getExtension(path.toString()).equalsIgnoreCase(JSON);
-    }
-
-    public static boolean isJsonFile(File file) {
-        return isFile(file) && hasJsonExtension(file.toPath());
+        return file.isFile() && hasYamlExtension(file.toPath());
     }
 
     public static boolean isJavaFile(File file) {
-        return isFile(file) && FilenameUtils.getExtension(file.getName()).equalsIgnoreCase(JAVA);
+        return file.isFile() && FilenameUtils.getExtension(file.getName()).equalsIgnoreCase(JAVA);
     }
 
     public static String[] getRevisionsFromRange(String revisionRange) {

@@ -11,9 +11,9 @@ import java.util.List;
 
 class LocalGitModeRunner extends GitModeRunner {
 
-    LocalGitModeRunner(List<String> metrics, String target, Path outFilePath, String filesRegex, Pair<RevisionMode, String> revision, Path workDirPath) {
-        super(metrics, target, outFilePath, filesRegex, revision);
-        Writer writer = Writer.newWriter(getOutFilePath());
+    LocalGitModeRunner(List<String> metrics, String target, Pair<String, String> outFile, String filesRegex, Pair<RevisionMode, String> revision, Path workDirPath) {
+        super(metrics, target, outFile, filesRegex, revision);
+        Writer writer = Writer.newWriter(getOutFilePath(), getOutFileExtension());
         setResultsExporter(new GitProjectResultsExporter(writer, null));
         setSetupEnvironmentAction(new CopySetupEnvironmentAction(getProjectName(), target, workDirPath));
     }

@@ -7,28 +7,28 @@ import java.util.List;
 import java.util.Objects;
 
 public class RunSetting {
-    private final List<String> metrics;
     private final Pair<RunMode, String> target;
-    private final Path outFilePath;
+    private final List<String> metrics;
+    private final Pair<String, String> outFile;
     private final String filesRegex;
     private final Path workDirPath;
     private final Pair<RevisionMode, String> revision;
 
-    public RunSetting(List<String> metrics, Pair<RunMode, String> target, Path outFilePath, String filesRegex, Path workDirPath, Pair<RevisionMode, String> revision) {
-        this.metrics = Objects.requireNonNull(metrics);
+    public RunSetting(Pair<RunMode, String> target, List<String> metrics, Pair<String, String> outFile, String filesRegex, Path workDirPath, Pair<RevisionMode, String> revision) {
         this.target = Objects.requireNonNull(target);
-        this.outFilePath = Objects.requireNonNull(outFilePath);
+        this.metrics = Objects.requireNonNull(metrics);
+        this.outFile = Objects.requireNonNull(outFile);
         this.filesRegex = filesRegex;
         this.workDirPath = workDirPath;
         this.revision = revision;
     }
 
-    public List<String> getMetrics() {
-        return metrics;
-    }
-
     public Pair<RunMode, String> getTarget() {
         return target;
+    }
+
+    public List<String> getMetrics() {
+        return metrics;
     }
 
     public RunMode getRunMode() {
@@ -39,8 +39,8 @@ public class RunSetting {
         return target.getValue();
     }
 
-    public Path getOutFilePath() {
-        return outFilePath;
+    public Pair<String, String> getOutFile() {
+        return outFile;
     }
 
     public String getFilesRegex() {
