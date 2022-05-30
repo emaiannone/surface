@@ -2,7 +2,6 @@ package org.surface.surface.common;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.validator.routines.UrlValidator;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -17,7 +16,6 @@ public class Utils {
     private static final String YAML = "yaml";
     private static final String JAVA = "java";
     private static final String JSON = "json";
-    private static final String GITHUB = "github.com";
 
     private static boolean isFile(File file) {
         return file.exists() && file.isFile();
@@ -51,10 +49,6 @@ public class Utils {
 
     public static boolean isJavaFile(File file) {
         return isFile(file) && FilenameUtils.getExtension(file.getName()).equalsIgnoreCase(JAVA);
-    }
-
-    public static boolean isGitHubUrl(String urlString) {
-        return UrlValidator.getInstance().isValid(urlString) && urlString.contains(GITHUB);
     }
 
     public static String[] getRevisionsFromRange(String revisionRange) {

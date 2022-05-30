@@ -1,7 +1,7 @@
-package org.surface.surface.out.exporters;
+package org.surface.surface.core.out.exporters;
 
 import org.surface.surface.core.metrics.results.ProjectMetricsResults;
-import org.surface.surface.out.writers.Writer;
+import org.surface.surface.core.out.writers.Writer;
 
 import java.io.IOException;
 import java.util.Map;

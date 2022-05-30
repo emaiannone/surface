@@ -1,4 +1,4 @@
-package org.surface.surface.out.writers;
+package org.surface.surface.core.out.writers;
 
 import java.util.Map;
 

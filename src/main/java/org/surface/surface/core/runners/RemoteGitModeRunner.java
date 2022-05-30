@@ -3,8 +3,8 @@ package org.surface.surface.core.runners;
 import org.apache.commons.lang3.tuple.Pair;
 import org.surface.surface.common.RevisionMode;
 import org.surface.surface.core.analysis.setup.CloneSetupEnvironmentAction;
-import org.surface.surface.out.exporters.GitProjectResultsExporter;
-import org.surface.surface.out.writers.Writer;
+import org.surface.surface.core.out.exporters.GitProjectResultsExporter;
+import org.surface.surface.core.out.writers.Writer;
 
 import java.nio.file.Path;
 import java.util.List;

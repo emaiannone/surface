@@ -8,6 +8,8 @@ import org.surface.surface.common.RevisionMode;
 import org.surface.surface.common.RunMode;
 import org.surface.surface.common.RunSetting;
 import org.surface.surface.common.Utils;
+import org.surface.surface.common.parsers.MetricsParser;
+import org.surface.surface.common.parsers.TargetParser;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,40 +20,38 @@ import java.util.regex.PatternSyntaxException;
 class CLIArgumentsParser {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private static List<String> parseMetrics(String[] metricsFormula) {
-        MetricsFormulaParser metricsFormulaParser = new MetricsFormulaParser();
-        List<String> selectedMetrics;
-        try {
-            selectedMetrics = metricsFormulaParser.parse(metricsFormula);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("The list of metrics specified with " + CLIOptions.METRICS + " option is not indicated or not specified as a comma-separated list of acronyms of metrics.", e);
-        }
-        if (selectedMetrics.size() == 0) {
-            throw new IllegalArgumentException("The list of metrics specified with " + CLIOptions.METRICS + " option resulted in an empty set of metrics.");
-        }
-        return selectedMetrics;
-    }
-
     public static RunSetting parse(String[] args) throws ParseException {
         // Fetch the indicated CLI options
         Options options = CLIOptions.getInstance();
         CommandLineParser cliParser = new DefaultParser();
         CommandLine commandLine = cliParser.parse(options, args);
 
-        // Parse Metrics, Mode
-        List<String> selectedMetrics = parseMetrics(commandLine.getOptionValues(CLIOptions.METRICS));
-        LOGGER.info("* Going to compute the following metrics: {}", selectedMetrics);
+        // Parse RunMode
         String target = commandLine.getOptionValue(CLIOptions.TARGET);
-        // TODO Extract the validation from inferMode here, and then move it elsewhere
-        RunMode runMode = RunModeSelector.inferMode(target);
+        RunMode runMode;
+        try {
+            runMode = TargetParser.parseTargetString(target);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("The supplied target must be (i) a local non-git directory (LOCAL), (ii) a local git directory (LOCAL_GIT), (iii) a remote URL to a GitHub repository (REMOTE_GIT), or (iv) a local path to a YAML file (FLEXIBLE).", e);
+        }
         LOGGER.info("* Going to run in the following mode: " + runMode);
+
+        // Parse Metrics
+        List<String> selectedMetrics;
+        try {
+            selectedMetrics = MetricsParser.parseMetricsString(commandLine.getOptionValues(CLIOptions.METRICS));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("The supplied metrics formula must be a list of comma-separate metric codes without any space in between.", e);
+        }
+        LOGGER.info("* Going to compute the following metrics: {}", selectedMetrics);
 
         // Parse Output File
         String outFileValue = commandLine.getOptionValue(CLIOptions.OUT_FILE);
         Path outFilePath = Paths.get(outFileValue).toAbsolutePath();
         if (!Utils.hasJsonExtension(outFilePath)) {
-            throw new IllegalArgumentException("The supplied output file was " + outFileValue + ", but must have extension .json.");
+            throw new IllegalArgumentException("The supplied output must have a supported extension.");
         }
+
         LOGGER.info("* Going to export results in file: " + outFilePath);
 
         // Parse the Revision group

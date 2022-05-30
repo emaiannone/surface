@@ -3,7 +3,7 @@ package org.surface.surface.core.runners;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.surface.surface.common.RunSetting;
-import org.surface.surface.out.exporters.ResultsExporter;
+import org.surface.surface.core.out.exporters.ResultsExporter;
 
 import java.io.IOException;
 import java.nio.file.Path;

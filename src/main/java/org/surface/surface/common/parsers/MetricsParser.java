@@ -1,4 +1,4 @@
-package org.surface.surface.cli;
+package org.surface.surface.common.parsers;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -22,13 +22,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-class MetricsFormulaParser {
+public class MetricsParser {
 
     private static final String ALL = "ALL";
-    private final List<Pair<String, String>> supportedMetrics;
+    private static final List<Pair<String, String>> supportedMetrics;
 
-    public MetricsFormulaParser() {
-        // NOTE All supported metrics must be added there to be recognized by the CLI parser
+    static {
+        // NOTE Any new metric must be added here to be recognized by the CLI parser
         supportedMetrics = new ArrayList<>();
         supportedMetrics.add(new ImmutablePair<>(CA.CODE, CA.NAME));
         supportedMetrics.add(new ImmutablePair<>(CM.CODE, CM.NAME));
@@ -45,13 +45,16 @@ class MetricsFormulaParser {
         supportedMetrics.add(new ImmutablePair<>(SCCR.CODE, SCCR.NAME));
     }
 
-    public List<String> parse(String[] metricsFormula) {
-        if (metricsFormula == null || metricsFormula.length == 0 || metricsFormula[0].equals("")) {
+    public static List<String> parseMetricsString(String[] metricsString) {
+        if (metricsString == null || metricsString.length == 0 || metricsString[0].equals("")) {
             throw new IllegalArgumentException("The input metrics formula must not be null, empty, or with an empty string as its only element.");
         }
         Set<String> selectedMetrics = new LinkedHashSet<>();
         List<String> supportedCodes = supportedMetrics.stream().map(Pair::getKey).collect(Collectors.toList());
-        for (String part : metricsFormula) {
+        for (String part : metricsString) {
+            if (part == null || part.equals("")) {
+                throw new IllegalArgumentException("The input metrics formula has an invalid code.");
+            }
             if (part.equals(ALL)) {
                 selectedMetrics.addAll(supportedCodes);
             } else {
@@ -74,6 +77,9 @@ class MetricsFormulaParser {
                     }
                 }
             }
+        }
+        if (selectedMetrics.size() == 0) {
+            throw new IllegalArgumentException("The input metrics formula resulted in an empty set of metrics.");
         }
         return new ArrayList<>(selectedMetrics);
     }

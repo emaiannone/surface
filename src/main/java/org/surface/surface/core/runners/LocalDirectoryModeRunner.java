@@ -5,8 +5,8 @@ import org.apache.logging.log4j.Logger;
 import org.surface.surface.common.Utils;
 import org.surface.surface.core.analysis.SnapshotAnalyzer;
 import org.surface.surface.core.metrics.results.ProjectMetricsResults;
-import org.surface.surface.out.exporters.SimpleProjectResultsExporter;
-import org.surface.surface.out.writers.Writer;
+import org.surface.surface.core.out.exporters.SimpleProjectResultsExporter;
+import org.surface.surface.core.out.writers.Writer;
 
 import java.io.IOException;
 import java.nio.file.Path;

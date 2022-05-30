@@ -6,11 +6,13 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.surface.surface.common.RevisionMode;
+import org.surface.surface.common.RunMode;
 import org.surface.surface.common.Utils;
+import org.surface.surface.common.parsers.TargetParser;
 import org.surface.surface.core.analysis.selectors.RevisionSelector;
 import org.surface.surface.core.metrics.results.ProjectMetricsResults;
-import org.surface.surface.out.exporters.MixedProjectsResultsExporter;
-import org.surface.surface.out.writers.Writer;
+import org.surface.surface.core.out.exporters.MixedProjectsResultsExporter;
+import org.surface.surface.core.out.writers.Writer;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -50,8 +52,16 @@ public class FlexibleModeRunner extends ModeRunner<Map<String, Map<String, Proje
                 LOGGER.warn("* Project #{} has an invalid ID. Assigning the default project name.", i);
                 project.id = project.getDefaultProjectName();
             }
-            // TODO Validate. If not valid, skip it, otherwise instantiate an HistoryAnalyzer.
-            //  Check if the validation logic can be factorized from CliArgumentsParser and placed elsewhere (validators?)
+
+            RunMode runMode;
+            try {
+                runMode = TargetParser.parseTargetString(project.location);
+            } catch (IllegalArgumentException e) {
+                LOGGER.warn("* Project #{} has an invalid 'location' field. Ignoring it.", i);
+                continue;
+            }
+
+            // TODO Keep validating the other parts
             // TODO Run history analyzer and collect the results. Progressively, export to the outFile
 
             System.out.println(project.location);
