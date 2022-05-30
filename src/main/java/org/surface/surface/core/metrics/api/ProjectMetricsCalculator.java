@@ -21,14 +21,14 @@ public class ProjectMetricsCalculator {
         // Class-level metrics
         for (ClassInspectorResults classResults : projectInspectorResults) {
             ClassMetricsResults classMetricsResults = new ClassMetricsResults(classResults);
-            List<ClassMetric<?>> classMetrics = new ClassMetricsFactory().getMetrics(metricCodes);
+            List<ClassMetric<?>> classMetrics = ClassMetricsFactory.getMetrics(metricCodes);
             for (ClassMetric<?> classMetric : classMetrics) {
                 classMetricsResults.add(classMetric.compute(classResults));
             }
             projectMetricsResults.add(classMetricsResults);
         }
         // Project-level metrics
-        List<ProjectMetric<?>> projectMetrics = new ProjectMetricsFactory().getMetrics(metricCodes);
+        List<ProjectMetric<?>> projectMetrics = ProjectMetricsFactory.getMetrics(metricCodes);
         for (ProjectMetric<?> projectMetric : projectMetrics) {
             projectMetricsResults.add(projectMetric.compute(projectInspectorResults));
         }

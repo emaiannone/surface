@@ -21,14 +21,10 @@ import org.surface.surface.core.metrics.classlevel.rp.RPCached;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClassMetricsFactory implements MetricsFactory<ClassMetric<?>> {
-    private final MetricsStructure metricsStructure;
+public class ClassMetricsFactory {
+    private static final MetricsStructure metricsStructure = new MetricsStructure();
 
-    public ClassMetricsFactory() {
-        this.metricsStructure = new MetricsStructure();
-    }
-
-    public List<ClassMetric<?>> getMetrics(List<String> metricsCodes) {
+    public static List<ClassMetric<?>> getMetrics(List<String> metricsCodes) {
         List<ClassMetric<?>> classMetrics = new ArrayList<>();
         // NOTE Any new metric must be added here to be supported
         for (String metricCode : metricsCodes) {

@@ -17,15 +17,12 @@ import org.surface.surface.core.metrics.projectlevel.sccr.SCCRCached;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProjectMetricsFactory implements MetricsFactory<ProjectMetric<?>> {
-    private final MetricsStructure metricsStructure;
+public class ProjectMetricsFactory {
+    private static final MetricsStructure metricsStructure = new MetricsStructure();
 
-    public ProjectMetricsFactory() {
-        this.metricsStructure = new MetricsStructure();
-    }
-
-    public List<ProjectMetric<?>> getMetrics(List<String> metricsCodes) {
+    public static List<ProjectMetric<?>> getMetrics(List<String> metricsCodes) {
         List<ProjectMetric<?>> projectMetrics = new ArrayList<>();
+        // NOTE Any new metric must be added here to be supported
         for (String metricCode : metricsCodes) {
             ProjectMetric<?> projectMetric = null;
             switch (metricCode) {
@@ -47,7 +44,6 @@ public class ProjectMetricsFactory implements MetricsFactory<ProjectMetric<?>> {
                 case CSCR.CODE:
                     projectMetric = metricsStructure.getCscr();
                     break;
-                // NOTE Add other metrics here
             }
             if (projectMetric != null) {
                 projectMetrics.add(projectMetric);
