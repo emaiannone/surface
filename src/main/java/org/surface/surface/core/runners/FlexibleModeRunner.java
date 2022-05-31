@@ -2,18 +2,14 @@ package org.surface.surface.core.runners;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.surface.surface.common.RevisionMode;
-import org.surface.surface.common.RunMode;
-import org.surface.surface.common.Utils;
+import org.surface.surface.core.Utils;
 import org.surface.surface.core.analysis.selectors.RevisionSelector;
+import org.surface.surface.core.metrics.api.Metric;
 import org.surface.surface.core.metrics.results.ProjectMetricsResults;
 import org.surface.surface.core.out.exporters.MixedProjectsResultsExporter;
-import org.surface.surface.core.out.writers.Writer;
-import org.surface.surface.core.parsers.MetricsParser;
-import org.surface.surface.core.parsers.TargetParser;
+import org.surface.surface.core.out.writers.FileWriter;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -24,26 +20,29 @@ import java.util.Map;
 
 public class FlexibleModeRunner extends ModeRunner<Map<String, Map<String, ProjectMetricsResults>>> {
     private static final Logger LOGGER = LogManager.getLogger();
+    private static final String CODE_NAME = "FLEXIBLE";
 
-    private final Path workDirPath;
+    private final Path configFilePath;
     private final RevisionSelector defaultRevisionSelector;
+    private final Path defaultWorkDirPath;
 
-    FlexibleModeRunner(List<String> metrics, String target, Pair<String, String> outFile, String filesRegex, Pair<RevisionMode, String> revision, Path workDirPath) {
-        super(metrics, target, outFile, filesRegex);
-        this.workDirPath = workDirPath;
-        this.defaultRevisionSelector = RevisionSelector.newRevisionSelector(revision);
-        Writer writer = Writer.newWriter(getOutFilePath(), getOutFileExtension());
-        setResultsExporter(new MixedProjectsResultsExporter(writer));
+    public FlexibleModeRunner(Path configFilePath, List<Metric<?, ?>> metrics, FileWriter writer, String filesRegex, RevisionSelector defaultRevisionSelector, Path defaultWorkDirPath) {
+        super(metrics, writer, filesRegex);
+        this.configFilePath = configFilePath;
+        this.defaultRevisionSelector = defaultRevisionSelector;
+        this.defaultWorkDirPath = defaultWorkDirPath;
+        setCodeName(CODE_NAME);
+        setResultsExporter(new MixedProjectsResultsExporter());
     }
 
     @Override
     public void run() throws Exception {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        File configFile = Paths.get(getTarget()).toFile();
+        File configFile = configFilePath.toFile();
         if (!Utils.isYamlFile(configFile)) {
             throw new IllegalStateException("The target configuration file does not exist or is not a YAML file.");
         }
-        Configuration configuration = mapper.readValue(Paths.get(getTarget()).toFile(), Configuration.class);
+        Configuration configuration = mapper.readValue(configFile, Configuration.class);
 
         List<ProjectConfiguration> projects = configuration.projects;
         Map<String, Map<String, ProjectMetricsResults>> fullResults = new LinkedHashMap<>();
@@ -56,9 +55,10 @@ public class FlexibleModeRunner extends ModeRunner<Map<String, Map<String, Proje
                 projectId = project.getDefaultProjectName();
             }
 
+            /* TODO OLD CODE: Revamp
             RunMode runMode;
             try {
-                runMode = TargetParser.parseTargetString(project.location);
+                runMode = ModeRunnerFactory.discernRunMode(project.location);
             } catch (IllegalArgumentException e) {
                 LOGGER.warn("* Project #{} has an invalid 'location' field. The project will be ignored.", i);
                 continue;
@@ -66,7 +66,7 @@ public class FlexibleModeRunner extends ModeRunner<Map<String, Map<String, Proje
 
             List<String> metrics;
             try {
-                metrics = MetricsParser.parseMetricsString(project.metrics.split(","));
+                metrics = MetricsFormulaParser.parseMetricsFormula(project.metrics.split(","));
             } catch (IllegalArgumentException e) {
                 LOGGER.warn("* Project #{} has an invalid 'metrics' field. The project will be ignored.", i);
                 continue;
@@ -77,6 +77,7 @@ public class FlexibleModeRunner extends ModeRunner<Map<String, Map<String, Proje
             System.out.println(projectId);
             System.out.println(runMode);
             System.out.println(metrics);
+             */
         }
     }
 

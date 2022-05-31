@@ -1,15 +1,14 @@
 package org.surface.surface.core.runners;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.surface.surface.common.RevisionMode;
 import org.surface.surface.core.analysis.HistoryAnalyzer;
 import org.surface.surface.core.analysis.selectors.RevisionSelector;
 import org.surface.surface.core.analysis.setup.SetupEnvironmentAction;
+import org.surface.surface.core.metrics.api.Metric;
 import org.surface.surface.core.metrics.results.ProjectMetricsResults;
+import org.surface.surface.core.out.writers.FileWriter;
 
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -19,22 +18,25 @@ public abstract class GitModeRunner extends ModeRunner<Map<String, ProjectMetric
     private final RevisionSelector revisionSelector;
     private SetupEnvironmentAction setupEnvironmentAction;
 
-    GitModeRunner(List<String> metrics, String target, Pair<String, String> outFile, String filesRegex, Pair<RevisionMode, String> revision) {
-        super(metrics, target, outFile, filesRegex);
-        this.revisionSelector = RevisionSelector.newRevisionSelector(revision);
+    GitModeRunner(List<Metric<?, ?>> metrics, FileWriter writer, String filesRegex, RevisionSelector revisionSelector) {
+        super(metrics, writer, filesRegex);
+        this.revisionSelector = revisionSelector;
     }
 
-    void setSetupEnvironmentAction(SetupEnvironmentAction setupEnvironmentAction) {
+    abstract String getProjectName();
+
+    public void setSetupEnvironmentAction(SetupEnvironmentAction setupEnvironmentAction) {
         this.setupEnvironmentAction = setupEnvironmentAction;
     }
 
-    String getProjectName() {
-        return Paths.get(getTarget()).getFileName().toString();
+    public RevisionSelector getRevisionSelector() {
+        return revisionSelector;
     }
 
     @Override
     public void run() throws Exception {
-        HistoryAnalyzer historyAnalyzer = new HistoryAnalyzer(getProjectName(), getDefaultFilesRegex(), getMetrics(), revisionSelector, setupEnvironmentAction);
+        HistoryAnalyzer historyAnalyzer = new HistoryAnalyzer(getProjectName(), getFilesRegex(), getMetrics(),
+                revisionSelector, setupEnvironmentAction);
         Map<String, ProjectMetricsResults> allResults = historyAnalyzer.analyze();
         exportResults(allResults);
     }

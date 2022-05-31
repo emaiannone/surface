@@ -7,17 +7,15 @@ public abstract class SetupEnvironmentAction {
     private static final String SURFACE_TMP = "SURFACE_TMP";
 
     private final String projectName;
-    private final String target;
     private final Path workDirPath;
 
-    SetupEnvironmentAction(String projectName, String target, Path workDirPath) {
+    SetupEnvironmentAction(String projectName, Path workDirPath) {
         this.projectName = projectName;
-        this.target = target;
         this.workDirPath = workDirPath;
     }
 
-    public String getTarget() {
-        return target;
+    public Path getWorkDirPath() {
+        return workDirPath;
     }
 
     Path getTmpDirPath() {

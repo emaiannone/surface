@@ -3,7 +3,7 @@ package org.surface.surface.core.out.exporters;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.surface.surface.core.metrics.results.ProjectMetricsResults;
-import org.surface.surface.core.out.writers.Writer;
+import org.surface.surface.core.out.writers.FileWriter;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -21,13 +21,12 @@ public class GitProjectResultsExporter extends ResultsExporter<Map<String, Proje
 
     private final String remotePath;
 
-    public GitProjectResultsExporter(Writer writer, String remotePath) {
-        super(writer);
+    public GitProjectResultsExporter(String remotePath) {
         this.remotePath = remotePath;
     }
 
     @Override
-    public void export(Map<String, ProjectMetricsResults> projectMetricsResults) throws IOException {
+    public void export(Map<String, ProjectMetricsResults> projectMetricsResults, FileWriter writer) throws IOException {
         Map<String, Object> content = new LinkedHashMap<>();
         Map<String, Object> revisions = new LinkedHashMap<>();
         Map.Entry<String, ProjectMetricsResults> first = projectMetricsResults.entrySet().iterator().next();
@@ -44,6 +43,6 @@ public class GitProjectResultsExporter extends ResultsExporter<Map<String, Proje
         }
         content.put(REVISIONS, revisions);
         LOGGER.trace("Results exported: {}", content);
-        getResultsWriter().write(content);
+        writer.write(content);
     }
 }

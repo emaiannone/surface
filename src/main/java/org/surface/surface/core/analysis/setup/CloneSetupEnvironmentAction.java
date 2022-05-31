@@ -7,13 +7,17 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Path;
 
 public class CloneSetupEnvironmentAction extends SetupEnvironmentAction {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public CloneSetupEnvironmentAction(String projectName, String target, Path workDirPath) {
-        super(projectName, target, workDirPath);
+    private final URI cloneUrl;
+
+    public CloneSetupEnvironmentAction(String projectName, Path destDirPath, URI cloneUrl) {
+        super(projectName, destDirPath);
+        this.cloneUrl = cloneUrl;
     }
 
     @Override
@@ -28,14 +32,14 @@ public class CloneSetupEnvironmentAction extends SetupEnvironmentAction {
         }
         Path repoDirPath = getRepoDirPath();
         repoDirPath.toFile().mkdirs();
-        LOGGER.info("* Cloning {} into {}", getTarget(), repoDirPath);
+        LOGGER.info("* Cloning {} into {}", cloneUrl, repoDirPath);
         try (Git git = Git.cloneRepository()
-                .setURI(getTarget())
+                .setURI(cloneUrl.toString())
                 .setDirectory(repoDirPath.toFile())
                 .call()) {
             LOGGER.info("* Clone successful");
         } catch (GitAPIException e) {
-            throw new RuntimeException("Failed to clone the remote git repository from " + getTarget() +
+            throw new RuntimeException("Failed to clone the remote git repository from " + cloneUrl +
                     " into " + tmpDirPath +
                     ". Please, try a new remote URL or select a new destination where to clone it.", e);
         }

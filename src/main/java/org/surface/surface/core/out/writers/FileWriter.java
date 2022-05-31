@@ -1,19 +1,18 @@
 package org.surface.surface.core.out.writers;
 
-import java.nio.file.Path;
+import java.io.File;
+import java.io.IOException;
+import java.util.Map;
 
-abstract class FileWriter extends Writer {
-    private Path outFilePath;
+public abstract class FileWriter {
+    private final File outFile;
 
-    FileWriter(Path outFilePath) {
-        this.outFilePath = outFilePath;
+    public FileWriter(File outFile) {
+        this.outFile = outFile;
     }
 
-    Path getOutFilePath() {
-        return outFilePath;
+    public File getOutFile() {
+        return outFile;
     }
-
-    public void setOutFilePath(Path outFilePath) {
-        this.outFilePath = outFilePath;
-    }
+    public abstract void write(Map<String, Object> content) throws IOException;
 }

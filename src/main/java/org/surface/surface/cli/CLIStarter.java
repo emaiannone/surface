@@ -2,9 +2,9 @@ package org.surface.surface.cli;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.surface.surface.common.RunSetting;
-import org.surface.surface.common.Utils;
 import org.surface.surface.core.Surface;
+import org.surface.surface.core.Utils;
+import org.surface.surface.core.runners.ModeRunner;
 
 import java.util.List;
 
@@ -12,9 +12,9 @@ class CLIStarter {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public static void main(String[] args) {
-        RunSetting runSetting = null;
+        ModeRunner<?> runner = null;
         try {
-            runSetting = CLIArgumentsParser.parse(args);
+            runner = CLIArgumentsParser.parse(args);
         } catch (Exception e) {
             List<String> messages = Utils.getExceptionMessageChain(e);
             LOGGER.error("* Failed to parse some command line arguments");
@@ -25,7 +25,7 @@ class CLIStarter {
             LOGGER.debug(e);
             System.exit(1);
         }
-        Surface surface = new Surface(runSetting);
+        Surface surface = new Surface(runner);
         surface.run();
     }
 }

@@ -1,20 +1,31 @@
 package org.surface.surface.core.runners;
 
-import org.apache.commons.lang3.tuple.Pair;
-import org.surface.surface.common.RevisionMode;
+import org.surface.surface.core.analysis.selectors.RevisionSelector;
 import org.surface.surface.core.analysis.setup.CloneSetupEnvironmentAction;
+import org.surface.surface.core.metrics.api.Metric;
 import org.surface.surface.core.out.exporters.GitProjectResultsExporter;
-import org.surface.surface.core.out.writers.Writer;
+import org.surface.surface.core.out.writers.FileWriter;
 
+import java.net.URI;
 import java.nio.file.Path;
 import java.util.List;
 
-class RemoteGitModeRunner extends GitModeRunner {
+public class RemoteGitModeRunner extends GitModeRunner {
+    private static final String CODE_NAME = "REMOTE_GIT";
 
-    RemoteGitModeRunner(List<String> metrics, String target, Pair<String, String> outFile, String filesRegex, Pair<RevisionMode, String> revision, Path workDirPath) {
-        super(metrics, target, outFile, filesRegex, revision);
-        Writer writer = Writer.newWriter(getOutFilePath(), getOutFileExtension());
-        setResultsExporter(new GitProjectResultsExporter(writer, target));
-        setSetupEnvironmentAction(new CloneSetupEnvironmentAction(getProjectName(), target, workDirPath));
+    private final URI repoUrl;
+
+    public RemoteGitModeRunner(URI repoUrl, List<Metric<?, ?>> metrics, FileWriter writer, String filesRegex, RevisionSelector revisionSelector, Path workDirPath) {
+        super(metrics, writer, filesRegex, revisionSelector);
+        this.repoUrl = repoUrl;
+        setCodeName(CODE_NAME);
+        setResultsExporter(new GitProjectResultsExporter(repoUrl.toString()));
+        setSetupEnvironmentAction(new CloneSetupEnvironmentAction(getProjectName(), workDirPath, repoUrl));
+    }
+
+    @Override
+    String getProjectName() {
+        String path = repoUrl.getPath();
+        return path.substring(path.lastIndexOf('/') + 1);
     }
 }

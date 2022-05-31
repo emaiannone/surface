@@ -1,36 +1,44 @@
 package org.surface.surface.core.parsers;
 
 import org.apache.commons.io.FilenameUtils;
+import org.surface.surface.core.out.writers.FileWriter;
 import org.surface.surface.core.out.writers.JsonFileWriter;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Map;
 
 public class OutFileParser {
-
-    private static final List<String> supportedFileTypes;
-
+    private static final Map<String, Class<? extends FileWriter>> SUPPORTED_FILE_TYPES;
     static {
         // NOTE Any new file type must be added here to be recognized by the CLI parser
-        supportedFileTypes = new ArrayList<>();
-        supportedFileTypes.add(JsonFileWriter.CODE);
+        SUPPORTED_FILE_TYPES = new HashMap<>();
+        SUPPORTED_FILE_TYPES.put(JsonFileWriter.CODE.toLowerCase(), JsonFileWriter.class);
     }
 
-    public static String parseOutFilePath(String outFileString) {
-        Path outFilePath = Paths.get(outFileString).toAbsolutePath();
+    public static FileWriter parseOutString(String outString) {
+        Path outFilePath = Paths.get(outString).toAbsolutePath();
         File file = outFilePath.toFile();
         String extension = FilenameUtils.getExtension(file.toString());
         if (extension == null || extension.equals("")) {
             throw new IllegalArgumentException("The input file has no extension.");
         }
-        List<String> fileTypes = supportedFileTypes.stream().map(String::toLowerCase).collect(Collectors.toList());
-        if (!fileTypes.contains(extension.toLowerCase())) {
-            throw new IllegalArgumentException("The file's extensions is not supported.");
+        FileWriter fileWriter;
+        try {
+            Class<? extends FileWriter> aClass = SUPPORTED_FILE_TYPES.get(extension.toLowerCase());
+            if (aClass == null) {
+                throw new IllegalArgumentException("The file's extension supplied is not supported.");
+            }
+            Constructor<? extends FileWriter> constructor = aClass.getConstructor(File.class);
+            fileWriter = constructor.newInstance(file);
+        } catch (InvocationTargetException | IllegalAccessException | InstantiationException |
+                 NoSuchMethodException e) {
+            throw new IllegalArgumentException("The file's extension supplied is not supported.");
         }
-        return extension;
+        return fileWriter;
     }
 }

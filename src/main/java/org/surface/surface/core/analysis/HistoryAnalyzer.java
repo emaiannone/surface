@@ -13,6 +13,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.surface.surface.core.analysis.selectors.RevisionSelector;
 import org.surface.surface.core.analysis.setup.SetupEnvironmentAction;
+import org.surface.surface.core.metrics.api.Metric;
 import org.surface.surface.core.metrics.results.ProjectMetricsResults;
 
 import java.io.IOException;
@@ -25,11 +26,11 @@ public class HistoryAnalyzer {
 
     private final String projectName;
     private final String filesRegex;
-    private final List<String> metrics;
+    private final List<Metric<?,?>> metrics;
     private final RevisionSelector revisionSelector;
     private final SetupEnvironmentAction setupEnvironmentAction;
 
-    public HistoryAnalyzer(String projectName, String filesRegex, List<String> metrics, RevisionSelector revisionSelector, SetupEnvironmentAction setupEnvironmentAction) {
+    public HistoryAnalyzer(String projectName, String filesRegex, List<Metric<?,?>> metrics, RevisionSelector revisionSelector, SetupEnvironmentAction setupEnvironmentAction) {
         this.projectName = projectName;
         this.filesRegex = filesRegex;
         this.metrics = metrics;

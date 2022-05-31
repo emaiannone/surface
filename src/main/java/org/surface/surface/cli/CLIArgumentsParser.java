@@ -1,16 +1,17 @@
 package org.surface.surface.cli;
 
 import org.apache.commons.cli.*;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.surface.surface.common.RevisionMode;
-import org.surface.surface.common.RunMode;
-import org.surface.surface.common.RunSetting;
-import org.surface.surface.common.Utils;
-import org.surface.surface.core.parsers.MetricsParser;
+import org.surface.surface.core.Utils;
+import org.surface.surface.core.analysis.selectors.RevisionSelector;
+import org.surface.surface.core.metrics.api.Metric;
+import org.surface.surface.core.out.writers.FileWriter;
+import org.surface.surface.core.parsers.MetricsFormulaParser;
 import org.surface.surface.core.parsers.OutFileParser;
-import org.surface.surface.core.parsers.TargetParser;
+import org.surface.surface.core.parsers.RevisionGroupParser;
+import org.surface.surface.core.runners.ModeRunner;
+import org.surface.surface.core.runners.ModeRunnerFactory;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -21,92 +22,34 @@ import java.util.regex.PatternSyntaxException;
 class CLIArgumentsParser {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static RunSetting parse(String[] args) throws ParseException {
+    public static ModeRunner<?> parse(String[] args) throws ParseException {
         // Fetch the indicated CLI options
         Options options = CLIOptions.getInstance();
         CommandLineParser cliParser = new DefaultParser();
         CommandLine commandLine = cliParser.parse(options, args);
 
-        // Parse RunMode
         String target = commandLine.getOptionValue(CLIOptions.TARGET);
-        RunMode runMode;
-        try {
-            runMode = TargetParser.parseTargetString(target);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("The supplied target must be (i) a local non-git directory (LOCAL), (ii) a local git directory (LOCAL_GIT), (iii) a remote URL to a GitHub repository (REMOTE_GIT), or (iv) a local path to a YAML file (FLEXIBLE).", e);
-        }
-        LOGGER.info("* Going to run in the following mode: " + runMode);
 
         // Parse Metrics
-        List<String> selectedMetrics;
+        List<Metric<?, ?>> metrics;
         try {
-            selectedMetrics = MetricsParser.parseMetricsString(commandLine.getOptionValues(CLIOptions.METRICS));
+            metrics = MetricsFormulaParser.parseMetricsFormula(commandLine.getOptionValues(CLIOptions.METRICS));
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("The supplied metrics formula must be a list of comma-separate metric codes without any space in between.", e);
         }
-        LOGGER.info("* Going to compute the following metrics: {}", selectedMetrics);
+        LOGGER.info("* Going to compute the following metrics: {}", metrics);
 
-        // Parse Output File
+        // Parse Output File to get the Writer
         String outFileValue = commandLine.getOptionValue(CLIOptions.OUT_FILE);
-        String outFileExtension;
+        FileWriter writer;
         try {
-            outFileExtension = OutFileParser.parseOutFilePath(outFileValue);
+            writer = OutFileParser.parseOutString(outFileValue);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("The supplied output file path must point to a file of one of the supported type.", e);
         }
         LOGGER.info("* Going to export results in file: " + outFileValue);
 
-        // TODO RevisionModeParser
-        // Parse the Revision group
-        RevisionMode revisionMode = null;
-        String revisionValue = null;
-        if (runMode == RunMode.LOCAL_GIT || runMode == RunMode.REMOTE_GIT) {
-            String revisionModeSelected = options.getOptionGroup(options.getOption(CLIOptions.RANGE)).getSelected();
-            if (revisionModeSelected == null) {
-                revisionMode = RevisionMode.HEAD;
-            } else {
-                switch (revisionModeSelected) {
-                    case CLIOptions.RANGE: {
-                        revisionValue = commandLine.getOptionValue(CLIOptions.RANGE);
-                        // Check only if the range has the expected format, not that the commits are valid
-                        String[] range = Utils.getRevisionsFromRange(revisionValue);
-                        revisionMode = RevisionMode.RANGE;
-                        break;
-                    }
-                    case CLIOptions.AT: {
-                        revisionValue = commandLine.getOptionValue(CLIOptions.AT);
-                        if (!Utils.isAlphaNumeric(revisionValue)) {
-                            throw new IllegalArgumentException("The revision must an alphanumeric string.");
-                        }
-                        revisionMode = RevisionMode.SINGLE;
-                        break;
-                    }
-                    case CLIOptions.ALL: {
-                        revisionMode = RevisionMode.ALL;
-                        break;
-                    }
-                }
-            }
-            LOGGER.info("* Going to analyze the following revision: " + revisionMode);
-        }
-
-        // TODO WorkingDirectoryParser
-        // Parse the Working Directory
-        Path workDirPath = null;
-        if (runMode != RunMode.LOCAL_DIR) {
-            String workDirValue = commandLine.getOptionValue(CLIOptions.WORK_DIR);
-            if (workDirValue == null) {
-                throw new IllegalArgumentException("The path where to copy or clone the repositories must be indicated.");
-            }
-            workDirPath = Paths.get(workDirValue).toAbsolutePath();
-            if (!workDirPath.toFile().isDirectory()) {
-                throw new IllegalArgumentException("The path where to copy or clone the repositories must point to a directory.");
-            }
-            LOGGER.info("* Going to clone in the following directory: " + workDirPath);
-        }
-
-        // TODO FilesRegexParser
-        // Parse Files regex
+        // Validate regex on files
         String filesRegex = null;
         if (commandLine.hasOption(CLIOptions.FILES)) {
             String filesValue = commandLine.getOptionValue(CLIOptions.FILES);
@@ -121,6 +64,38 @@ class CLIArgumentsParser {
             LOGGER.info("* Going to analyze all .java files found");
         }
 
-        return new RunSetting(new ImmutablePair<>(runMode, target), selectedMetrics, new ImmutablePair<>(outFileValue, outFileExtension), filesRegex, workDirPath, new ImmutablePair<>(revisionMode, revisionValue));
+        // Parse the Revision group
+        RevisionSelector revisionSelector;
+        String revisionModeSelected = options.getOptionGroup(options.getOption(CLIOptions.RANGE)).getSelected();
+        String revisionValue = commandLine.getOptionValue(revisionModeSelected);
+        try {
+            revisionSelector = RevisionGroupParser.parseRevisionGroup(revisionModeSelected, revisionValue);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("The supplied revision option must fulfill the requirements of each type (see options documentation).", e);
+        }
+        if (revisionSelector.getRevisionString() == null) {
+            LOGGER.info("* Going to analyze the HEAD revision (default)");
+        } else {
+            LOGGER.info("* Going to analyze {} {} " + revisionModeSelected, revisionValue);
+        }
+
+        // Validate the Working Directory
+        Path workDirPath = null;
+        if (!Utils.isPathToLocalDirectory(Paths.get(target))) {
+            String workDirValue = commandLine.getOptionValue(CLIOptions.WORK_DIR);
+            if (workDirValue == null) {
+                throw new IllegalArgumentException("The path where to copy or clone the repositories must be indicated.");
+            }
+            workDirPath = Paths.get(workDirValue).toAbsolutePath();
+            if (!Utils.isPathToLocalDirectory(workDirPath)) {
+                throw new IllegalArgumentException("The path where to copy or clone the repositories must point to a directory.");
+            }
+            LOGGER.info("* Going to clone in the following directory: " + workDirPath);
+        }
+
+        // Parse RunMode
+        ModeRunner<?> modeRunner = ModeRunnerFactory.newModeRunner(target, metrics, writer, filesRegex, revisionSelector, workDirPath);
+        LOGGER.info("* Going to run in the following mode: " + modeRunner.getCodeName());
+        return modeRunner;
     }
 }

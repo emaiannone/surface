@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AllRevisionSelector extends RevisionSelector {
+    public static final String CODE = "ALL";
+
     private static final Logger LOGGER = LogManager.getLogger();
 
     public AllRevisionSelector(String revisionString) {

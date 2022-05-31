@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.surface.surface.core.explorers.JavaFilesExplorer;
 import org.surface.surface.core.inspection.ProjectInspector;
 import org.surface.surface.core.inspection.results.ProjectInspectorResults;
+import org.surface.surface.core.metrics.api.Metric;
 import org.surface.surface.core.metrics.api.ProjectMetricsCalculator;
 import org.surface.surface.core.metrics.results.ProjectMetricsResults;
 
@@ -17,9 +18,9 @@ public class SnapshotAnalyzer {
 
     private final Path projectDirPath;
     private final String filesRegex;
-    private final List<String> metrics;
+    private final List<Metric<?,?>> metrics;
 
-    public SnapshotAnalyzer(Path projectDirPath, String filesRegex, List<String> metrics) {
+    public SnapshotAnalyzer(Path projectDirPath, String filesRegex, List<Metric<?,?>> metrics) {
         this.projectDirPath = projectDirPath;
         this.filesRegex = filesRegex;
         this.metrics = metrics;

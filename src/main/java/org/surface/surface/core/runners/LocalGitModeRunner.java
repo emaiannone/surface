@@ -1,20 +1,30 @@
 package org.surface.surface.core.runners;
 
-import org.apache.commons.lang3.tuple.Pair;
-import org.surface.surface.common.RevisionMode;
+import org.surface.surface.core.analysis.selectors.RevisionSelector;
 import org.surface.surface.core.analysis.setup.CopySetupEnvironmentAction;
+import org.surface.surface.core.metrics.api.Metric;
 import org.surface.surface.core.out.exporters.GitProjectResultsExporter;
-import org.surface.surface.core.out.writers.Writer;
+import org.surface.surface.core.out.writers.FileWriter;
 
 import java.nio.file.Path;
 import java.util.List;
 
-class LocalGitModeRunner extends GitModeRunner {
+public class LocalGitModeRunner extends GitModeRunner {
+    private static final String CODE_NAME = "LOCAL_GIT";
 
-    LocalGitModeRunner(List<String> metrics, String target, Pair<String, String> outFile, String filesRegex, Pair<RevisionMode, String> revision, Path workDirPath) {
-        super(metrics, target, outFile, filesRegex, revision);
-        Writer writer = Writer.newWriter(getOutFilePath(), getOutFileExtension());
-        setResultsExporter(new GitProjectResultsExporter(writer, null));
-        setSetupEnvironmentAction(new CopySetupEnvironmentAction(getProjectName(), target, workDirPath));
+    private final Path repoPath;
+
+    public LocalGitModeRunner(Path repoPath, List<Metric<?, ?>> metrics, FileWriter writer, String filesRegex, RevisionSelector revisionSelector, Path workDirPath) {
+        super(metrics, writer, filesRegex, revisionSelector);
+        this.repoPath = repoPath;
+        setCodeName(CODE_NAME);
+        setResultsExporter(new GitProjectResultsExporter(null));
+        setSetupEnvironmentAction(new CopySetupEnvironmentAction(getProjectName(), workDirPath, repoPath));
+    }
+
+
+    @Override
+    String getProjectName() {
+        return repoPath.getFileName().toString();
     }
 }

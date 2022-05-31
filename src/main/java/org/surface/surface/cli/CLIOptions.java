@@ -3,6 +3,9 @@ package org.surface.surface.cli;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
+import org.surface.surface.core.analysis.selectors.AllRevisionSelector;
+import org.surface.surface.core.analysis.selectors.RangeRevisionSelector;
+import org.surface.surface.core.analysis.selectors.SingleRevisionSelector;
 
 public class CLIOptions extends Options {
     private static CLIOptions INSTANCE;
@@ -13,9 +16,10 @@ public class CLIOptions extends Options {
 
     public static final String OUT_FILE = "outFile";
 
-    public static final String RANGE = "range";
-    public static final String ALL = "all";
-    public static final String AT = "at";
+    // NOTE Add new revision selectors here... still co-changes with RevisionGroupParser, to be changed
+    public static final String RANGE = RangeRevisionSelector.CODE.toLowerCase();
+    public static final String ALL = AllRevisionSelector.CODE.toLowerCase();
+    public static final String AT = SingleRevisionSelector.CODE.toLowerCase();
 
     public static final String WORK_DIR = "workDir";
 
@@ -42,6 +46,7 @@ public class CLIOptions extends Options {
                 .desc("Path to a file .json file where to store the results. If the file already exists, its content will be overwritten.")
                 .build();
 
+        // NOTE Add new revision selectors here... still co-changes with RevisionGroupParser, to be changed
         Option range = Option.builder(RANGE)
                 .hasArg(true)
                 .desc("Revisions (commits) range on which to run SURFACE. Format: \"<START-SHA>..<END-SHA>\", where <START-SHA> must be reachable from <END-SHA> (i.e., is in its ancestor path in the main branch). Evaluated only when -" + TARGET + " is a remote URL. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + ALL + " and -" + AT + " options. If none is specified, the analyses will be run on the repository's current state.")

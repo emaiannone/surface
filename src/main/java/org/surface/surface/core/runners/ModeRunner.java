@@ -1,57 +1,51 @@
 package org.surface.surface.core.runners;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.surface.surface.common.RunSetting;
+import org.surface.surface.core.metrics.api.Metric;
 import org.surface.surface.core.out.exporters.ResultsExporter;
+import org.surface.surface.core.out.writers.FileWriter;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.Objects;
 
 public abstract class ModeRunner<T> {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final List<String> metrics;
-    private final String target;
-    private final Path outFilePath;
-    private final String outFileExtension;
-    private final String defaultFilesRegex;
+    private final List<Metric<?, ?>> metrics;
+    private final FileWriter writer;
+    private final String filesRegex;
     private ResultsExporter<T> resultsExporter;
+    private String codeName;
 
-    ModeRunner(List<String> metrics, String target, Pair<String, String> outFile, String defaultFilesRegex) {
-        this.metrics = Objects.requireNonNull(metrics);
-        this.target = Objects.requireNonNull(target);
-        this.outFilePath = Objects.requireNonNull(Paths.get(outFile.getKey()).toAbsolutePath());
-        this.outFileExtension = Objects.requireNonNull(outFile.getValue());
-        this.defaultFilesRegex = defaultFilesRegex;
+    ModeRunner(List<Metric<?, ?>> metrics, FileWriter writer, String filesRegex) {
+        this.metrics = metrics;
+        this.writer = writer;
+        this.filesRegex = filesRegex;
     }
 
-    public static ModeRunner<?> newModeRunner(RunSetting runSetting) {
-        return ModeRunnerFactory.newModeRunner(runSetting);
-    }
-
-    public List<String> getMetrics() {
+    public List<Metric<?, ?>> getMetrics() {
         return metrics;
     }
 
-    String getTarget() {
-        return target;
+    public FileWriter getWriter() {
+        return writer;
     }
 
-    Path getOutFilePath() {
-        return outFilePath;
+    public String getFilesRegex() {
+        return filesRegex;
     }
 
-    public String getOutFileExtension() {
-        return outFileExtension;
+    public ResultsExporter<T> getResultsExporter() {
+        return resultsExporter;
     }
 
-    String getDefaultFilesRegex() {
-        return defaultFilesRegex;
+    public String getCodeName() {
+        return codeName;
+    }
+
+    public void setCodeName(String codeName) {
+        this.codeName = codeName;
     }
 
     void setResultsExporter(ResultsExporter<T> resultsExporter) {
@@ -59,12 +53,12 @@ public abstract class ModeRunner<T> {
     }
 
     void exportResults(T projectMetricsResults) throws IOException {
-        LOGGER.info("* Exporting results to {}", getOutFilePath());
+        LOGGER.info("* Exporting results to {}", writer.getOutFile());
         try {
-            resultsExporter.export(projectMetricsResults);
-            LOGGER.info("* Exporting completed to {}", getOutFilePath());
+            resultsExporter.export(projectMetricsResults, writer);
+            LOGGER.info("* Exporting completed to {}", writer.getOutFile());
         } catch (IOException e) {
-            LOGGER.info("* Exporting failed to {}", getOutFilePath());
+            LOGGER.info("* Exporting failed to {}", writer.getOutFile());
             throw e;
         }
     }
