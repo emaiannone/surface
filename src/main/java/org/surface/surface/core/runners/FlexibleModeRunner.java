@@ -6,7 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.surface.surface.core.Utils;
 import org.surface.surface.core.analysis.selectors.RevisionSelector;
-import org.surface.surface.core.metrics.api.Metric;
+import org.surface.surface.core.metrics.api.MetricsManager;
 import org.surface.surface.core.metrics.results.ProjectMetricsResults;
 import org.surface.surface.core.out.exporters.MixedProjectsResultsExporter;
 import org.surface.surface.core.out.writers.FileWriter;
@@ -26,8 +26,8 @@ public class FlexibleModeRunner extends ModeRunner<Map<String, Map<String, Proje
     private final RevisionSelector defaultRevisionSelector;
     private final Path defaultWorkDirPath;
 
-    public FlexibleModeRunner(Path configFilePath, List<Metric<?, ?>> metrics, FileWriter writer, String filesRegex, RevisionSelector defaultRevisionSelector, Path defaultWorkDirPath) {
-        super(metrics, writer, filesRegex);
+    public FlexibleModeRunner(Path configFilePath, MetricsManager metricsManager, FileWriter writer, String filesRegex, RevisionSelector defaultRevisionSelector, Path defaultWorkDirPath) {
+        super(metricsManager, writer, filesRegex);
         this.configFilePath = configFilePath;
         this.defaultRevisionSelector = defaultRevisionSelector;
         this.defaultWorkDirPath = defaultWorkDirPath;

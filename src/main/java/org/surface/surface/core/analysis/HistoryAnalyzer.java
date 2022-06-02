@@ -13,7 +13,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.surface.surface.core.analysis.selectors.RevisionSelector;
 import org.surface.surface.core.analysis.setup.SetupEnvironmentAction;
-import org.surface.surface.core.metrics.api.Metric;
+import org.surface.surface.core.metrics.api.MetricsManager;
 import org.surface.surface.core.metrics.results.ProjectMetricsResults;
 
 import java.io.IOException;
@@ -26,14 +26,14 @@ public class HistoryAnalyzer {
 
     private final String projectName;
     private final String filesRegex;
-    private final List<Metric<?,?>> metrics;
+    private final MetricsManager metricsManager;
     private final RevisionSelector revisionSelector;
     private final SetupEnvironmentAction setupEnvironmentAction;
 
-    public HistoryAnalyzer(String projectName, String filesRegex, List<Metric<?,?>> metrics, RevisionSelector revisionSelector, SetupEnvironmentAction setupEnvironmentAction) {
+    public HistoryAnalyzer(String projectName, String filesRegex, MetricsManager metricsManager, RevisionSelector revisionSelector, SetupEnvironmentAction setupEnvironmentAction) {
         this.projectName = projectName;
         this.filesRegex = filesRegex;
-        this.metrics = metrics;
+        this.metricsManager = metricsManager;
         this.revisionSelector = revisionSelector;
         this.setupEnvironmentAction = setupEnvironmentAction;
     }
@@ -80,7 +80,7 @@ public class HistoryAnalyzer {
                     }
                     progressBar.setExtraMessage("Inspecting " + commit.getName().substring(0, 8));
                     progressBar.step();
-                    SnapshotAnalyzer snapshotAnalyzer = new SnapshotAnalyzer(projectDirPath, filesRegex, metrics);
+                    SnapshotAnalyzer snapshotAnalyzer = new SnapshotAnalyzer(projectDirPath, filesRegex, metricsManager);
                     ProjectMetricsResults projectMetricsResults = snapshotAnalyzer.analyze();
                     allResults.put(commit.getName(), projectMetricsResults);
                 }

@@ -5,11 +5,10 @@ import org.apache.logging.log4j.Logger;
 import org.surface.surface.core.analysis.HistoryAnalyzer;
 import org.surface.surface.core.analysis.selectors.RevisionSelector;
 import org.surface.surface.core.analysis.setup.SetupEnvironmentAction;
-import org.surface.surface.core.metrics.api.Metric;
+import org.surface.surface.core.metrics.api.MetricsManager;
 import org.surface.surface.core.metrics.results.ProjectMetricsResults;
 import org.surface.surface.core.out.writers.FileWriter;
 
-import java.util.List;
 import java.util.Map;
 
 public abstract class GitModeRunner extends ModeRunner<Map<String, ProjectMetricsResults>> {
@@ -18,8 +17,8 @@ public abstract class GitModeRunner extends ModeRunner<Map<String, ProjectMetric
     private final RevisionSelector revisionSelector;
     private SetupEnvironmentAction setupEnvironmentAction;
 
-    GitModeRunner(List<Metric<?, ?>> metrics, FileWriter writer, String filesRegex, RevisionSelector revisionSelector) {
-        super(metrics, writer, filesRegex);
+    GitModeRunner(MetricsManager metricsManager, FileWriter writer, String filesRegex, RevisionSelector revisionSelector) {
+        super(metricsManager, writer, filesRegex);
         this.revisionSelector = revisionSelector;
     }
 
@@ -35,7 +34,7 @@ public abstract class GitModeRunner extends ModeRunner<Map<String, ProjectMetric
 
     @Override
     public void run() throws Exception {
-        HistoryAnalyzer historyAnalyzer = new HistoryAnalyzer(getProjectName(), getFilesRegex(), getMetrics(),
+        HistoryAnalyzer historyAnalyzer = new HistoryAnalyzer(getProjectName(), getFilesRegex(), getMetricsManager(),
                 revisionSelector, setupEnvironmentAction);
         Map<String, ProjectMetricsResults> allResults = historyAnalyzer.analyze();
         exportResults(allResults);

@@ -8,14 +8,13 @@ import org.surface.surface.core.analysis.selectors.RevisionSelector;
 import org.surface.surface.core.interpreters.MetricsFormulaInterpreter;
 import org.surface.surface.core.interpreters.OutFileInterpreter;
 import org.surface.surface.core.interpreters.RevisionGroupInterpreter;
-import org.surface.surface.core.metrics.api.Metric;
+import org.surface.surface.core.metrics.api.MetricsManager;
 import org.surface.surface.core.out.writers.FileWriter;
 import org.surface.surface.core.runners.ModeRunner;
 import org.surface.surface.core.runners.ModeRunnerFactory;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -31,13 +30,13 @@ class CLIArgumentsParser {
         String target = commandLine.getOptionValue(CLIOptions.TARGET);
 
         // Parse Metrics
-        List<Metric<?, ?>> metrics;
+        MetricsManager metricsManager;
         try {
-            metrics = MetricsFormulaInterpreter.interpretMetricsFormula(commandLine.getOptionValues(CLIOptions.METRICS));
+            metricsManager = MetricsFormulaInterpreter.interpretMetricsFormula(commandLine.getOptionValues(CLIOptions.METRICS));
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("The supplied metrics formula must be a list of comma-separate metric codes without any space in between.", e);
         }
-        LOGGER.info("* Going to compute the following metrics: {}", metrics);
+        LOGGER.info("* Going to compute the following metrics: {}", metricsManager.getMetricsCodes());
 
         // Parse Output File to get the Writer
         String outFileValue = commandLine.getOptionValue(CLIOptions.OUT_FILE);
@@ -94,7 +93,7 @@ class CLIArgumentsParser {
         }
 
         // Parse RunMode
-        ModeRunner<?> modeRunner = ModeRunnerFactory.newModeRunner(target, metrics, writer, filesRegex, revisionSelector, workDirPath);
+        ModeRunner<?> modeRunner = ModeRunnerFactory.newModeRunner(target, metricsManager, writer, filesRegex, revisionSelector, workDirPath);
         LOGGER.info("* Going to run in the following mode: " + modeRunner.getCodeName());
         return modeRunner;
     }

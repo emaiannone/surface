@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.surface.surface.core.explorers.JavaFilesExplorer;
 import org.surface.surface.core.inspection.ProjectInspector;
 import org.surface.surface.core.inspection.results.ProjectInspectorResults;
-import org.surface.surface.core.metrics.api.Metric;
+import org.surface.surface.core.metrics.api.MetricsManager;
 import org.surface.surface.core.metrics.api.ProjectMetricsCalculator;
 import org.surface.surface.core.metrics.results.ProjectMetricsResults;
 
@@ -18,12 +18,12 @@ public class SnapshotAnalyzer {
 
     private final Path projectDirPath;
     private final String filesRegex;
-    private final List<Metric<?,?>> metrics;
+    private final MetricsManager metricsManager;
 
-    public SnapshotAnalyzer(Path projectDirPath, String filesRegex, List<Metric<?,?>> metrics) {
+    public SnapshotAnalyzer(Path projectDirPath, String filesRegex, MetricsManager metricsManager) {
         this.projectDirPath = projectDirPath;
         this.filesRegex = filesRegex;
-        this.metrics = metrics;
+        this.metricsManager = metricsManager;
     }
 
     public ProjectMetricsResults analyze() throws IOException {
@@ -34,7 +34,7 @@ public class SnapshotAnalyzer {
         ProjectInspectorResults projectInspectorResults = projectInspector.inspect();
         ProjectMetricsCalculator projectMetricsCalculator = new ProjectMetricsCalculator(projectInspectorResults);
         LOGGER.debug("* Metrics computation started");
-        ProjectMetricsResults projectMetricsResults = projectMetricsCalculator.calculate(metrics);
+        ProjectMetricsResults projectMetricsResults = projectMetricsCalculator.calculate(metricsManager);
         LOGGER.debug("* Metrics computation ended");
         LOGGER.trace("Metrics results:\n\t{}", projectMetricsResults.toString().replaceAll("\n", "\n\t"));
         return projectMetricsResults;

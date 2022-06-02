@@ -2,30 +2,29 @@ package org.surface.surface.core.runners;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.surface.surface.core.metrics.api.Metric;
+import org.surface.surface.core.metrics.api.MetricsManager;
 import org.surface.surface.core.out.exporters.ResultsExporter;
 import org.surface.surface.core.out.writers.FileWriter;
 
 import java.io.IOException;
-import java.util.List;
 
 public abstract class ModeRunner<T> {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final List<Metric<?, ?>> metrics;
+    private final MetricsManager metricsManager;
     private final FileWriter writer;
     private final String filesRegex;
     private ResultsExporter<T> resultsExporter;
     private String codeName;
 
-    ModeRunner(List<Metric<?, ?>> metrics, FileWriter writer, String filesRegex) {
-        this.metrics = metrics;
+    ModeRunner(MetricsManager metricsManager, FileWriter writer, String filesRegex) {
+        this.metricsManager = metricsManager;
         this.writer = writer;
         this.filesRegex = filesRegex;
     }
 
-    public List<Metric<?, ?>> getMetrics() {
-        return metrics;
+    public MetricsManager getMetricsManager() {
+        return metricsManager;
     }
 
     public FileWriter getWriter() {
