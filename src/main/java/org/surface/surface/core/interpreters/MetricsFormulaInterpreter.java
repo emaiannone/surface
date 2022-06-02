@@ -1,4 +1,4 @@
-package org.surface.surface.core.parsers;
+package org.surface.surface.core.interpreters;
 
 import org.surface.surface.core.metrics.api.Metric;
 import org.surface.surface.core.metrics.classlevel.ca.CA;
@@ -32,7 +32,7 @@ import org.surface.surface.core.metrics.projectlevel.sccr.SCCRCached;
 
 import java.util.*;
 
-public class MetricsFormulaParser {
+public class MetricsFormulaInterpreter {
     private static final String ALL = "ALL";
     private static final Map<String, Metric<?, ?>> ALL_METRICS;
     private static final ProjectMetricsStructure PROJECT_METRICS_STRUCTURE;
@@ -59,7 +59,7 @@ public class MetricsFormulaParser {
         ALL_METRICS.put(SCCR.CODE, PROJECT_METRICS_STRUCTURE.getSccr());
     }
 
-    public static List<Metric<?, ?>> parseMetricsFormula(String[] metricsString) {
+    public static List<Metric<?, ?>> interpretMetricsFormula(String[] metricsString) {
         if (metricsString == null || metricsString.length == 0 || metricsString[0].equals("")) {
             throw new IllegalArgumentException("The input metrics formula must not be null, empty, or with an empty string as its only element.");
         }

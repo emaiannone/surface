@@ -5,11 +5,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.surface.surface.core.Utils;
 import org.surface.surface.core.analysis.selectors.RevisionSelector;
+import org.surface.surface.core.interpreters.MetricsFormulaInterpreter;
+import org.surface.surface.core.interpreters.OutFileInterpreter;
+import org.surface.surface.core.interpreters.RevisionGroupInterpreter;
 import org.surface.surface.core.metrics.api.Metric;
 import org.surface.surface.core.out.writers.FileWriter;
-import org.surface.surface.core.parsers.MetricsFormulaParser;
-import org.surface.surface.core.parsers.OutFileParser;
-import org.surface.surface.core.parsers.RevisionGroupParser;
 import org.surface.surface.core.runners.ModeRunner;
 import org.surface.surface.core.runners.ModeRunnerFactory;
 
@@ -33,7 +33,7 @@ class CLIArgumentsParser {
         // Parse Metrics
         List<Metric<?, ?>> metrics;
         try {
-            metrics = MetricsFormulaParser.parseMetricsFormula(commandLine.getOptionValues(CLIOptions.METRICS));
+            metrics = MetricsFormulaInterpreter.interpretMetricsFormula(commandLine.getOptionValues(CLIOptions.METRICS));
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("The supplied metrics formula must be a list of comma-separate metric codes without any space in between.", e);
         }
@@ -43,7 +43,7 @@ class CLIArgumentsParser {
         String outFileValue = commandLine.getOptionValue(CLIOptions.OUT_FILE);
         FileWriter writer;
         try {
-            writer = OutFileParser.parseOutString(outFileValue);
+            writer = OutFileInterpreter.interpretOutString(outFileValue);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("The supplied output file path must point to a file of one of the supported type.", e);
         }
@@ -69,7 +69,7 @@ class CLIArgumentsParser {
         String revisionModeSelected = options.getOptionGroup(options.getOption(CLIOptions.RANGE)).getSelected();
         String revisionValue = commandLine.getOptionValue(revisionModeSelected);
         try {
-            revisionSelector = RevisionGroupParser.parseRevisionGroup(revisionModeSelected, revisionValue);
+            revisionSelector = RevisionGroupInterpreter.interpretRevisionGroup(revisionModeSelected, revisionValue);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("The supplied revision option must fulfill the requirements of each type (see options documentation).", e);
         }

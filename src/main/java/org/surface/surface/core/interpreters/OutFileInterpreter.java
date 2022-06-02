@@ -1,4 +1,4 @@
-package org.surface.surface.core.parsers;
+package org.surface.surface.core.interpreters;
 
 import org.apache.commons.io.FilenameUtils;
 import org.surface.surface.core.out.writers.FileWriter;
@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
-public class OutFileParser {
+public class OutFileInterpreter {
     private static final Map<String, Class<? extends FileWriter>> SUPPORTED_FILE_TYPES;
     static {
         // NOTE Any new file type must be added here to be recognized by the CLI parser
@@ -20,7 +20,7 @@ public class OutFileParser {
         SUPPORTED_FILE_TYPES.put(JsonFileWriter.CODE.toLowerCase(), JsonFileWriter.class);
     }
 
-    public static FileWriter parseOutString(String outString) {
+    public static FileWriter interpretOutString(String outString) {
         Path outFilePath = Paths.get(outString).toAbsolutePath();
         File file = outFilePath.toFile();
         String extension = FilenameUtils.getExtension(file.toString());

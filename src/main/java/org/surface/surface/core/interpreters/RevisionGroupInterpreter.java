@@ -1,4 +1,4 @@
-package org.surface.surface.core.parsers;
+package org.surface.surface.core.interpreters;
 
 import org.surface.surface.core.analysis.selectors.*;
 
@@ -7,7 +7,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RevisionGroupParser {
+public class RevisionGroupInterpreter {
     private static final Map<String, Class<? extends RevisionSelector>> SUPPORTED_SELECTORS;
     static {
         // NOTE Any new selection type must be added here to be recognized by the CLI parser
@@ -17,7 +17,7 @@ public class RevisionGroupParser {
         SUPPORTED_SELECTORS.put(AllRevisionSelector.CODE.toLowerCase(), AllRevisionSelector.class);
     }
 
-    public static RevisionSelector parseRevisionGroup(String revisionMode, String revisionString) {
+    public static RevisionSelector interpretRevisionGroup(String revisionMode, String revisionString) {
         RevisionSelector revisionSelector;
         try {
             Class<? extends RevisionSelector> aClass = SUPPORTED_SELECTORS.get(revisionMode);
