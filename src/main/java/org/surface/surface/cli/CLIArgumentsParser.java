@@ -29,7 +29,7 @@ class CLIArgumentsParser {
 
         String target = commandLine.getOptionValue(CLIOptions.TARGET);
 
-        // Parse Metrics
+        // Interpret Metrics
         MetricsManager metricsManager;
         try {
             metricsManager = MetricsFormulaInterpreter.interpretMetricsFormula(commandLine.getOptionValues(CLIOptions.METRICS));
@@ -38,7 +38,7 @@ class CLIArgumentsParser {
         }
         LOGGER.info("* Going to compute the following metrics: {}", metricsManager.getMetricsCodes());
 
-        // Parse Output File to get the Writer
+        // Interpret Output File to get the Writer
         String outFileValue = commandLine.getOptionValue(CLIOptions.OUT_FILE);
         FileWriter writer;
         try {
@@ -56,14 +56,14 @@ class CLIArgumentsParser {
                 Pattern.compile(filesValue);
                 filesRegex = filesValue;
             } catch (PatternSyntaxException e) {
-                throw new IllegalArgumentException("The supplied regular expression must be compilable.", e);
+                throw new IllegalArgumentException("The supplied regular expression to filter files must be compilable.", e);
             }
             LOGGER.info("* Going to analyze only the .java files matching this expression: " + filesRegex);
         } else {
             LOGGER.info("* Going to analyze all .java files found");
         }
 
-        // Parse the Revision group
+        // Interpret the Revision group
         RevisionSelector revisionSelector;
         String revisionModeSelected = options.getOptionGroup(options.getOption(CLIOptions.RANGE)).getSelected();
         String revisionValue = commandLine.getOptionValue(revisionModeSelected);
@@ -75,7 +75,7 @@ class CLIArgumentsParser {
         if (revisionSelector.getRevisionString() == null) {
             LOGGER.info("* Going to analyze the HEAD revision (default)");
         } else {
-            LOGGER.info("* Going to analyze {} {} " + revisionModeSelected, revisionValue);
+            LOGGER.info("* Going to analyze {} {} ", revisionModeSelected, revisionValue);
         }
 
         // Validate the Working Directory
@@ -92,9 +92,9 @@ class CLIArgumentsParser {
             LOGGER.info("* Going to clone in the following directory: " + workDirPath);
         }
 
-        // Parse RunMode
+        // Interpret RunMode
         ModeRunner<?> modeRunner = ModeRunnerFactory.newModeRunner(target, metricsManager, writer, filesRegex, revisionSelector, workDirPath);
-        LOGGER.info("* Going to run in the following mode: " + modeRunner.getCodeName());
+        LOGGER.info("* Going to run mode: {}", modeRunner.getCodeName());
         return modeRunner;
     }
 }

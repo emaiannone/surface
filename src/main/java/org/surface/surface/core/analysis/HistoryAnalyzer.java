@@ -21,19 +21,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-public class HistoryAnalyzer {
+public class HistoryAnalyzer extends Analyzer {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final String projectName;
-    private final String filesRegex;
-    private final MetricsManager metricsManager;
     private final RevisionSelector revisionSelector;
     private final SetupEnvironmentAction setupEnvironmentAction;
 
     public HistoryAnalyzer(String projectName, String filesRegex, MetricsManager metricsManager, RevisionSelector revisionSelector, SetupEnvironmentAction setupEnvironmentAction) {
+        super(filesRegex ,metricsManager);
         this.projectName = projectName;
-        this.filesRegex = filesRegex;
-        this.metricsManager = metricsManager;
         this.revisionSelector = revisionSelector;
         this.setupEnvironmentAction = setupEnvironmentAction;
     }
@@ -80,9 +77,9 @@ public class HistoryAnalyzer {
                     }
                     progressBar.setExtraMessage("Inspecting " + commit.getName().substring(0, 8));
                     progressBar.step();
-                    SnapshotAnalyzer snapshotAnalyzer = new SnapshotAnalyzer(projectDirPath, filesRegex, metricsManager);
-                    ProjectMetricsResults projectMetricsResults = snapshotAnalyzer.analyze();
-                    allResults.put(commit.getName(), projectMetricsResults);
+                    SnapshotAnalyzer snapshotAnalyzer = new SnapshotAnalyzer(projectDirPath, getFilesRegex(), getMetricsManager());
+                    Map<String, ProjectMetricsResults> projectMetricsResults = snapshotAnalyzer.analyze();
+                    allResults.putAll(projectMetricsResults);
                 }
             }
         } catch (IOException e) {

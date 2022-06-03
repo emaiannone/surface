@@ -54,7 +54,7 @@ public abstract class ModeRunner<T> {
     void exportResults(T projectMetricsResults) throws IOException {
         LOGGER.info("* Exporting results to {}", writer.getOutFile());
         try {
-            resultsExporter.export(projectMetricsResults, writer);
+            resultsExporter.exportToFile(projectMetricsResults, writer);
             LOGGER.info("* Exporting completed to {}", writer.getOutFile());
         } catch (IOException e) {
             LOGGER.info("* Exporting failed to {}", writer.getOutFile());

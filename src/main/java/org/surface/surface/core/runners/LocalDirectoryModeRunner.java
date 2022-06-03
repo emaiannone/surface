@@ -10,6 +10,7 @@ import org.surface.surface.core.out.writers.FileWriter;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Map;
 
 public class LocalDirectoryModeRunner extends ModeRunner<ProjectMetricsResults> {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -30,7 +31,7 @@ public class LocalDirectoryModeRunner extends ModeRunner<ProjectMetricsResults> 
             throw new IllegalStateException("The target directory does not exist or is not a directory.");
         }
         SnapshotAnalyzer snapshotAnalyzer = new SnapshotAnalyzer(localDirPath, getFilesRegex(), getMetricsManager());
-        ProjectMetricsResults projectMetricsResults = snapshotAnalyzer.analyze();
-        exportResults(projectMetricsResults);
+        Map<String, ProjectMetricsResults> results = snapshotAnalyzer.analyze();
+        exportResults(results.get(localDirPath.toString()));
     }
 }

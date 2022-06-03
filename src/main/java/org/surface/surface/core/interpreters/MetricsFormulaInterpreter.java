@@ -10,6 +10,10 @@ import java.util.Set;
 public class MetricsFormulaInterpreter {
     private static final String ALL = "ALL";
 
+    public static MetricsManager interpretMetricsFormula(String metricsString, String sep) {
+        return interpretMetricsFormula(metricsString.split(sep));
+    }
+
     public static MetricsManager interpretMetricsFormula(String[] metricsString) {
         if (metricsString == null || metricsString.length == 0 || metricsString[0].equals("")) {
             throw new IllegalArgumentException("The input metrics formula must not be null, empty, or with an empty string as its only element.");
