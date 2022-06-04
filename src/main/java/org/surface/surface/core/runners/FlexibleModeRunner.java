@@ -43,8 +43,8 @@ public class FlexibleModeRunner extends ModeRunner<Map<String, Map<String, Proje
     private final RevisionSelector defaultRevisionSelector;
     private final Path workDirPath;
 
-    public FlexibleModeRunner(Path configFilePath, MetricsManager metricsManager, FileWriter writer, String filesRegex, RevisionSelector defaultRevisionSelector, Path workDirPath) {
-        super(metricsManager, writer, filesRegex);
+    public FlexibleModeRunner(Path configFilePath, MetricsManager metricsManager, FileWriter writer, String filesRegex, boolean includeTests, RevisionSelector defaultRevisionSelector, Path workDirPath) {
+        super(metricsManager, writer, filesRegex, includeTests);
         this.configFilePath = configFilePath;
         this.defaultRevisionSelector = defaultRevisionSelector;
         this.workDirPath = workDirPath;
@@ -62,7 +62,6 @@ public class FlexibleModeRunner extends ModeRunner<Map<String, Map<String, Proje
         List<String> failedProjects = new ArrayList<>();
         LOGGER.info("* Going to analyze the following projects: {}", analyzers.keySet());
         for (Map.Entry<String, Analyzer> analyzerEntry : analyzers.entrySet()) {
-            // TODO If there is an exception, instead of letting it pass, catch it and go to the next project. Store the failed project and print the in stdout to warn the user of the failed runs
             String projectIdKey = analyzerEntry.getKey();
             try {
                 Map<String, ProjectMetricsResults> projectMetricsResults = analyzerEntry.getValue().analyze();
@@ -157,8 +156,21 @@ public class FlexibleModeRunner extends ModeRunner<Map<String, Map<String, Proje
                 LOGGER.info("* Project \"{}\": Going to analyze only the .java files matching this expression {}", projectId, filesRegex);
             } else {
                 filesRegex = getFilesRegex();
-                LOGGER.warn("* Project \"{}\": No regular expression supplied. Using the default option.", projectId);
+                LOGGER.warn("* Project \"{}\": No regular expression to filter files supplied. Using the default option.", projectId);
             }
+
+            // Check the inclusion of test files
+            boolean includeTests = false;
+            if (project.includeTests != null) {
+                if (project.includeTests) {
+                    includeTests = true;
+                    LOGGER.info("* Project \"{}\": Going to include test files as well.", projectId);
+                }
+            } else {
+                includeTests = isIncludeTests();
+                LOGGER.info("* Project \"{}\": No indication on how to manage test files. Using the default option.", projectId);
+            }
+
 
             // Interpret the Revision Filter
             RevisionSelector revisionSelector;
@@ -184,9 +196,9 @@ public class FlexibleModeRunner extends ModeRunner<Map<String, Map<String, Proje
             // Instantiate the appropriate analyzer
             Analyzer analyzer;
             if (isSnapshot) {
-                analyzer = new SnapshotAnalyzer(path, filesRegex, metricsManager);
+                analyzer = new SnapshotAnalyzer(path, filesRegex, metricsManager, includeTests);
             } else {
-                analyzer = new HistoryAnalyzer(projectId, filesRegex, metricsManager, revisionSelector, setupEnvironmentAction);
+                analyzer = new HistoryAnalyzer(projectId, filesRegex, metricsManager, includeTests, revisionSelector, setupEnvironmentAction);
             }
             analyzers.put(projectId, analyzer);
         }
@@ -223,6 +235,7 @@ public class FlexibleModeRunner extends ModeRunner<Map<String, Map<String, Proje
         public String location;
         public String metrics;
         public String filesRegex;
+        public Boolean includeTests;
         public RevisionConfiguration revisions;
 
         public ProjectConfiguration() {

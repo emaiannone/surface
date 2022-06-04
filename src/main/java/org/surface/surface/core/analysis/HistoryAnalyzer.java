@@ -28,8 +28,8 @@ public class HistoryAnalyzer extends Analyzer {
     private final RevisionSelector revisionSelector;
     private final SetupEnvironmentAction setupEnvironmentAction;
 
-    public HistoryAnalyzer(String projectName, String filesRegex, MetricsManager metricsManager, RevisionSelector revisionSelector, SetupEnvironmentAction setupEnvironmentAction) {
-        super(filesRegex ,metricsManager);
+    public HistoryAnalyzer(String projectName, String filesRegex, MetricsManager metricsManager, boolean includeTests, RevisionSelector revisionSelector, SetupEnvironmentAction setupEnvironmentAction) {
+        super(filesRegex ,metricsManager, includeTests);
         this.projectName = projectName;
         this.revisionSelector = revisionSelector;
         this.setupEnvironmentAction = setupEnvironmentAction;
@@ -77,7 +77,7 @@ public class HistoryAnalyzer extends Analyzer {
                     }
                     progressBar.setExtraMessage("Inspecting " + commit.getName().substring(0, 8));
                     progressBar.step();
-                    SnapshotAnalyzer snapshotAnalyzer = new SnapshotAnalyzer(projectDirPath, getFilesRegex(), getMetricsManager());
+                    SnapshotAnalyzer snapshotAnalyzer = new SnapshotAnalyzer(projectDirPath, getFilesRegex(), getMetricsManager(), isIncludeTests());
                     Map<String, ProjectMetricsResults> projectMetricsResults = snapshotAnalyzer.analyze();
                     ProjectMetricsResults value = projectMetricsResults.entrySet().iterator().next().getValue();
                     allResults.put(commit.getName(), value);

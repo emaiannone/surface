@@ -17,8 +17,8 @@ public abstract class GitModeRunner extends ModeRunner<Map<String, ProjectMetric
     private final RevisionSelector revisionSelector;
     private SetupEnvironmentAction setupEnvironmentAction;
 
-    GitModeRunner(MetricsManager metricsManager, FileWriter writer, String filesRegex, RevisionSelector revisionSelector) {
-        super(metricsManager, writer, filesRegex);
+    GitModeRunner(MetricsManager metricsManager, FileWriter writer, String filesRegex, boolean includeTests, RevisionSelector revisionSelector) {
+        super(metricsManager, writer, filesRegex, includeTests);
         this.revisionSelector = revisionSelector;
     }
 
@@ -34,8 +34,8 @@ public abstract class GitModeRunner extends ModeRunner<Map<String, ProjectMetric
 
     @Override
     public void run() throws Exception {
-        HistoryAnalyzer historyAnalyzer = new HistoryAnalyzer(getProjectName(), getFilesRegex(), getMetricsManager(),
-                revisionSelector, setupEnvironmentAction);
+        HistoryAnalyzer historyAnalyzer = new HistoryAnalyzer(getProjectName(), getFilesRegex(),
+                getMetricsManager(), isIncludeTests(), revisionSelector, setupEnvironmentAction);
         Map<String, ProjectMetricsResults> allResults = historyAnalyzer.analyze();
         exportResults(allResults);
         LOGGER.info("* Exported results to {}", getWriter().getOutFile());

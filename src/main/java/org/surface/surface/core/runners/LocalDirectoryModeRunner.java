@@ -18,8 +18,8 @@ public class LocalDirectoryModeRunner extends ModeRunner<ProjectMetricsResults> 
 
     private final Path localDirPath;
 
-    public LocalDirectoryModeRunner(Path localDirPath, MetricsManager metricsManager, FileWriter writer, String filesRegex) {
-        super(metricsManager, writer, filesRegex);
+    public LocalDirectoryModeRunner(Path localDirPath, MetricsManager metricsManager, FileWriter writer, String filesRegex, boolean includeTests) {
+        super(metricsManager, writer, filesRegex, includeTests);
         this.localDirPath = localDirPath;
         setCodeName(CODE_NAME);
         setResultsExporter(new SimpleProjectResultsExporter());
@@ -30,7 +30,7 @@ public class LocalDirectoryModeRunner extends ModeRunner<ProjectMetricsResults> 
         if (!localDirPath.toFile().isDirectory()) {
             throw new IllegalStateException("The target directory does not exist or is not a directory.");
         }
-        SnapshotAnalyzer snapshotAnalyzer = new SnapshotAnalyzer(localDirPath, getFilesRegex(), getMetricsManager());
+        SnapshotAnalyzer snapshotAnalyzer = new SnapshotAnalyzer(localDirPath, getFilesRegex(), getMetricsManager(), isIncludeTests());
         Map<String, ProjectMetricsResults> results = snapshotAnalyzer.analyze();
         exportResults(results.get(localDirPath.toString()));
         LOGGER.info("* Exported results to {}", getWriter().getOutFile());

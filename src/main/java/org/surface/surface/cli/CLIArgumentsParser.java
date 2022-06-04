@@ -63,6 +63,13 @@ class CLIArgumentsParser {
             LOGGER.info("* Going to analyze all .java files found (default).");
         }
 
+        // Check the inclusion of test files
+        boolean includeTests = false;
+        if (commandLine.hasOption(CLIOptions.INCLUDE_TESTS)) {
+            includeTests = true;
+            LOGGER.info("* Going to include test files as well.");
+        }
+
         // Interpret the Revision group
         RevisionSelector revisionSelector;
         String revisionModeSelected = options.getOptionGroup(options.getOption(CLIOptions.RANGE)).getSelected();
@@ -93,7 +100,7 @@ class CLIArgumentsParser {
         }
 
         // Interpret RunMode
-        ModeRunner<?> modeRunner = ModeRunnerFactory.newModeRunner(target, metricsManager, writer, filesRegex, revisionSelector, workDirPath);
+        ModeRunner<?> modeRunner = ModeRunnerFactory.newModeRunner(target, metricsManager, writer, filesRegex, includeTests, revisionSelector, workDirPath);
         LOGGER.info("* Going to run mode: {}", modeRunner.getCodeName());
         return modeRunner;
     }

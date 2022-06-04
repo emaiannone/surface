@@ -16,7 +16,6 @@ public class CLIOptions extends Options {
 
     public static final String OUT_FILE = "outFile";
 
-    // NOTE Add new revision selectors here... still co-changes with RevisionGroupParser, to be changed
     public static final String RANGE = RangeRevisionSelector.CODE.toLowerCase();
     public static final String ALL = AllRevisionSelector.CODE.toLowerCase();
     public static final String AT = SingleRevisionSelector.CODE.toLowerCase();
@@ -24,6 +23,7 @@ public class CLIOptions extends Options {
     public static final String WORK_DIR = "workDir";
 
     public static final String FILES = "files";
+    public static final String INCLUDE_TESTS = "includeTests";
 
     private CLIOptions() {
         Option target = Option.builder(TARGET)
@@ -46,7 +46,6 @@ public class CLIOptions extends Options {
                 .desc("Path to a file .json file where to store the results. If the file already exists, its content will be overwritten.")
                 .build();
 
-        // NOTE Add new revision selectors here... still co-changes with RevisionGroupParser, to be changed
         Option range = Option.builder(RANGE)
                 .hasArg(true)
                 .desc("Revisions (commits) range on which to run SURFACE. Format: \"<START-SHA>..<END-SHA>\", where <START-SHA> must be reachable from <END-SHA> (i.e., is in its ancestor path in the main branch). Evaluated only when -" + TARGET + " is a remote URL. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + ALL + " and -" + AT + " options. If none is specified, the analyses will be run on the repository's current state.")
@@ -76,12 +75,19 @@ public class CLIOptions extends Options {
                 .desc("(Optional) Regular expression to select the .java files on which SURFACE is run. If not specified, all the parsable .java files in the target project will be select. In FLEXIBLE mode it is used as default regular expression, if not specified differently in the YAML file.")
                 .build();
 
+        Option includeTests = Option.builder(INCLUDE_TESTS)
+                .hasArg(false)
+                .required(false)
+                .desc("(Optional) Flag admitting test files (i.e., classes with \"Test\"-like annotations, e.g. @Test or @ParameterizedTest. Disabled by default.")
+                .build();
+
         addOption(target);
         addOption(metrics);
         addOption(outFile);
         addOptionGroup(revisionGroup);
         addOption(cloneDir);
         addOption(files);
+        addOption(includeTests);
     }
 
     public static CLIOptions getInstance() {

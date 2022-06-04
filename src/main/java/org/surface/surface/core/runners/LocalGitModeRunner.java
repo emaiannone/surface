@@ -13,8 +13,8 @@ public class LocalGitModeRunner extends GitModeRunner {
 
     private final Path repoPath;
 
-    public LocalGitModeRunner(Path repoPath, MetricsManager metricsManager, FileWriter writer, String filesRegex, RevisionSelector revisionSelector, Path workDirPath) {
-        super(metricsManager, writer, filesRegex, revisionSelector);
+    public LocalGitModeRunner(Path repoPath, MetricsManager metricsManager, FileWriter writer, String filesRegex, boolean includeTests, RevisionSelector revisionSelector, Path workDirPath) {
+        super(metricsManager, writer, filesRegex, includeTests, revisionSelector);
         this.repoPath = repoPath;
         setCodeName(CODE_NAME);
         setResultsExporter(new GitProjectResultsExporter(null));

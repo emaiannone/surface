@@ -14,13 +14,15 @@ public abstract class ModeRunner<T> {
     private final MetricsManager metricsManager;
     private final FileWriter writer;
     private final String filesRegex;
+    private final boolean includeTests;
     private ResultsExporter<T> resultsExporter;
     private String codeName;
 
-    ModeRunner(MetricsManager metricsManager, FileWriter writer, String filesRegex) {
+    ModeRunner(MetricsManager metricsManager, FileWriter writer, String filesRegex, boolean includeTests) {
         this.metricsManager = metricsManager;
         this.writer = writer;
         this.filesRegex = filesRegex;
+        this.includeTests = includeTests;
     }
 
     public MetricsManager getMetricsManager() {
@@ -33,6 +35,10 @@ public abstract class ModeRunner<T> {
 
     public String getFilesRegex() {
         return filesRegex;
+    }
+
+    public boolean isIncludeTests() {
+        return includeTests;
     }
 
     public ResultsExporter<T> getResultsExporter() {
@@ -57,7 +63,7 @@ public abstract class ModeRunner<T> {
             resultsExporter.exportToFile(projectMetricsResults, writer);
             LOGGER.debug("* Exporting completed to {}", writer.getOutFile());
         } catch (IOException e) {
-            throw new IOException("Failed exporting to " + writer.getOutFile(), e);
+            throw new IOException("Failed to export to " + writer.getOutFile(), e);
         }
     }
 

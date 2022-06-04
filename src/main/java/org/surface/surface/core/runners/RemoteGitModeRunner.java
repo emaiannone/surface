@@ -14,8 +14,8 @@ public class RemoteGitModeRunner extends GitModeRunner {
 
     private final URI repoUrl;
 
-    public RemoteGitModeRunner(URI repoUrl, MetricsManager metricsManager, FileWriter writer, String filesRegex, RevisionSelector revisionSelector, Path workDirPath) {
-        super(metricsManager, writer, filesRegex, revisionSelector);
+    public RemoteGitModeRunner(URI repoUrl, MetricsManager metricsManager, FileWriter writer, String filesRegex, boolean includeTests, RevisionSelector revisionSelector, Path workDirPath) {
+        super(metricsManager, writer, filesRegex, includeTests, revisionSelector);
         this.repoUrl = repoUrl;
         setCodeName(CODE_NAME);
         setResultsExporter(new GitProjectResultsExporter(repoUrl.toString()));
