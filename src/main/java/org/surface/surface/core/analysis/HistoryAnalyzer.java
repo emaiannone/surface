@@ -49,18 +49,18 @@ public class HistoryAnalyzer extends Analyzer {
             try {
                 resetHard(git);
             } catch (GitAPIException e) {
-                throw new RuntimeException("The reset of git repository " + git.getRepository().getDirectory().getName() + "failed", e);
+                throw new RuntimeException("Failed to reset the state of git repository " + git.getRepository().getDirectory().getName(), e);
             }
             try {
                 commits = revisionSelector.selectRevisions(git);
             } catch (Exception e) {
-                throw new Exception("Failed to fetch the required revisions from git repository " + projectDirPath, e);
+                throw new RuntimeException("Failed to fetch the required revisions from git repository " + projectDirPath, e);
             }
             Collections.reverse(commits);
             int numCommits = commits.size();
-            LOGGER.info("* Going to analyze {} commits in git repository {}", numCommits, projectDirPath);
+            LOGGER.info("* Analyzing {} commits in git repository {}", numCommits, projectDirPath);
             try (ProgressBar progressBar = new ProgressBarBuilder()
-                    .setTaskName("History Analysis")
+                    .setTaskName("Project " + projectName)
                     .setInitialMax(numCommits)
                     .setStyle(ProgressBarStyle.ASCII)
                     .setMaxRenderedLength(150)

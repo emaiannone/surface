@@ -24,4 +24,9 @@ public abstract class RevisionSelector {
         String revisionRegex = "[a-zA-Z\\d]+";
         return string.matches(revisionRegex);
     }
+
+    @Override
+    public String toString() {
+        return revisionString;
+    }
 }

@@ -52,13 +52,12 @@ public abstract class ModeRunner<T> {
     }
 
     void exportResults(T projectMetricsResults) throws IOException {
-        LOGGER.info("* Exporting results to {}", writer.getOutFile());
+        LOGGER.debug("* Exporting results to {}", writer.getOutFile());
         try {
             resultsExporter.exportToFile(projectMetricsResults, writer);
-            LOGGER.info("* Exporting completed to {}", writer.getOutFile());
+            LOGGER.debug("* Exporting completed to {}", writer.getOutFile());
         } catch (IOException e) {
-            LOGGER.info("* Exporting failed to {}", writer.getOutFile());
-            throw e;
+            throw new IOException("Failed exporting to " + writer.getOutFile(), e);
         }
     }
 

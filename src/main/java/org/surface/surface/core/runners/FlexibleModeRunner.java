@@ -1,5 +1,6 @@
 package org.surface.surface.core.runners;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -30,10 +31,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -55,37 +53,85 @@ public class FlexibleModeRunner extends ModeRunner<Map<String, Map<String, Proje
     }
 
     @Override
-    public void run() throws Exception {
+    public void run() {
         Map<String, Map<String, ProjectMetricsResults>> fullResults = new LinkedHashMap<>();
         Map<String, Analyzer> analyzers = prepareAnalyzers();
         if (analyzers.size() == 0) {
-            throw new RuntimeException("Could not build any analyzer because the configuration file did not contain any valid project configuration.");
+            throw new RuntimeException("Could not run any analyzer because all projects specifications in the configuration file had errors.");
         }
+        List<String> failedProjects = new ArrayList<>();
+        LOGGER.info("* Going to analyze the following projects: {}", analyzers.keySet());
         for (Map.Entry<String, Analyzer> analyzerEntry : analyzers.entrySet()) {
-            Map<String, ProjectMetricsResults> projectMetricsResults = analyzerEntry.getValue().analyze();
+            // TODO If there is an exception, instead of letting it pass, catch it and go to the next project. Store the failed project and print the in stdout to warn the user of the failed runs
             String projectIdKey = analyzerEntry.getKey();
-            // Regenerate ID if there is a collision
-            while (fullResults.containsKey(projectIdKey)) {
-                projectIdKey += "_" + UUID.randomUUID();
+            try {
+                Map<String, ProjectMetricsResults> projectMetricsResults = analyzerEntry.getValue().analyze();
+                // Assign a new but similar ID if there is a collision
+                while (fullResults.containsKey(projectIdKey)) {
+                    projectIdKey += "_" + UUID.randomUUID();
+                }
+                fullResults.put(projectIdKey, projectMetricsResults);
+                try {
+                    exportResults(fullResults);
+                    LOGGER.info("* Results updated in {}", getWriter().getOutFile());
+                } catch (IOException e) {
+                    failedProjects.add(projectIdKey);
+                    LOGGER.error("* Found a problem during the export of the results for project \"" + projectIdKey + "\". Going to the next one. Details:");
+                    LOGGER.error("\t* {}", e.getMessage());
+                    continue;
+                }
+            } catch (Exception e) {
+                failedProjects.add(projectIdKey);
+                LOGGER.error("* Found a problem during the analysis of project \"" + projectIdKey + "\". Going to the next one. Details:");
+                LOGGER.error("\t* {}", e.getMessage());
+                continue;
             }
-            fullResults.put(projectIdKey, projectMetricsResults);
-            exportResults(fullResults);
+        }
+        if (failedProjects.size() > 0) {
+            LOGGER.info("* The following projects could not be analyzed successfully because of some errors during the process: {}", failedProjects);
         }
     }
 
     private Map<String, Analyzer> prepareAnalyzers() {
         Map<String, Analyzer> analyzers = new LinkedHashMap<>();
-
+        List<String> ignoredProjects = new ArrayList<>();
+        LOGGER.info("* Starting {} mode: parsing configuration file {} and using all given options as default", CODE_NAME, configFilePath.toString());
         Configuration configuration = readConfigFile();
-        LOGGER.info("* Parsing configuration file {}", configFilePath.toString());
         List<ProjectConfiguration> projects = configuration.projects;
         for (int i = 0, projectsSize = projects.size(); i < projectsSize; i++) {
             ProjectConfiguration project = projects.get(i);
 
+            // Interpret ID
             String projectId = project.id;
             if (projectId == null || projectId.equals("")) {
-                LOGGER.warn("* Project #{} has an invalid ID. Using its index as id.", i);
+                LOGGER.warn("* Project #{} has an invalid ID. Using its index as ID.", i);
                 projectId = String.valueOf(i);
+            }
+
+            // Interpret location to prepare the setup
+            Path path = Paths.get(project.location).toAbsolutePath();
+            boolean isSnapshot = false;
+            SetupEnvironmentAction setupEnvironmentAction = null;
+            if (Utils.isPathToLocalDirectory(path)) {
+                isSnapshot = true;
+            } else {
+                if (Utils.isPathToGitDirectory(path)) {
+                    setupEnvironmentAction = new CopySetupEnvironmentAction(projectId, workDirPath, path);
+                }
+                if (Utils.isGitHubUrl(project.location)) {
+                    try {
+                        setupEnvironmentAction = new CloneSetupEnvironmentAction(projectId, workDirPath, new URI(project.location));
+                    } catch (URISyntaxException e) {
+                        ignoredProjects.add(projectId);
+                        LOGGER.warn("* Project \"{}\": The location URL is malformed. Ignoring project.", projectId);
+                        continue;
+                    }
+                }
+                if (setupEnvironmentAction == null) {
+                    ignoredProjects.add(projectId);
+                    LOGGER.warn("* Project \"{}\": The supplied location is not attributable to any supported run mode. Ignoring project.", projectId);
+                    continue;
+                }
             }
 
             // Interpret Metrics
@@ -93,10 +139,10 @@ public class FlexibleModeRunner extends ModeRunner<Map<String, Map<String, Proje
             try {
                 metricsManager = MetricsFormulaInterpreter.interpretMetricsFormula(project.metrics, ",");
             } catch (RuntimeException e) {
-                LOGGER.warn("* Project {}: Invalid metrics formula, which must be a list of comma-separate metric codes without any space in between. Using the default metrics.", projectId);
                 metricsManager = getMetricsManager();
+                LOGGER.warn("* Project \"{}\": Invalid metrics formula: must be a list of comma-separate metric codes without any space in between. Using the default: {}", projectId, metricsManager.getMetricsCodes());
             }
-            LOGGER.debug("* Project {}: Going to compute the following metrics: {}", projectId, metricsManager.getMetricsCodes());
+            LOGGER.debug("* Project \"{}\": Going to compute the following metrics: {}", projectId, metricsManager.getMetricsCodes());
 
             // Validate regex on files
             String filesRegex;
@@ -105,64 +151,51 @@ public class FlexibleModeRunner extends ModeRunner<Map<String, Map<String, Proje
                     Pattern.compile(project.filesRegex);
                     filesRegex = project.filesRegex;
                 } catch (PatternSyntaxException e) {
-                    LOGGER.warn("Project {} : The regular expression to filter files must be compilable. Using the default regular expression.", projectId);
                     filesRegex = getFilesRegex();
+                    LOGGER.warn("Project \"{}\": The regular expression to filter files must be compilable. Using the default:{}", projectId, filesRegex);
                 }
-                LOGGER.info("* Project {}: Going to analyze only the .java files matching this expression {}", projectId, filesRegex);
+                LOGGER.info("* Project \"{}\": Going to analyze only the .java files matching this expression {}", projectId, filesRegex);
             } else {
-                LOGGER.warn("* Project {}: No regular expression supplied. Using the default regular expression.", projectId);
-                filesRegex = project.filesRegex;
+                filesRegex = getFilesRegex();
+                LOGGER.warn("* Project \"{}\": No regular expression supplied. Using the default: {}", projectId, filesRegex);
             }
 
             // Interpret the Revision group
             RevisionSelector revisionSelector;
             if (project.revisions == null || project.revisions.size() == 0) {
-                LOGGER.warn("* Project {}: No revision options found. Using the default revision option.", projectId);
                 revisionSelector = defaultRevisionSelector;
+                LOGGER.warn("* Project \"{}\": No revision options found. Using the default: {}", projectId, revisionSelector);
             } else {
                 RevisionConfiguration revisionConfiguration = project.revisions.get(0);
                 if (project.revisions.size() > 1) {
-                    LOGGER.warn("* Project {}: Selecting only the first revision filter found", projectId);
+                    LOGGER.warn("* Project \"{}\": Selecting only the first revision filter found.", projectId);
                 }
                 Pair<String, String> selectedRevision = revisionConfiguration.getSelectedRevision();
                 if (selectedRevision == null) {
-                    LOGGER.warn("* Project {}: No valid revision option supplied. Using the default revision option.", projectId);
                     revisionSelector = defaultRevisionSelector;
+                    LOGGER.warn("* Project \"{}\": No valid revision option supplied. Using the default: {}", projectId, revisionSelector);
                 } else {
                     try {
                         revisionSelector = RevisionGroupInterpreter.interpretRevisionGroup(selectedRevision.getKey(), selectedRevision.getValue());
-                        LOGGER.info("* Project {}: Going to analyze {} {} ", projectId, selectedRevision.getKey(), selectedRevision.getValue());
+                        LOGGER.info("* Project \"{}\": Going to analyze {} {} ", projectId, selectedRevision.getKey(), selectedRevision.getValue());
                     } catch (IllegalArgumentException e) {
-                        LOGGER.warn("* Project {}: The supplied revision option must fulfill the requirements of each type (see options documentation). Using the default revision option.", projectId);
                         revisionSelector = defaultRevisionSelector;
+                        LOGGER.warn("* Project \"{}\": The supplied revision option must fulfill the requirements of each type (see options documentation). Using the default: {}", projectId, revisionSelector);
                     }
                 }
             }
 
-            // Interpret location to prepare the setup
-            Path path = Paths.get(project.location).toAbsolutePath();
+            // Instantiate the appropriate analyzer
             Analyzer analyzer;
-            if (Utils.isPathToLocalDirectory(path)) {
+            if (isSnapshot) {
                 analyzer = new SnapshotAnalyzer(path, filesRegex, metricsManager);
             } else {
-                SetupEnvironmentAction setupEnvironmentAction = null;
-                if (Utils.isPathToGitDirectory(path)) {
-                    setupEnvironmentAction = new CopySetupEnvironmentAction(projectId, workDirPath, path);
-                }
-                if (Utils.isGitHubUrl(project.location)) {
-                    try {
-                        setupEnvironmentAction = new CloneSetupEnvironmentAction(projectId, workDirPath, new URI(project.location));
-                    } catch (URISyntaxException e) {
-                        LOGGER.warn("Project {}: The location URL is malformed. Ignoring project.", projectId);
-                        continue;
-                    }
-                }
-                if (setupEnvironmentAction == null) {
-                    LOGGER.warn("Project {}: The supplied location is not attributable to any supported run mode. Ignoring project.", projectId);
-                }
                 analyzer = new HistoryAnalyzer(projectId, filesRegex, metricsManager, revisionSelector, setupEnvironmentAction);
             }
             analyzers.put(projectId, analyzer);
+        }
+        if (ignoredProjects.size() > 0) {
+            LOGGER.info("* The following projects will not be analyzed because of errors in the configuration file: {}", ignoredProjects);
         }
         return analyzers;
     }
@@ -170,7 +203,7 @@ public class FlexibleModeRunner extends ModeRunner<Map<String, Map<String, Proje
     private Configuration readConfigFile() {
         //YAMLMapper mapper = new YAMLMapper();
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        //mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         File configFile = configFilePath.toFile();
         if (!Utils.isYamlFile(configFile)) {
             throw new IllegalStateException("The target configuration file does not exist or is not a YAML file.");

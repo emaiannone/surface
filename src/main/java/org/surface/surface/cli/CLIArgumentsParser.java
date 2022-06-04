@@ -58,9 +58,9 @@ class CLIArgumentsParser {
             } catch (PatternSyntaxException e) {
                 throw new IllegalArgumentException("The supplied regular expression to filter files must be compilable.", e);
             }
-            LOGGER.info("* Going to analyze only the .java files matching this expression: " + filesRegex);
+            LOGGER.info("* Going to analyze only the .java files matching this expression: {}", filesRegex);
         } else {
-            LOGGER.info("* Going to analyze all .java files found");
+            LOGGER.info("* Going to analyze all .java files found (default).");
         }
 
         // Interpret the Revision group
@@ -73,7 +73,7 @@ class CLIArgumentsParser {
             throw new IllegalArgumentException("The supplied revision option must fulfill the requirements of each type (see options documentation).", e);
         }
         if (revisionSelector.getRevisionString() == null) {
-            LOGGER.info("* Going to analyze the HEAD revision (default)");
+            LOGGER.info("* Going to analyze the HEAD revision (default).");
         } else {
             LOGGER.info("* Going to analyze {} {} ", revisionModeSelected, revisionValue);
         }
@@ -83,11 +83,11 @@ class CLIArgumentsParser {
         if (!Utils.isPathToLocalDirectory(Paths.get(target))) {
             String workDirValue = commandLine.getOptionValue(CLIOptions.WORK_DIR);
             if (workDirValue == null) {
-                throw new IllegalArgumentException("The path where to copy or clone the repositories must be indicated.");
+                throw new IllegalArgumentException("The working directory path must be indicated.");
             }
             workDirPath = Paths.get(workDirValue).toAbsolutePath();
             if (!Utils.isPathToLocalDirectory(workDirPath)) {
-                throw new IllegalArgumentException("The path where to copy or clone the repositories must point to a directory.");
+                throw new IllegalArgumentException("The working directory path must point to an existing directory.");
             }
             LOGGER.info("* Going to clone in the following directory: " + workDirPath);
         }

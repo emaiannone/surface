@@ -32,16 +32,16 @@ public class CloneSetupEnvironmentAction extends SetupEnvironmentAction {
         }
         Path repoDirPath = getRepoDirPath();
         repoDirPath.toFile().mkdirs();
-        LOGGER.info("* Cloning {} into {}", cloneUrl, repoDirPath);
+        LOGGER.debug("* Cloning {} into {}", cloneUrl, repoDirPath);
         try (Git git = Git.cloneRepository()
                 .setURI(cloneUrl.toString())
                 .setDirectory(repoDirPath.toFile())
                 .call()) {
-            LOGGER.info("* Clone successful");
+            LOGGER.debug("* Clone successful");
         } catch (GitAPIException e) {
             throw new RuntimeException("Failed to clone the remote git repository from " + cloneUrl +
                     " into " + tmpDirPath +
-                    ". Please, try a new remote URL or select a new destination where to clone it.", e);
+                    ". Please, check if URL is spelled correctly or try a new remote URL.", e);
         }
         return tmpDirPath;
     }

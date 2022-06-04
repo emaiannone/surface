@@ -38,5 +38,6 @@ public abstract class GitModeRunner extends ModeRunner<Map<String, ProjectMetric
                 revisionSelector, setupEnvironmentAction);
         Map<String, ProjectMetricsResults> allResults = historyAnalyzer.analyze();
         exportResults(allResults);
+        LOGGER.info("* Exported results to {}", getWriter().getOutFile());
     }
 }

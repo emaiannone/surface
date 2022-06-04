@@ -33,5 +33,6 @@ public class LocalDirectoryModeRunner extends ModeRunner<ProjectMetricsResults> 
         SnapshotAnalyzer snapshotAnalyzer = new SnapshotAnalyzer(localDirPath, getFilesRegex(), getMetricsManager());
         Map<String, ProjectMetricsResults> results = snapshotAnalyzer.analyze();
         exportResults(results.get(localDirPath.toString()));
+        LOGGER.info("* Exported results to {}", getWriter().getOutFile());
     }
 }
