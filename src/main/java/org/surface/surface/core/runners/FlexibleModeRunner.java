@@ -173,7 +173,7 @@ public class FlexibleModeRunner extends ModeRunner<Map<String, Map<String, Proje
                 } else {
                     try {
                         revisionSelector = RevisionGroupInterpreter.interpretRevisionGroup(selectedRevision.getKey(), selectedRevision.getValue());
-                        LOGGER.info("* Project \"{}\": Going to analyze \"{} {}\" revisions ", projectId, selectedRevision.getKey(), selectedRevision.getValue());
+                        LOGGER.info("* Project \"{}\": Going to analyze \"{} {}\" revisions", projectId, selectedRevision.getKey(), selectedRevision.getValue());
                     } catch (IllegalArgumentException e) {
                         revisionSelector = defaultRevisionSelector;
                         LOGGER.warn("* Project \"{}\": The supplied revision selector must fulfill the requirements of each type (see options documentation). Using the default: {}", projectId, revisionSelector);

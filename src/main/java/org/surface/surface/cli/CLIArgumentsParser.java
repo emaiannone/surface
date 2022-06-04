@@ -75,7 +75,7 @@ class CLIArgumentsParser {
         if (revisionSelector.getRevisionString() == null) {
             LOGGER.info("* Going to analyze the HEAD revision (default).");
         } else {
-            LOGGER.info("* Going to analyze {} {} ", revisionModeSelected, revisionValue);
+            LOGGER.info("* Going to analyze \"{} {}\" revisions", revisionModeSelected, revisionValue);
         }
 
         // Validate the Working Directory

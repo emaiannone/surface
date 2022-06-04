@@ -20,6 +20,7 @@ public class GitProjectResultsExporter extends ResultsExporter<Map<String, Proje
     public GitProjectResultsExporter(String remotePath) {
         this.remotePath = remotePath;
     }
+
     @Override
     public Map<String, Object> export(Map<String, ProjectMetricsResults> projectMetricsResults) {
         Map<String, Object> content = new LinkedHashMap<>();
