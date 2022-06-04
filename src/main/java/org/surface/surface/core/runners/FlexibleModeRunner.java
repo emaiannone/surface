@@ -157,30 +157,26 @@ public class FlexibleModeRunner extends ModeRunner<Map<String, Map<String, Proje
                 LOGGER.info("* Project \"{}\": Going to analyze only the .java files matching this expression {}", projectId, filesRegex);
             } else {
                 filesRegex = getFilesRegex();
-                LOGGER.warn("* Project \"{}\": No regular expression supplied. Using the default: {}", projectId, filesRegex);
+                LOGGER.warn("* Project \"{}\": No regular expression supplied. Using the default option.", projectId);
             }
 
-            // Interpret the Revision group
+            // Interpret the Revision Filter
             RevisionSelector revisionSelector;
-            if (project.revisions == null || project.revisions.size() == 0) {
+            if (project.revisions == null) {
                 revisionSelector = defaultRevisionSelector;
-                LOGGER.warn("* Project \"{}\": No revision options found. Using the default: {}", projectId, revisionSelector);
+                LOGGER.warn("* Project \"{}\": No revisions specified. Using the default option", projectId);
             } else {
-                RevisionConfiguration revisionConfiguration = project.revisions.get(0);
-                if (project.revisions.size() > 1) {
-                    LOGGER.warn("* Project \"{}\": Selecting only the first revision filter found.", projectId);
-                }
-                Pair<String, String> selectedRevision = revisionConfiguration.getSelectedRevision();
+                Pair<String, String> selectedRevision = project.revisions.getSelectedRevision();
                 if (selectedRevision == null) {
                     revisionSelector = defaultRevisionSelector;
-                    LOGGER.warn("* Project \"{}\": No valid revision option supplied. Using the default: {}", projectId, revisionSelector);
+                    LOGGER.warn("* Project \"{}\": No valid revision selector supplied. Using the default: {}", projectId, revisionSelector);
                 } else {
                     try {
                         revisionSelector = RevisionGroupInterpreter.interpretRevisionGroup(selectedRevision.getKey(), selectedRevision.getValue());
-                        LOGGER.info("* Project \"{}\": Going to analyze {} {} ", projectId, selectedRevision.getKey(), selectedRevision.getValue());
+                        LOGGER.info("* Project \"{}\": Going to analyze \"{} {}\" revisions ", projectId, selectedRevision.getKey(), selectedRevision.getValue());
                     } catch (IllegalArgumentException e) {
                         revisionSelector = defaultRevisionSelector;
-                        LOGGER.warn("* Project \"{}\": The supplied revision option must fulfill the requirements of each type (see options documentation). Using the default: {}", projectId, revisionSelector);
+                        LOGGER.warn("* Project \"{}\": The supplied revision selector must fulfill the requirements of each type (see options documentation). Using the default: {}", projectId, revisionSelector);
                     }
                 }
             }
@@ -227,29 +223,28 @@ public class FlexibleModeRunner extends ModeRunner<Map<String, Map<String, Proje
         public String location;
         public String metrics;
         public String filesRegex;
-        public List<RevisionConfiguration> revisions;
+        public RevisionConfiguration revisions;
 
         public ProjectConfiguration() {
         }
     }
 
     private static class RevisionConfiguration {
-        public String at;
-        public String range;
-        public Boolean all;
+        public String type;
+        public String value;
 
         public RevisionConfiguration() {
         }
 
         Pair<String, String> getSelectedRevision() {
-            if (at != null && range == null && all == null) {
-                return new ImmutablePair<>(SingleRevisionSelector.CODE, at);
+            if (type.equalsIgnoreCase(AllRevisionSelector.CODE)) {
+                return new ImmutablePair<>(type, "");
             }
-            if (at == null && range != null && all == null) {
-                return new ImmutablePair<>(RangeRevisionSelector.CODE, range);
+            if (type.equalsIgnoreCase(SingleRevisionSelector.CODE) && value != null) {
+                return new ImmutablePair<>(type, value);
             }
-            if (at == null && range == null && all != null) {
-                return new ImmutablePair<>(AllRevisionSelector.CODE, "");
+            if (type.equalsIgnoreCase(RangeRevisionSelector.CODE) && value != null) {
+                return new ImmutablePair<>(type, value);
             }
             return null;
         }

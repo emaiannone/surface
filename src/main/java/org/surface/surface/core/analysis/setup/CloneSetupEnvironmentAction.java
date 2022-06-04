@@ -32,7 +32,7 @@ public class CloneSetupEnvironmentAction extends SetupEnvironmentAction {
         }
         Path repoDirPath = getRepoDirPath();
         repoDirPath.toFile().mkdirs();
-        LOGGER.debug("* Cloning {} into {}", cloneUrl, repoDirPath);
+        LOGGER.info("* Cloning {} into {}", cloneUrl, repoDirPath);
         try (Git git = Git.cloneRepository()
                 .setURI(cloneUrl.toString())
                 .setDirectory(repoDirPath.toFile())

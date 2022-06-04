@@ -79,7 +79,8 @@ public class HistoryAnalyzer extends Analyzer {
                     progressBar.step();
                     SnapshotAnalyzer snapshotAnalyzer = new SnapshotAnalyzer(projectDirPath, getFilesRegex(), getMetricsManager());
                     Map<String, ProjectMetricsResults> projectMetricsResults = snapshotAnalyzer.analyze();
-                    allResults.putAll(projectMetricsResults);
+                    ProjectMetricsResults value = projectMetricsResults.entrySet().iterator().next().getValue();
+                    allResults.put(commit.getName(), value);
                 }
             }
         } catch (IOException e) {

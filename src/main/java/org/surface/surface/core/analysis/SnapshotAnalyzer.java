@@ -37,7 +37,7 @@ public class SnapshotAnalyzer extends Analyzer {
         LOGGER.debug("* Metrics computation ended");
         LOGGER.trace("Metrics results:\n\t{}", projectMetricsResults.toString().replaceAll("\n", "\n\t"));
         // Pack it into a one-entry map for upholding the expected return type
-        LinkedHashMap<String, ProjectMetricsResults> results = new LinkedHashMap<>();
+        Map<String, ProjectMetricsResults> results = new LinkedHashMap<>();
         results.put(projectDirPath.toString(), projectMetricsResults);
         return results;
     }
