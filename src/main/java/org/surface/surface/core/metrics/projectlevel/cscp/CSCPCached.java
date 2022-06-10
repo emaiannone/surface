@@ -1,22 +1,22 @@
-package org.surface.surface.core.metrics.projectlevel.cce;
+package org.surface.surface.core.metrics.projectlevel.cscp;
 
 import org.surface.surface.core.inspection.results.ProjectInspectorResults;
 import org.surface.surface.core.metrics.projectlevel.cct.CCT;
 import org.surface.surface.core.metrics.results.values.DoubleMetricValue;
 
-public class CCECached extends CCE {
-    private final CCEImpl cce;
+public class CSCPCached extends CSCP {
+    private final CSCPImpl cscp;
     private DoubleMetricValue cachedResult;
 
-    public CCECached(CCT CCT) {
-        this.cce = new CCEImpl(CCT);
+    public CSCPCached(CCT CCT) {
+        this.cscp = new CSCPImpl(CCT);
         this.cachedResult = null;
     }
 
     @Override
     public DoubleMetricValue compute(ProjectInspectorResults projectResults) {
         if (cachedResult == null) {
-            cachedResult = cce.compute(projectResults);
+            cachedResult = cscp.compute(projectResults);
         }
         return cachedResult;
     }
