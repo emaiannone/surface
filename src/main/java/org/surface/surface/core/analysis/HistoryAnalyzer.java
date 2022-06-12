@@ -11,6 +11,8 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.surface.surface.core.analysis.results.HistoryAnalysisResults;
+import org.surface.surface.core.analysis.results.SnapshotAnalysisResults;
 import org.surface.surface.core.analysis.selectors.RevisionSelector;
 import org.surface.surface.core.analysis.setup.SetupEnvironmentAction;
 import org.surface.surface.core.metrics.api.MetricsManager;
@@ -36,14 +38,14 @@ public class HistoryAnalyzer extends Analyzer {
         this.setupEnvironmentAction = setupEnvironmentAction;
     }
 
-    public AnalysisResults analyze() throws Exception {
+    public HistoryAnalysisResults analyze() throws Exception {
         Path tmpDirPath = setupEnvironmentAction.setupEnvironment();
         Path projectDirPath = Paths.get(tmpDirPath.toString(), projectName);
 
         SigIntHandler sigIntHandler = new SigIntHandler(tmpDirPath);
         Runtime.getRuntime().addShutdownHook(sigIntHandler);
 
-        AnalysisResults analysisResults = new AnalysisResults();
+        HistoryAnalysisResults analysisResults = new HistoryAnalysisResults();
         List<String> notProcessedCommits = new ArrayList<>();
         try (Git git = Git.open(projectDirPath.toFile())) {
             List<RevCommit> commits;
@@ -79,8 +81,8 @@ public class HistoryAnalyzer extends Analyzer {
                     progressBar.setExtraMessage("Inspecting " + commit.getName().substring(0, 8));
                     progressBar.step();
                     SnapshotAnalyzer snapshotAnalyzer = new SnapshotAnalyzer(projectDirPath, getFilesRegex(), getMetricsManager(), isIncludeTests());
-                    AnalysisResults snapshotAnalyzerResults = snapshotAnalyzer.analyze();
-                    analysisResults.addProjectResult(commit.getName(), snapshotAnalyzerResults.getFirstProjectResult());
+                    SnapshotAnalysisResults snapshotAnalyzerResults = snapshotAnalyzer.analyze();
+                    analysisResults.addSnapshotAnalysisResults(commit.getName(), snapshotAnalyzerResults);
                 }
             }
         } catch (IOException e) {

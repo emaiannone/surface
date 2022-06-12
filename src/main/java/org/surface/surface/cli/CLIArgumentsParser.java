@@ -9,9 +9,9 @@ import org.surface.surface.core.interpreters.MetricsFormulaInterpreter;
 import org.surface.surface.core.interpreters.OutFileInterpreter;
 import org.surface.surface.core.interpreters.RevisionGroupInterpreter;
 import org.surface.surface.core.metrics.api.MetricsManager;
-import org.surface.surface.core.out.writers.FileWriter;
 import org.surface.surface.core.runners.ModeRunner;
 import org.surface.surface.core.runners.ModeRunnerFactory;
+import org.surface.surface.core.writers.FileWriter;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

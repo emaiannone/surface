@@ -1,8 +1,8 @@
 package org.surface.surface.core.interpreters;
 
 import org.apache.commons.io.FilenameUtils;
-import org.surface.surface.core.out.writers.FileWriter;
-import org.surface.surface.core.out.writers.JsonFileWriter;
+import org.surface.surface.core.writers.FileWriter;
+import org.surface.surface.core.writers.JsonFileWriter;
 
 import java.io.File;
 import java.lang.reflect.Constructor;

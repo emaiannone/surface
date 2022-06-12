@@ -3,19 +3,20 @@ package org.surface.surface.core.runners;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.surface.surface.core.metrics.api.MetricsManager;
-import org.surface.surface.core.out.exporters.ResultsExporter;
-import org.surface.surface.core.out.writers.FileWriter;
+import org.surface.surface.core.runners.results.RunResults;
+import org.surface.surface.core.writers.FileWriter;
 
 import java.io.IOException;
+import java.util.Map;
 
-public abstract class ModeRunner<T> {
+public abstract class ModeRunner<T extends RunResults> {
     private static final Logger LOGGER = LogManager.getLogger();
 
+    private T runResults;
     private final MetricsManager metricsManager;
     private final FileWriter writer;
     private final String filesRegex;
     private final boolean includeTests;
-    private ResultsExporter<T> resultsExporter;
     private String codeName;
 
     ModeRunner(MetricsManager metricsManager, FileWriter writer, String filesRegex, boolean includeTests) {
@@ -41,26 +42,28 @@ public abstract class ModeRunner<T> {
         return includeTests;
     }
 
-    public ResultsExporter<T> getResultsExporter() {
-        return resultsExporter;
-    }
-
     public String getCodeName() {
         return codeName;
+    }
+
+    public T getRunResults() {
+        return runResults;
     }
 
     public void setCodeName(String codeName) {
         this.codeName = codeName;
     }
 
-    void setResultsExporter(ResultsExporter<T> resultsExporter) {
-        this.resultsExporter = resultsExporter;
+    public void setRunResults(T runResults) {
+        this.runResults = runResults;
     }
 
-    void exportResults(T projectMetricsResults) throws IOException {
+    void exportResults(T runResults) throws IOException {
         LOGGER.debug("* Exporting results to {}", writer.getOutFile());
         try {
-            resultsExporter.exportToFile(projectMetricsResults, writer);
+            Map<String, Object> export = runResults.export();
+            LOGGER.trace("Results exported: {}", export);
+            writer.write(export);
             LOGGER.debug("* Exporting completed to {}", writer.getOutFile());
         } catch (IOException e) {
             throw new IOException("Failed to export to " + writer.getOutFile(), e);

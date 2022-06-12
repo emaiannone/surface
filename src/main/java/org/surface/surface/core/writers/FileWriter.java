@@ -1,4 +1,4 @@
-package org.surface.surface.core.out.writers;
+package org.surface.surface.core.writers;
 
 import java.io.File;
 import java.io.IOException;

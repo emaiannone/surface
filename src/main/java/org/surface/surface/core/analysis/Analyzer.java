@@ -1,5 +1,6 @@
 package org.surface.surface.core.analysis;
 
+import org.surface.surface.core.analysis.results.AnalysisResults;
 import org.surface.surface.core.metrics.api.MetricsManager;
 
 public abstract class Analyzer {

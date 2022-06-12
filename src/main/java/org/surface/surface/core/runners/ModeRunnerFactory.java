@@ -3,7 +3,7 @@ package org.surface.surface.core.runners;
 import org.surface.surface.core.Utils;
 import org.surface.surface.core.analysis.selectors.RevisionSelector;
 import org.surface.surface.core.metrics.api.MetricsManager;
-import org.surface.surface.core.out.writers.FileWriter;
+import org.surface.surface.core.writers.FileWriter;
 
 import java.net.URI;
 import java.net.URISyntaxException;

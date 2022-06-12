@@ -11,6 +11,7 @@ import org.surface.surface.core.Utils;
 import org.surface.surface.core.analysis.Analyzer;
 import org.surface.surface.core.analysis.HistoryAnalyzer;
 import org.surface.surface.core.analysis.SnapshotAnalyzer;
+import org.surface.surface.core.analysis.results.AnalysisResults;
 import org.surface.surface.core.analysis.selectors.AllRevisionSelector;
 import org.surface.surface.core.analysis.selectors.RangeRevisionSelector;
 import org.surface.surface.core.analysis.selectors.RevisionSelector;
@@ -21,9 +22,8 @@ import org.surface.surface.core.analysis.setup.SetupEnvironmentAction;
 import org.surface.surface.core.interpreters.MetricsFormulaInterpreter;
 import org.surface.surface.core.interpreters.RevisionGroupInterpreter;
 import org.surface.surface.core.metrics.api.MetricsManager;
-import org.surface.surface.core.metrics.results.ProjectMetricsResults;
-import org.surface.surface.core.out.exporters.MixedProjectsResultsExporter;
-import org.surface.surface.core.out.writers.FileWriter;
+import org.surface.surface.core.runners.results.FlexibleRunResults;
+import org.surface.surface.core.writers.FileWriter;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +35,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-public class FlexibleModeRunner extends ModeRunner<Map<String, Map<String, ProjectMetricsResults>>> {
+public class FlexibleModeRunner extends ModeRunner<FlexibleRunResults> {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String CODE_NAME = "FLEXIBLE";
 
@@ -49,12 +49,12 @@ public class FlexibleModeRunner extends ModeRunner<Map<String, Map<String, Proje
         this.defaultRevisionSelector = defaultRevisionSelector;
         this.workDirPath = workDirPath;
         setCodeName(CODE_NAME);
-        setResultsExporter(new MixedProjectsResultsExporter());
+        setRunResults(new FlexibleRunResults());
     }
 
     @Override
     public void run() {
-        Map<String, Map<String, ProjectMetricsResults>> fullResults = new LinkedHashMap<>();
+        FlexibleRunResults runResults = new FlexibleRunResults();
         Map<String, Analyzer> analyzers = prepareAnalyzers();
         if (analyzers.size() == 0) {
             throw new RuntimeException("Could not run any analyzer because all projects specifications in the configuration file had errors.");
@@ -64,15 +64,14 @@ public class FlexibleModeRunner extends ModeRunner<Map<String, Map<String, Proje
         for (Map.Entry<String, Analyzer> analyzerEntry : analyzers.entrySet()) {
             String projectIdKey = analyzerEntry.getKey();
             try {
-                // TODO Wrap this into a different object, that exposes method to query it from clients without depending on metrics pakcage
-                Map<String, ProjectMetricsResults> projectMetricsResults = analyzerEntry.getValue().analyze().getResults();
+                AnalysisResults analysisResults = analyzerEntry.getValue().analyze();
                 // Assign a new but similar ID if there is a collision
-                while (fullResults.containsKey(projectIdKey)) {
+                while (runResults.containsKey(projectIdKey)) {
                     projectIdKey += "_" + UUID.randomUUID();
                 }
-                fullResults.put(projectIdKey, projectMetricsResults);
+                runResults.addAnalysisResults(projectIdKey, analysisResults);
                 try {
-                    exportResults(fullResults);
+                    exportResults(runResults);
                     LOGGER.info("* Results updated in {}", getWriter().getOutFile());
                 } catch (IOException e) {
                     failedProjects.add(projectIdKey);
