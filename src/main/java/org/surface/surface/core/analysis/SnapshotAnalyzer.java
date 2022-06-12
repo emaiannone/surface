@@ -2,8 +2,6 @@ package org.surface.surface.core.analysis;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.surface.surface.core.inspection.ProjectInspector;
-import org.surface.surface.core.inspection.results.ProjectInspectorResults;
 import org.surface.surface.core.metrics.api.MetricsManager;
 import org.surface.surface.core.metrics.api.ProjectMetricsCalculator;
 import org.surface.surface.core.metrics.results.ProjectMetricsResults;
@@ -24,9 +22,7 @@ public class SnapshotAnalyzer extends Analyzer {
     }
 
     public Map<String, ProjectMetricsResults> analyze() throws IOException {
-        ProjectInspector projectInspector = new ProjectInspector(projectDirPath, getFilesRegex(), isIncludeTests());
-        ProjectInspectorResults projectInspectorResults = projectInspector.inspect();
-        ProjectMetricsCalculator projectMetricsCalculator = new ProjectMetricsCalculator(projectInspectorResults);
+        ProjectMetricsCalculator projectMetricsCalculator = new ProjectMetricsCalculator(projectDirPath, getFilesRegex(), isIncludeTests());
         LOGGER.debug("* Metrics computation started");
         ProjectMetricsResults projectMetricsResults = projectMetricsCalculator.calculate(getMetricsManager());
         LOGGER.debug("* Metrics computation ended");
