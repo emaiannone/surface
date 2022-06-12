@@ -1,4 +1,4 @@
-package org.surface.surface.core.explorers;
+package org.surface.surface.core.inspection;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

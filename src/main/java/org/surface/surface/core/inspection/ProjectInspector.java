@@ -13,7 +13,6 @@ import com.github.javaparser.utils.SourceRoot;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.surface.surface.core.explorers.JavaFilesExplorer;
 import org.surface.surface.core.inspection.results.ClassInspectorResults;
 import org.surface.surface.core.inspection.results.ProjectInspectorResults;
 
