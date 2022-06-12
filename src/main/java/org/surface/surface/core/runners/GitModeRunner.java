@@ -36,7 +36,8 @@ public abstract class GitModeRunner extends ModeRunner<Map<String, ProjectMetric
     public void run() throws Exception {
         HistoryAnalyzer historyAnalyzer = new HistoryAnalyzer(getProjectName(), getFilesRegex(),
                 getMetricsManager(), isIncludeTests(), revisionSelector, setupEnvironmentAction);
-        Map<String, ProjectMetricsResults> allResults = historyAnalyzer.analyze();
+        // TODO Wrap this into a different object, that exposes method to query it from clients without depending on metrics pakcage
+        Map<String, ProjectMetricsResults> allResults = historyAnalyzer.analyze().getResults();
         exportResults(allResults);
         LOGGER.info("* Exported results to {}", getWriter().getOutFile());
     }

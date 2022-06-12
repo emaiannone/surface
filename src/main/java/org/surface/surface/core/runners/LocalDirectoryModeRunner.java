@@ -31,7 +31,8 @@ public class LocalDirectoryModeRunner extends ModeRunner<ProjectMetricsResults> 
             throw new IllegalStateException("The target directory does not exist or is not a directory.");
         }
         SnapshotAnalyzer snapshotAnalyzer = new SnapshotAnalyzer(localDirPath, getFilesRegex(), getMetricsManager(), isIncludeTests());
-        Map<String, ProjectMetricsResults> results = snapshotAnalyzer.analyze();
+        // TODO Wrap this into a different object, that exposes method to query it from clients without depending on metrics pakcage
+        Map<String, ProjectMetricsResults> results = snapshotAnalyzer.analyze().getResults();
         exportResults(results.get(localDirPath.toString()));
         LOGGER.info("* Exported results to {}", getWriter().getOutFile());
     }

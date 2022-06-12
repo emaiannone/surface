@@ -14,12 +14,13 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.surface.surface.core.analysis.selectors.RevisionSelector;
 import org.surface.surface.core.analysis.setup.SetupEnvironmentAction;
 import org.surface.surface.core.metrics.api.MetricsManager;
-import org.surface.surface.core.metrics.results.ProjectMetricsResults;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class HistoryAnalyzer extends Analyzer {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -35,14 +36,14 @@ public class HistoryAnalyzer extends Analyzer {
         this.setupEnvironmentAction = setupEnvironmentAction;
     }
 
-    public Map<String, ProjectMetricsResults> analyze() throws Exception {
+    public AnalysisResults analyze() throws Exception {
         Path tmpDirPath = setupEnvironmentAction.setupEnvironment();
         Path projectDirPath = Paths.get(tmpDirPath.toString(), projectName);
 
         SigIntHandler sigIntHandler = new SigIntHandler(tmpDirPath);
         Runtime.getRuntime().addShutdownHook(sigIntHandler);
 
-        Map<String, ProjectMetricsResults> allResults = new LinkedHashMap<>();
+        AnalysisResults analysisResults = new AnalysisResults();
         List<String> notProcessedCommits = new ArrayList<>();
         try (Git git = Git.open(projectDirPath.toFile())) {
             List<RevCommit> commits;
@@ -78,9 +79,8 @@ public class HistoryAnalyzer extends Analyzer {
                     progressBar.setExtraMessage("Inspecting " + commit.getName().substring(0, 8));
                     progressBar.step();
                     SnapshotAnalyzer snapshotAnalyzer = new SnapshotAnalyzer(projectDirPath, getFilesRegex(), getMetricsManager(), isIncludeTests());
-                    Map<String, ProjectMetricsResults> projectMetricsResults = snapshotAnalyzer.analyze();
-                    ProjectMetricsResults value = projectMetricsResults.entrySet().iterator().next().getValue();
-                    allResults.put(commit.getName(), value);
+                    AnalysisResults snapshotAnalyzerResults = snapshotAnalyzer.analyze();
+                    analysisResults.addProjectResult(commit.getName(), snapshotAnalyzerResults.getFirstProjectResult());
                 }
             }
         } catch (IOException e) {
@@ -92,7 +92,7 @@ public class HistoryAnalyzer extends Analyzer {
             FileUtils.deleteDirectory(tmpDirPath.toFile());
             Runtime.getRuntime().removeShutdownHook(sigIntHandler);
         }
-        return allResults;
+        return analysisResults;
     }
 
     private void resetHard(Git git) throws GitAPIException {

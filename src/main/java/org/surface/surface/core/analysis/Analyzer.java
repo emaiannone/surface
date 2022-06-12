@@ -1,9 +1,6 @@
 package org.surface.surface.core.analysis;
 
 import org.surface.surface.core.metrics.api.MetricsManager;
-import org.surface.surface.core.metrics.results.ProjectMetricsResults;
-
-import java.util.Map;
 
 public abstract class Analyzer {
     private final String filesRegex;
@@ -28,5 +25,5 @@ public abstract class Analyzer {
         return includeTests;
     }
 
-    public abstract Map<String, ProjectMetricsResults> analyze() throws Exception;
+    public abstract AnalysisResults analyze() throws Exception;
 }

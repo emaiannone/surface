@@ -64,7 +64,8 @@ public class FlexibleModeRunner extends ModeRunner<Map<String, Map<String, Proje
         for (Map.Entry<String, Analyzer> analyzerEntry : analyzers.entrySet()) {
             String projectIdKey = analyzerEntry.getKey();
             try {
-                Map<String, ProjectMetricsResults> projectMetricsResults = analyzerEntry.getValue().analyze();
+                // TODO Wrap this into a different object, that exposes method to query it from clients without depending on metrics pakcage
+                Map<String, ProjectMetricsResults> projectMetricsResults = analyzerEntry.getValue().analyze().getResults();
                 // Assign a new but similar ID if there is a collision
                 while (fullResults.containsKey(projectIdKey)) {
                     projectIdKey += "_" + UUID.randomUUID();
