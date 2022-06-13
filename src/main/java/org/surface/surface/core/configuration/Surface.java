@@ -1,31 +1,36 @@
-package org.surface.surface.cli;
+package org.surface.surface.core.configuration;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.surface.surface.core.Utils;
-import org.surface.surface.core.configuration.Surface;
 import org.surface.surface.core.configuration.runners.ModeRunner;
 
 import java.util.List;
 
-class CLIStarter {
+public class Surface {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static void main(String[] args) {
-        ModeRunner<?> runner = null;
+    private final ModeRunner<?> modeRunner;
+
+    public Surface(ModeRunner<?> modeRunner) {
+        this.modeRunner = modeRunner;
+    }
+
+    public void run() {
+        LOGGER.info("* Launching SURFACE");
         try {
-            runner = CLIArgumentsParser.parse(args);
+            modeRunner.run();
         } catch (Exception e) {
             List<String> messages = Utils.getExceptionMessageChain(e);
-            LOGGER.error("* Failed to parse some command line arguments");
+            LOGGER.error("* Exiting SURFACE due to an unrecoverable error");
             for (int i = 0, messagesSize = messages.size(); i < messagesSize; i++) {
                 String tabs = new String(new char[i + 1]).replace("\0", "  ");
                 LOGGER.error("{}* {}", tabs, messages.get(i));
             }
             LOGGER.debug(e);
             System.exit(1);
+        } finally {
+            LOGGER.info("* Exiting SURFACE");
         }
-        Surface surface = new Surface(runner);
-        surface.run();
     }
 }

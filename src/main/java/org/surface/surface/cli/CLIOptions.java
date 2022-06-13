@@ -3,9 +3,9 @@ package org.surface.surface.cli;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
-import org.surface.surface.core.analysis.selectors.AllRevisionSelector;
-import org.surface.surface.core.analysis.selectors.RangeRevisionSelector;
-import org.surface.surface.core.analysis.selectors.SingleRevisionSelector;
+import org.surface.surface.core.engine.analysis.selectors.AllRevisionSelector;
+import org.surface.surface.core.engine.analysis.selectors.RangeRevisionSelector;
+import org.surface.surface.core.engine.analysis.selectors.SingleRevisionSelector;
 
 public class CLIOptions extends Options {
     private static CLIOptions INSTANCE;
