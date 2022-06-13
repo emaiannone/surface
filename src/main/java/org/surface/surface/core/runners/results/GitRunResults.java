@@ -2,7 +2,9 @@ package org.surface.surface.core.runners.results;
 
 import org.surface.surface.core.analysis.results.HistoryAnalysisResults;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class GitRunResults extends RunResults {
@@ -23,11 +25,13 @@ public class GitRunResults extends RunResults {
         this.analysisResults = analysisResults;
     }
 
-    public Map<String, Object> export() {
+    public List<Map<String, Object>> export() {
+        List<Map<String, Object>> exportList = new ArrayList<>();
         Map<String, Object> content = new LinkedHashMap<>();
         content.put(LOCATION, repoLocation);
         content.putAll(analysisResults.getProjectMetricsResultsAsMap());
-        return content;
+        exportList.add(content);
+        return exportList;
     }
 
 }

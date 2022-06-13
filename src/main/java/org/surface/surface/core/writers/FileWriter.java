@@ -2,6 +2,7 @@ package org.surface.surface.core.writers;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 public abstract class FileWriter {
@@ -14,5 +15,5 @@ public abstract class FileWriter {
     public File getOutFile() {
         return outFile;
     }
-    public abstract void write(Map<String, Object> content) throws IOException;
+    public abstract void write(List<Map<String, Object>> content) throws IOException;
 }

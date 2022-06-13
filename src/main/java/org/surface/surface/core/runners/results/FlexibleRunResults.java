@@ -2,7 +2,9 @@ package org.surface.surface.core.runners.results;
 
 import org.surface.surface.core.analysis.results.AnalysisResults;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class FlexibleRunResults extends RunResults {
@@ -33,14 +35,13 @@ public class FlexibleRunResults extends RunResults {
     }
 
     @Override
-    public Map<String, Object> export() {
-        Map<String, Object> content = new LinkedHashMap<>();
+    public List<Map<String, Object>> export() {
+        List<Map<String, Object>> exportList = new ArrayList<>();
         for (Map.Entry<String, AnalysisResults> analysisResultsEntry : allAnalysisResults.entrySet()) {
-            String projectId = analysisResultsEntry.getKey();
             AnalysisResults analysisResults = analysisResultsEntry.getValue();
             Map<String, Object> projectExport = analysisResults.getProjectMetricsResultsAsMap();
-            content.put(projectId, projectExport);
+            exportList.add(projectExport);
         }
-        return content;
+        return exportList;
     }
 }

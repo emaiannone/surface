@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class ClassMetricsResults implements MetricsResults, Iterable<MetricValue<?>> {
     private static final String CLASS_NAME = "className";
     private static final String FILE_PATH = "filePath";
-    private static final String METRICS = "metrics";
+    private static final String CLASS_METRICS = "classMetrics";
 
     private final String classFullyQualifiedName;
     private final Path filePath;
@@ -65,7 +65,7 @@ public class ClassMetricsResults implements MetricsResults, Iterable<MetricValue
         Map<String, Object> map = new LinkedHashMap<>();
         map.put(CLASS_NAME, getClassFullyQualifiedName());
         map.put(FILE_PATH, getFilePath(basePath).toString());
-        map.put(METRICS, getMetrics());
+        map.put(CLASS_METRICS, getMetrics());
         return map;
     }
 

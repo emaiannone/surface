@@ -7,6 +7,7 @@ import org.surface.surface.core.runners.results.RunResults;
 import org.surface.surface.core.writers.FileWriter;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 public abstract class ModeRunner<T extends RunResults> {
@@ -61,7 +62,7 @@ public abstract class ModeRunner<T extends RunResults> {
     void exportResults(T runResults) throws IOException {
         LOGGER.debug("* Exporting results to {}", writer.getOutFile());
         try {
-            Map<String, Object> export = runResults.export();
+            List<Map<String, Object>> export = runResults.export();
             LOGGER.trace("Results exported: {}", export);
             writer.write(export);
             LOGGER.debug("* Exporting completed to {}", writer.getOutFile());
