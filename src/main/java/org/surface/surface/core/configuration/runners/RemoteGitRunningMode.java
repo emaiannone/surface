@@ -8,6 +8,7 @@ import org.surface.surface.core.engine.writers.FileWriter;
 
 import java.net.URI;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class RemoteGitRunningMode extends GitRunningMode {
     private static final String CODE_NAME = "REMOTE_GIT";
@@ -17,7 +18,7 @@ public class RemoteGitRunningMode extends GitRunningMode {
     public RemoteGitRunningMode(URI repoUrl, MetricsManager metricsManager, FileWriter writer, String filesRegex, boolean includeTests, RevisionSelector revisionSelector, Path workDirPath) {
         super(metricsManager, writer, filesRegex, includeTests, revisionSelector);
         this.repoUrl = repoUrl;
-        setProjectName(repoUrl.getPath().substring(repoUrl.getPath().lastIndexOf('/')+1));
+        setProjectName(Paths.get(repoUrl.getPath()).getFileName().toString());
         setRepoLocation(repoUrl.toString());
         setCodeName(CODE_NAME);
         setRunResults(new GitRunResults(getRepoLocation()));
