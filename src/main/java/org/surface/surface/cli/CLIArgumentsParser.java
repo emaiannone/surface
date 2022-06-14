@@ -7,8 +7,8 @@ import org.surface.surface.core.Utils;
 import org.surface.surface.core.configuration.interpreters.MetricsFormulaInterpreter;
 import org.surface.surface.core.configuration.interpreters.OutFileInterpreter;
 import org.surface.surface.core.configuration.interpreters.RevisionGroupInterpreter;
-import org.surface.surface.core.configuration.runners.ModeRunner;
-import org.surface.surface.core.configuration.runners.ModeRunnerFactory;
+import org.surface.surface.core.configuration.runners.RunningMode;
+import org.surface.surface.core.configuration.runners.RunningModeFactory;
 import org.surface.surface.core.engine.analysis.selectors.RevisionSelector;
 import org.surface.surface.core.engine.metrics.api.MetricsManager;
 import org.surface.surface.core.engine.writers.FileWriter;
@@ -21,7 +21,7 @@ import java.util.regex.PatternSyntaxException;
 class CLIArgumentsParser {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static ModeRunner<?> parse(String[] args) throws ParseException {
+    public static RunningMode<?> parse(String[] args) throws ParseException {
         // Fetch the indicated CLI options
         Options options = CLIOptions.getInstance();
         CommandLineParser cliParser = new DefaultParser();
@@ -100,8 +100,8 @@ class CLIArgumentsParser {
         }
 
         // Interpret RunMode
-        ModeRunner<?> modeRunner = ModeRunnerFactory.newModeRunner(target, metricsManager, writer, filesRegex, includeTests, revisionSelector, workDirPath);
-        LOGGER.info("* Going to run mode: {}", modeRunner.getCodeName());
-        return modeRunner;
+        RunningMode<?> runningMode = RunningModeFactory.newRunningMode(target, metricsManager, writer, filesRegex, includeTests, revisionSelector, workDirPath);
+        LOGGER.info("* Going to run in mode: {}", runningMode.getCodeName());
+        return runningMode;
     }
 }

@@ -35,7 +35,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-public class FlexibleModeRunner extends ModeRunner<FlexibleRunResults> {
+public class FlexibleRunningMode extends RunningMode<FlexibleRunResults> {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String CODE_NAME = "FLEXIBLE";
 
@@ -43,7 +43,7 @@ public class FlexibleModeRunner extends ModeRunner<FlexibleRunResults> {
     private final RevisionSelector defaultRevisionSelector;
     private final Path workDirPath;
 
-    public FlexibleModeRunner(Path configFilePath, MetricsManager metricsManager, FileWriter writer, String filesRegex, boolean includeTests, RevisionSelector defaultRevisionSelector, Path workDirPath) {
+    public FlexibleRunningMode(Path configFilePath, MetricsManager metricsManager, FileWriter writer, String filesRegex, boolean includeTests, RevisionSelector defaultRevisionSelector, Path workDirPath) {
         super(metricsManager, writer, filesRegex, includeTests);
         this.configFilePath = configFilePath;
         this.defaultRevisionSelector = defaultRevisionSelector;

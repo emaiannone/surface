@@ -9,12 +9,12 @@ import org.surface.surface.core.engine.writers.FileWriter;
 import java.net.URI;
 import java.nio.file.Path;
 
-public class RemoteGitModeRunner extends GitModeRunner {
+public class RemoteGitRunningMode extends GitRunningMode {
     private static final String CODE_NAME = "REMOTE_GIT";
 
     private final URI repoUrl;
 
-    public RemoteGitModeRunner(URI repoUrl, MetricsManager metricsManager, FileWriter writer, String filesRegex, boolean includeTests, RevisionSelector revisionSelector, Path workDirPath) {
+    public RemoteGitRunningMode(URI repoUrl, MetricsManager metricsManager, FileWriter writer, String filesRegex, boolean includeTests, RevisionSelector revisionSelector, Path workDirPath) {
         super(metricsManager, writer, filesRegex, includeTests, revisionSelector);
         this.repoUrl = repoUrl;
         setProjectName(repoUrl.getPath().substring(repoUrl.getPath().lastIndexOf('/')+1));

@@ -10,10 +10,10 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class ModeRunnerFactory {
-    public static ModeRunner<?> newModeRunner(String target, MetricsManager metricsManager, FileWriter writer,
-                                              String filesRegex, boolean includeTests,
-                                              RevisionSelector revisionSelector, Path workDirPath) {
+public class RunningModeFactory {
+    public static RunningMode<?> newRunningMode(String target, MetricsManager metricsManager, FileWriter writer,
+                                                String filesRegex, boolean includeTests,
+                                                RevisionSelector revisionSelector, Path workDirPath) {
         // NOTE This method must be updated when new run modes are implemented
         if (target == null) {
             throw new IllegalArgumentException("No target selected. There must be the target of the analyses.");
@@ -27,7 +27,7 @@ public class ModeRunnerFactory {
 
         Path path = Paths.get(target).toAbsolutePath();
         if (Utils.isPathToLocalDirectory(path)) {
-            return new LocalDirectoryModeRunner(path, metricsManager, writer, filesRegex, includeTests);
+            return new LocalDirectoryRunningMode(path, metricsManager, writer, filesRegex, includeTests);
         }
 
         if (revisionSelector == null) {
@@ -38,17 +38,17 @@ public class ModeRunnerFactory {
         }
 
         if (Utils.isPathToGitDirectory(path)) {
-            return new LocalGitModeRunner(path, metricsManager, writer, filesRegex, includeTests, revisionSelector, workDirPath);
+            return new LocalGitRunningMode(path, metricsManager, writer, filesRegex, includeTests, revisionSelector, workDirPath);
         }
         if (Utils.isGitHubUrl(target)) {
             try {
-                return new RemoteGitModeRunner(new URI(target), metricsManager, writer, filesRegex, includeTests, revisionSelector, workDirPath);
+                return new RemoteGitRunningMode(new URI(target), metricsManager, writer, filesRegex, includeTests, revisionSelector, workDirPath);
             } catch (URISyntaxException e) {
                 throw new IllegalArgumentException("The target string is a malformed URL.");
             }
         }
         if (Utils.isPathToYamlFile(path)) {
-            return new FlexibleModeRunner(path, metricsManager, writer, filesRegex, includeTests, revisionSelector, workDirPath);
+            return new FlexibleRunningMode(path, metricsManager, writer, filesRegex, includeTests, revisionSelector, workDirPath);
         }
         throw new IllegalArgumentException("The supplied target is not attributable to any supported run mode.");
     }

@@ -3,23 +3,23 @@ package org.surface.surface.core.configuration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.surface.surface.core.Utils;
-import org.surface.surface.core.configuration.runners.ModeRunner;
+import org.surface.surface.core.configuration.runners.RunningMode;
 
 import java.util.List;
 
 public class Surface {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final ModeRunner<?> modeRunner;
+    private final RunningMode<?> runningMode;
 
-    public Surface(ModeRunner<?> modeRunner) {
-        this.modeRunner = modeRunner;
+    public Surface(RunningMode<?> runningMode) {
+        this.runningMode = runningMode;
     }
 
     public void run() {
         LOGGER.info("* Launching SURFACE");
         try {
-            modeRunner.run();
+            runningMode.run();
         } catch (Exception e) {
             List<String> messages = Utils.getExceptionMessageChain(e);
             LOGGER.error("* Exiting SURFACE due to an unrecoverable error");

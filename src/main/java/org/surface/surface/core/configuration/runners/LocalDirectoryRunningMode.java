@@ -11,13 +11,13 @@ import org.surface.surface.core.engine.writers.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 
-public class LocalDirectoryModeRunner extends ModeRunner<LocalDirectoryRunResults> {
+public class LocalDirectoryRunningMode extends RunningMode<LocalDirectoryRunResults> {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String CODE_NAME = "LOCAL_DIR";
 
     private final Path localDirPath;
 
-    public LocalDirectoryModeRunner(Path localDirPath, MetricsManager metricsManager, FileWriter writer, String filesRegex, boolean includeTests) {
+    public LocalDirectoryRunningMode(Path localDirPath, MetricsManager metricsManager, FileWriter writer, String filesRegex, boolean includeTests) {
         super(metricsManager, writer, filesRegex, includeTests);
         this.localDirPath = localDirPath;
         setRunResults(new LocalDirectoryRunResults());

@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-public abstract class ModeRunner<T extends RunResults> {
+public abstract class RunningMode<T extends RunResults> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private T runResults;
@@ -20,7 +20,7 @@ public abstract class ModeRunner<T extends RunResults> {
     private final boolean includeTests;
     private String codeName;
 
-    ModeRunner(MetricsManager metricsManager, FileWriter writer, String filesRegex, boolean includeTests) {
+    RunningMode(MetricsManager metricsManager, FileWriter writer, String filesRegex, boolean includeTests) {
         this.metricsManager = metricsManager;
         this.writer = writer;
         this.filesRegex = filesRegex;

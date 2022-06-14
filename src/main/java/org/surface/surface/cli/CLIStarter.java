@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.surface.surface.core.Utils;
 import org.surface.surface.core.configuration.Surface;
-import org.surface.surface.core.configuration.runners.ModeRunner;
+import org.surface.surface.core.configuration.runners.RunningMode;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ class CLIStarter {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public static void main(String[] args) {
-        ModeRunner<?> runner = null;
+        RunningMode<?> runner = null;
         try {
             runner = CLIArgumentsParser.parse(args);
         } catch (Exception e) {

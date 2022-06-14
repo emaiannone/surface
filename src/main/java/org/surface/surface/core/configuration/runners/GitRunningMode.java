@@ -10,7 +10,7 @@ import org.surface.surface.core.engine.analysis.setup.SetupEnvironmentAction;
 import org.surface.surface.core.engine.metrics.api.MetricsManager;
 import org.surface.surface.core.engine.writers.FileWriter;
 
-public abstract class GitModeRunner extends ModeRunner<GitRunResults> {
+public abstract class GitRunningMode extends RunningMode<GitRunResults> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final RevisionSelector revisionSelector;
@@ -18,7 +18,7 @@ public abstract class GitModeRunner extends ModeRunner<GitRunResults> {
     private String repoLocation;
     private SetupEnvironmentAction setupEnvironmentAction;
 
-    GitModeRunner(MetricsManager metricsManager, FileWriter writer, String filesRegex, boolean includeTests, RevisionSelector revisionSelector) {
+    GitRunningMode(MetricsManager metricsManager, FileWriter writer, String filesRegex, boolean includeTests, RevisionSelector revisionSelector) {
         super(metricsManager, writer, filesRegex, includeTests);
         this.revisionSelector = revisionSelector;
     }
