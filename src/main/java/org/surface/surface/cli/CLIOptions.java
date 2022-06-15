@@ -67,13 +67,13 @@ public class CLIOptions extends Options {
 
         Option cloneDir = Option.builder(WORK_DIR)
                 .hasArg(true)
-                .desc("Path to a local directory where repositories will be copied (LOCAL_GIT or FLEXIBLE) or cloned (REMOTE_GIT or FLEXIBLE). Not evaluated in LOCAL_DIR mode. In FLEXIBLE mode it is the default directory where all remote repositories are cloned if not specified differently in the YAML file.")
+                .desc("Path to a local directory where repositories will be copied (LOCAL_GIT or FLEXIBLE) or cloned (REMOTE_GIT or FLEXIBLE). Not evaluated in LOCAL_DIR mode. In FLEXIBLE mode this option represents the default directory where all remote repositories are cloned when not specified differently in the YAML file.")
                 .build();
 
         Option files = Option.builder(FILES)
                 .hasArg(true)
                 .required(false)
-                .desc("(Optional) Regular expression to select the .java files on which SURFACE operates. If not specified, all the parsable .java files in the target project will be select. In FLEXIBLE mode it is used as default regular expression, if not specified differently in the YAML file.")
+                .desc("(Optional) Regular expression to select the .java files on which SURFACE will operate. If not specified, all the parsable .java files in the target project will be considered. In FLEXIBLE mode this option represents default regular expression used when not specified differently in the YAML file. Note that the regular expression matches the entire string, as it is surrounded by \".*\", and ")
                 .build();
 
         Option includeTests = Option.builder(INCLUDE_TESTS)

@@ -19,9 +19,9 @@ public class JavaFilesExplorer {
         final Pattern compiledRegex;
         Pattern compiledRegexTmp;
         try {
-            compiledRegexTmp = Pattern.compile(regex);
+            compiledRegexTmp = Pattern.compile(regex, Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
         } catch (Exception e) {
-            compiledRegexTmp = Pattern.compile(".*", Pattern.DOTALL);
+            compiledRegexTmp = Pattern.compile(".*", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
         }
         compiledRegex = compiledRegexTmp;
         try (Stream<Path> fileStream = Files.walk(startDir)) {

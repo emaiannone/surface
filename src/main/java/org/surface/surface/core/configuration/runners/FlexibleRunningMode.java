@@ -147,10 +147,10 @@ public class FlexibleRunningMode extends RunningMode<FlexibleRunResults> {
 
             // Validate regex on files
             String filesRegex;
-            if (project.filesRegex != null) {
+            if (project.files != null) {
                 try {
-                    Pattern.compile(project.filesRegex);
-                    filesRegex = project.filesRegex;
+                    Pattern.compile(project.files);
+                    filesRegex = project.files;
                 } catch (PatternSyntaxException e) {
                     filesRegex = getFilesRegex();
                     LOGGER.warn("Project \"{}\": The regular expression to filter files must be compilable. Using the default:{}", projectId, filesRegex);
@@ -246,7 +246,7 @@ public class FlexibleRunningMode extends RunningMode<FlexibleRunResults> {
         public String id;
         public String location;
         public String metrics;
-        public String filesRegex;
+        public String files;
         public Boolean includeTests;
         public Boolean excludeWorkTree;
         public RevisionConfiguration revisions;
