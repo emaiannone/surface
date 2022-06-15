@@ -181,11 +181,11 @@ public class FlexibleRunningMode extends RunningMode<FlexibleRunResults> {
 
             // Interpret the Revision Filter
             RevisionSelector revisionSelector;
-            if (project.revisions == null) {
+            if (project.revisionFilter == null) {
                 revisionSelector = defaultRevisionSelector;
                 LOGGER.warn("* Project \"{}\": No revisions specified. Using the default option", projectId);
             } else {
-                Pair<String, String> selectedRevision = project.revisions.getSelectedRevision();
+                Pair<String, String> selectedRevision = project.revisionFilter.getSelectedRevision();
                 if (selectedRevision == null) {
                     revisionSelector = defaultRevisionSelector;
                     LOGGER.warn("* Project \"{}\": No valid revision selector supplied. Using the default: {}", projectId, revisionSelector);
@@ -244,7 +244,7 @@ public class FlexibleRunningMode extends RunningMode<FlexibleRunResults> {
         public String files;
         public Boolean includeTests;
         public Boolean excludeWorkTree;
-        public RevisionConfiguration revisions;
+        public RevisionConfiguration revisionFilter;
 
         public ProjectConfiguration() {
         }
