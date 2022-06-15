@@ -13,6 +13,8 @@ public class RevisionGroupInterpreter {
         // NOTE Any new selection type must be added here to be recognized by the CLI parser
         SUPPORTED_SELECTORS = new HashMap<>();
         SUPPORTED_SELECTORS.put(RangeRevisionSelector.CODE.toLowerCase(), RangeRevisionSelector.class);
+        SUPPORTED_SELECTORS.put(FromRevisionSelector.CODE.toLowerCase(), FromRevisionSelector.class);
+        SUPPORTED_SELECTORS.put(ToRevisionSelector.CODE.toLowerCase(), ToRevisionSelector.class);
         SUPPORTED_SELECTORS.put(SingleRevisionSelector.CODE.toLowerCase(), SingleRevisionSelector.class);
         SUPPORTED_SELECTORS.put(AllRevisionSelector.CODE.toLowerCase(), AllRevisionSelector.class);
     }

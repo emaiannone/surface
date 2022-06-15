@@ -15,10 +15,7 @@ import org.surface.surface.core.engine.analysis.Analyzer;
 import org.surface.surface.core.engine.analysis.HistoryAnalyzer;
 import org.surface.surface.core.engine.analysis.SnapshotAnalyzer;
 import org.surface.surface.core.engine.analysis.results.AnalysisResults;
-import org.surface.surface.core.engine.analysis.selectors.AllRevisionSelector;
-import org.surface.surface.core.engine.analysis.selectors.RangeRevisionSelector;
-import org.surface.surface.core.engine.analysis.selectors.RevisionSelector;
-import org.surface.surface.core.engine.analysis.selectors.SingleRevisionSelector;
+import org.surface.surface.core.engine.analysis.selectors.*;
 import org.surface.surface.core.engine.analysis.setup.CloneSetupEnvironmentAction;
 import org.surface.surface.core.engine.analysis.setup.CopySetupEnvironmentAction;
 import org.surface.surface.core.engine.analysis.setup.SetupEnvironmentAction;
@@ -267,6 +264,12 @@ public class FlexibleRunningMode extends RunningMode<FlexibleRunResults> {
                 return new ImmutablePair<>(type, "");
             }
             if (type.equalsIgnoreCase(SingleRevisionSelector.CODE) && value != null) {
+                return new ImmutablePair<>(type, value);
+            }
+            if (type.equalsIgnoreCase(FromRevisionSelector.CODE) && value != null) {
+                return new ImmutablePair<>(type, value);
+            }
+            if (type.equalsIgnoreCase(ToRevisionSelector.CODE) && value != null) {
                 return new ImmutablePair<>(type, value);
             }
             if (type.equalsIgnoreCase(RangeRevisionSelector.CODE) && value != null) {
