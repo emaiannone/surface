@@ -8,6 +8,7 @@ import org.eclipse.jgit.revwalk.RevCommit;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class RangeRevisionSelector extends RevisionSelector {
@@ -36,6 +37,7 @@ public class RangeRevisionSelector extends RevisionSelector {
         }
         Iterable<RevCommit> commitsIter = git.log().addRange(from, to).call();
         commitsIter.spliterator().forEachRemaining(commits::add);
+        Collections.reverse(commits);
         return commits;
     }
 

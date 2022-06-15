@@ -17,6 +17,8 @@ public class CLIOptions extends Options {
     public static final String RANGE = RangeRevisionSelector.CODE.toLowerCase();
     public static final String FROM = FromRevisionSelector.CODE.toLowerCase();
     public static final String TO = ToRevisionSelector.CODE.toLowerCase();
+    public static final String ALLOW = AllowRevisionSelector.CODE.toLowerCase();
+    public static final String DENY = DenyRevisionSelector.CODE.toLowerCase();
     public static final String ALL = AllRevisionSelector.CODE.toLowerCase();
     public static final String AT = SingleRevisionSelector.CODE.toLowerCase();
 
@@ -49,28 +51,38 @@ public class CLIOptions extends Options {
 
         Option range = Option.builder(RANGE)
                 .hasArg(true)
-                .desc("Revisions (commits) range to analyze. Format: \"<START-SHA>..<END-SHA>\", where <START-SHA> must be reachable from <END-SHA> (i.e., is in its ancestor path in the main branch), following a similar syntax to git log. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + FROM + ", -" + TO + ", -" + ALL + ", -" + AT + " options. If none is specified, the analyses will be run on the repository's HEAD.")
+                .desc("Revisions (commits) range to analyze. Format: \"<START-SHA>..<END-SHA>\", where <START-SHA> must be reachable from <END-SHA> (i.e., is in its ancestor path in the main branch), following a similar syntax to git log. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + FROM + ", -" + TO + ", -" + ALLOW + ", -" + DENY + ", -" + ALL + ", -" + AT + " options. If none is specified, the analyses will be run on the repository's HEAD.")
                 .build();
         Option from = Option.builder(FROM)
                 .hasArg(true)
-                .desc("Revision (commit) from which select the commits to analyze (inclusive). Format: \"<SHA>\", where <SHA> is part of the main branch. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + ", -" + TO + ", -" + ALL + ", -" + AT + " options. If none is specified, the analyses will be run on the repository's HEAD.")
+                .desc("Revision (commit) from which select the commits to analyze (inclusive). Format: \"<SHA>\", where <SHA> is part of the main branch. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + ", -" + TO + ", -" + ALLOW + ", -" + DENY + ", -" + ALL + ", -" + AT + " options. If none is specified, the analyses will be run on the repository's HEAD.")
                 .build();
         Option to = Option.builder(TO)
                 .hasArg(true)
-                .desc("Revision (commit) up to which select the commits to analyze (inclusive). Format: \"<SHA>\", where <SHA> is part of the main branch. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + ", -" + FROM + ", -" + ALL + ", -" + AT + " options. If none is specified, the analyses will be run on the repository's HEAD.")
+                .desc("Revision (commit) up to which select the commits to analyze (inclusive). Format: \"<SHA>\", where <SHA> is part of the main branch. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + ", -" + FROM + ", -" + ALLOW + ", -" + DENY + ", -" + ALL + ", -" + AT + " options. If none is specified, the analyses will be run on the repository's HEAD.")
+                .build();
+        Option allow = Option.builder(ALLOW)
+                .hasArg(true)
+                .desc("Path to a file containing a list of revisions (commits) to analyze. The file must have one revision per line. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + ", -" + FROM + ", -" + TO + ", -" + DENY + ", -" + ALL + ", -" + AT + " options. If none is specified, the analyses will be run on the repository's HEAD.")
+                .build();
+        Option deny = Option.builder(DENY)
+                .hasArg(true)
+                .desc("Path to a file containing a list of revisions (commits) NOT to analyze. The file must have one revision per line. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + ", -" + FROM + ", -" + TO + ", -" + ALLOW + ", -" + ALL + ", -" + AT + " options. If none is specified, the analyses will be run on the repository's HEAD.")
                 .build();
         Option all = Option.builder(ALL)
                 .hasArg(false)
-                .desc("Flag enabling the analysis of the entire project's history. Format: \"<START-SHA>..<END-SHA>\", where <START-SHA> must be reachable from <END-SHA> (i.e., is in its ancestor path in the main branch). Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + ", -" + FROM + ", -" + TO + ", -" + AT + " options. If none is specified, the analyses will be run on the repository's HEAD.")
+                .desc("Flag enabling the analysis of the entire project's history. Format: \"<START-SHA>..<END-SHA>\", where <START-SHA> must be reachable from <END-SHA> (i.e., is in its ancestor path in the main branch). Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + ", -" + FROM + ", -" + TO + ", -" + ALLOW + ", -" + DENY + ", -" + AT + " options. If none is specified, the analyses will be run on the repository's HEAD.")
                 .build();
         Option at = Option.builder(AT)
                 .hasArg(true)
-                .desc("Revision (commit) to analyze. Format: \"<SHA>\", where <SHA> is part of the main branch. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + ", -" + FROM + ", -" + TO + ", -" + ALL + " options. If none is specified, the analyses will be run on the repository's HEAD.")
+                .desc("Revision (commit) to analyze. Format: \"<SHA>\", where <SHA> is part of the main branch. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + ", -" + FROM + ", -" + TO + ", -" + ALLOW + ", -" + DENY + ", -" + ALL + " options. If none is specified, the analyses will be run on the repository's HEAD.")
                 .build();
         OptionGroup revisionGroup = new OptionGroup()
                 .addOption(range)
                 .addOption(from)
                 .addOption(to)
+                .addOption(allow)
+                .addOption(deny)
                 .addOption(all)
                 .addOption(at);
         revisionGroup.setRequired(false);

@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class HistoryAnalyzer extends Analyzer {
@@ -69,7 +68,6 @@ public class HistoryAnalyzer extends Analyzer {
             } catch (Exception e) {
                 throw new RuntimeException("Failed to fetch the required revisions from git repository " + projectDirPath, e);
             }
-            Collections.reverse(commits);
             int numCommits = commits.size();
             LOGGER.info("* Analyzing {} commits in git repository {}", numCommits, projectDirPath);
             try (ProgressBar progressBar = new ProgressBarBuilder()

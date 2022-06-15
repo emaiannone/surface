@@ -76,13 +76,11 @@ public class FlexibleRunningMode extends RunningMode<FlexibleRunResults> {
                     failedProjects.add(projectIdKey);
                     LOGGER.error("* Found a problem during the export of the results for project \"" + projectIdKey + "\". Going to the next one. Details:");
                     LOGGER.error("\t* {}", e.getMessage());
-                    continue;
                 }
             } catch (Exception e) {
                 failedProjects.add(projectIdKey);
                 LOGGER.error("* Found a problem during the analysis of project \"" + projectIdKey + "\". Going to the next one. Details:");
                 LOGGER.error("\t* {}", e.getMessage());
-                continue;
             }
         }
         if (failedProjects.size() > 0) {
@@ -263,16 +261,14 @@ public class FlexibleRunningMode extends RunningMode<FlexibleRunResults> {
             if (type.equalsIgnoreCase(AllRevisionSelector.CODE)) {
                 return new ImmutablePair<>(type, "");
             }
-            if (type.equalsIgnoreCase(SingleRevisionSelector.CODE) && value != null) {
-                return new ImmutablePair<>(type, value);
-            }
-            if (type.equalsIgnoreCase(FromRevisionSelector.CODE) && value != null) {
-                return new ImmutablePair<>(type, value);
-            }
-            if (type.equalsIgnoreCase(ToRevisionSelector.CODE) && value != null) {
-                return new ImmutablePair<>(type, value);
-            }
-            if (type.equalsIgnoreCase(RangeRevisionSelector.CODE) && value != null) {
+            if (value != null
+                    && type.equalsIgnoreCase(SingleRevisionSelector.CODE)
+                    || type.equalsIgnoreCase(RangeRevisionSelector.CODE)
+                    || type.equalsIgnoreCase(FromRevisionSelector.CODE)
+                    || type.equalsIgnoreCase(ToRevisionSelector.CODE)
+                    || type.equalsIgnoreCase(AllowRevisionSelector.CODE)
+                    || type.equalsIgnoreCase(DenyRevisionSelector.CODE)
+            ) {
                 return new ImmutablePair<>(type, value);
             }
             return null;
