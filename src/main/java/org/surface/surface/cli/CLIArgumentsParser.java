@@ -78,17 +78,23 @@ class CLIArgumentsParser {
 
         // Interpret the Revision group
         RevisionSelector revisionSelector;
+        String revisionValue;
         String revisionModeSelected = options.getOptionGroup(options.getOption(CLIOptions.RANGE)).getSelected();
-        String revisionValue = commandLine.getOptionValue(revisionModeSelected);
+        if (revisionModeSelected == null) {
+            LOGGER.info("* Going to analyze the HEAD revision (default).");
+            revisionValue = null;
+        } else {
+            revisionValue = commandLine.getOptionValue(revisionModeSelected);
+        }
         try {
             revisionSelector = RevisionGroupInterpreter.interpretRevisionGroup(revisionModeSelected, revisionValue);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("The supplied revision option must fulfill the requirements of each type (see options documentation).", e);
         }
-        if (revisionSelector.getRevisionString() == null) {
-            LOGGER.info("* Going to analyze the HEAD revision (default).");
-        } else {
+        if (revisionSelector.getRevisionString() != null) {
             LOGGER.info("* Going to analyze \"{} {}\" revisions", revisionModeSelected, revisionValue);
+        } else {
+            LOGGER.info("* Going to analyze all revisions");
         }
 
         // Validate the Working Directory
