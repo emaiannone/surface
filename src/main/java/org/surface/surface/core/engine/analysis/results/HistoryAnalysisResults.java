@@ -9,11 +9,11 @@ public class HistoryAnalysisResults implements AnalysisResults {
     private final Map<String, SnapshotAnalysisResults> allSnapshotAnalysisResults;
 
     private static final String PROJECT_NAME = "projectName";
-    private static final String LOCAL_PATH = "localPath";
+    private static final String WORKING_DIR = "workingDir";
     private static final String REVISIONS = "revisions";
-    private static final String METRICS = "metrics";
+    private static final String METRICS = "projectMetrics";
     private static final String CLASSES = "classes";
-    private static final String COMMIT_HASH = "commitHash";
+    private static final String REVISION = "revision";
 
     public HistoryAnalysisResults() {
         this.allSnapshotAnalysisResults = new LinkedHashMap<>();
@@ -43,14 +43,14 @@ public class HistoryAnalysisResults implements AnalysisResults {
         Map<String, Object> content = new LinkedHashMap<>();
         List<Object> revisions = new ArrayList<>();
         content.put(PROJECT_NAME, getProjectName());
-        content.put(LOCAL_PATH, getProjectPath());
+        content.put(WORKING_DIR, getProjectPath());
         for (Map.Entry<String, SnapshotAnalysisResults> entry : allSnapshotAnalysisResults.entrySet()) {
             Map<String, Object> projectResults = entry.getValue().getProjectMetricsResultsAsMap();
             Object metrics = projectResults.remove(METRICS);
             Object classes = projectResults.remove(CLASSES);
             projectResults.remove(PROJECT_NAME);
-            projectResults.remove(LOCAL_PATH);
-            projectResults.put(COMMIT_HASH, entry.getKey());
+            projectResults.remove(WORKING_DIR);
+            projectResults.put(REVISION, entry.getKey());
             projectResults.put(METRICS, metrics);
             projectResults.put(CLASSES, classes);
             revisions.add(projectResults);

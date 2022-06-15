@@ -11,8 +11,8 @@ import java.nio.file.Path;
 public class LocalGitRunningMode extends GitRunningMode {
     private static final String CODE_NAME = "LOCAL_GIT";
 
-    public LocalGitRunningMode(Path repoPath, MetricsManager metricsManager, FileWriter writer, String filesRegex, boolean includeTests, RevisionSelector revisionSelector, Path workDirPath) {
-        super(metricsManager, writer, filesRegex, includeTests, revisionSelector);
+    public LocalGitRunningMode(Path repoPath, MetricsManager metricsManager, FileWriter writer, String filesRegex, boolean includeTests, boolean excludeWorkTree, RevisionSelector revisionSelector, Path workDirPath) {
+        super(metricsManager, writer, filesRegex, includeTests, excludeWorkTree, revisionSelector);
         setProjectName(repoPath.getFileName().toString());
         setRepoLocation(repoPath.toString());
         setCodeName(CODE_NAME);

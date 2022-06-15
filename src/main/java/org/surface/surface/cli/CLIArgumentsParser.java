@@ -69,6 +69,12 @@ class CLIArgumentsParser {
             includeTests = true;
             LOGGER.info("* Going to include test files as well.");
         }
+        // Check the exclusion of files in the work tree
+        boolean excludeWorkTree = false;
+        if (commandLine.hasOption(CLIOptions.EXCLUDE_WORK_TREE)) {
+            excludeWorkTree = true;
+            LOGGER.info("* Going to exclude files in the current work tree.");
+        }
 
         // Interpret the Revision group
         RevisionSelector revisionSelector;
@@ -100,7 +106,7 @@ class CLIArgumentsParser {
         }
 
         // Interpret RunMode
-        RunningMode<?> runningMode = RunningModeFactory.newRunningMode(target, metricsManager, writer, filesRegex, includeTests, revisionSelector, workDirPath);
+        RunningMode<?> runningMode = RunningModeFactory.newRunningMode(target, metricsManager, writer, filesRegex, includeTests, excludeWorkTree, revisionSelector, workDirPath);
         LOGGER.info("* Going to run in mode: {}", runningMode.getCodeName());
         return runningMode;
     }

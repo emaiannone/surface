@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetricsResults> {
     private static final String PROJECT_NAME = "projectName";
-    private static final String LOCAL_PATH = "localPath";
+    private static final String PROJECT_DIR = "projectDir";
     private static final String PROJECT_METRICS = "projectMetrics";
     private static final String CLASSES = "classes";
     private final Path projectRoot;
@@ -82,7 +82,7 @@ public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetr
     public Map<String, Object> toMap() {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put(PROJECT_NAME, getProjectName());
-        map.put(LOCAL_PATH, getProjectPath().toString());
+        map.put(PROJECT_DIR, getProjectPath().toString());
         map.put(PROJECT_METRICS, getMetrics());
         List<Map<?, ?>> classes = new ArrayList<>();
         for (ClassMetricsResults classMetricsResult : getClassMetricsResults()) {

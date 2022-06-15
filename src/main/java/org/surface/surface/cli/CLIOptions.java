@@ -24,6 +24,7 @@ public class CLIOptions extends Options {
 
     public static final String FILES = "files";
     public static final String INCLUDE_TESTS = "includeTests";
+    public static final String EXCLUDE_WORK_TREE = "excludeWorkTree";
 
     private CLIOptions() {
         Option target = Option.builder(TARGET)
@@ -81,6 +82,12 @@ public class CLIOptions extends Options {
                 .desc("(Optional) Flag admitting test files (i.e., classes with \"Test\"-like annotations, e.g. @Test or @ParameterizedTest. Disabled by default.")
                 .build();
 
+        Option excludeWorkTree = Option.builder(EXCLUDE_WORK_TREE)
+                .hasArg(false)
+                .required(false)
+                .desc("(Optional) Flag excluding the changed files in the work tree. Enabled by default.")
+                .build();
+
         addOption(target);
         addOption(metrics);
         addOption(outFile);
@@ -88,6 +95,7 @@ public class CLIOptions extends Options {
         addOption(cloneDir);
         addOption(files);
         addOption(includeTests);
+        addOption(excludeWorkTree);
     }
 
     public static CLIOptions getInstance() {

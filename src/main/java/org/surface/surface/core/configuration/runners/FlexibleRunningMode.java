@@ -40,12 +40,14 @@ public class FlexibleRunningMode extends RunningMode<FlexibleRunResults> {
     private static final String CODE_NAME = "FLEXIBLE";
 
     private final Path configFilePath;
+    private final boolean defaultExcludeWorkTree;
     private final RevisionSelector defaultRevisionSelector;
     private final Path workDirPath;
 
-    public FlexibleRunningMode(Path configFilePath, MetricsManager metricsManager, FileWriter writer, String filesRegex, boolean includeTests, RevisionSelector defaultRevisionSelector, Path workDirPath) {
+    public FlexibleRunningMode(Path configFilePath, MetricsManager metricsManager, FileWriter writer, String filesRegex, boolean includeTests, boolean defaultExcludeWorkTree, RevisionSelector defaultRevisionSelector, Path workDirPath) {
         super(metricsManager, writer, filesRegex, includeTests);
         this.configFilePath = configFilePath;
+        this.defaultExcludeWorkTree = defaultExcludeWorkTree;
         this.defaultRevisionSelector = defaultRevisionSelector;
         this.workDirPath = workDirPath;
         setCodeName(CODE_NAME);
@@ -170,7 +172,17 @@ public class FlexibleRunningMode extends RunningMode<FlexibleRunResults> {
                 includeTests = isIncludeTests();
                 LOGGER.info("* Project \"{}\": No indication on how to manage test files. Using the default option.", projectId);
             }
-
+            // Check the exclusion of files in the work tree
+            boolean excludeWorkTree = false;
+            if (project.excludeWorkTree != null) {
+                if (project.excludeWorkTree) {
+                    excludeWorkTree = true;
+                    LOGGER.info("* Project \"{}\": Going to exclude files in the work tree.", projectId);
+                }
+            } else {
+                excludeWorkTree = defaultExcludeWorkTree;
+                LOGGER.info("* Project \"{}\": No indication on how to manage files in the work tree. Using the default option.", projectId);
+            }
 
             // Interpret the Revision Filter
             RevisionSelector revisionSelector;
@@ -198,7 +210,7 @@ public class FlexibleRunningMode extends RunningMode<FlexibleRunResults> {
             if (isSnapshot) {
                 analyzer = new SnapshotAnalyzer(path, filesRegex, metricsManager, includeTests);
             } else {
-                analyzer = new HistoryAnalyzer(projectId, filesRegex, metricsManager, includeTests, revisionSelector, setupEnvironmentAction);
+                analyzer = new HistoryAnalyzer(projectId, filesRegex, metricsManager, includeTests, excludeWorkTree, revisionSelector, setupEnvironmentAction);
             }
             analyzers.put(projectId, analyzer);
         }
@@ -236,6 +248,7 @@ public class FlexibleRunningMode extends RunningMode<FlexibleRunResults> {
         public String metrics;
         public String filesRegex;
         public Boolean includeTests;
+        public Boolean excludeWorkTree;
         public RevisionConfiguration revisions;
 
         public ProjectConfiguration() {

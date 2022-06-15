@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand;
+import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.surface.surface.core.engine.analysis.results.HistoryAnalysisResults;
@@ -25,15 +26,17 @@ import java.util.Collections;
 import java.util.List;
 
 public class HistoryAnalyzer extends Analyzer {
+    public static final String WORK_TREE = "WORK_TREE";
     private static final Logger LOGGER = LogManager.getLogger();
-
     private final String projectName;
+    private final boolean excludeWorkTree;
     private final RevisionSelector revisionSelector;
     private final SetupEnvironmentAction setupEnvironmentAction;
 
-    public HistoryAnalyzer(String projectName, String filesRegex, MetricsManager metricsManager, boolean includeTests, RevisionSelector revisionSelector, SetupEnvironmentAction setupEnvironmentAction) {
-        super(filesRegex ,metricsManager, includeTests);
+    public HistoryAnalyzer(String projectName, String filesRegex, MetricsManager metricsManager, boolean includeTests, boolean excludeWorkTree, RevisionSelector revisionSelector, SetupEnvironmentAction setupEnvironmentAction) {
+        super(filesRegex, metricsManager, includeTests);
         this.projectName = projectName;
+        this.excludeWorkTree = excludeWorkTree;
         this.revisionSelector = revisionSelector;
         this.setupEnvironmentAction = setupEnvironmentAction;
     }
@@ -48,12 +51,19 @@ public class HistoryAnalyzer extends Analyzer {
         HistoryAnalysisResults analysisResults = new HistoryAnalysisResults();
         List<String> notProcessedCommits = new ArrayList<>();
         try (Git git = Git.open(projectDirPath.toFile())) {
-            List<RevCommit> commits;
+            SnapshotAnalysisResults workTreeResults = null;
+            // Analyze the current Work Tree if allowed
+            Status stats = git.status().call();
+            if (!excludeWorkTree && stats.getModified().size() > 0) {
+                LOGGER.info("* Analyzing the current work tree in git repository {}", projectDirPath);
+                workTreeResults = runSnapshotAnalysis(projectDirPath);
+            }
             try {
                 resetHard(git);
             } catch (GitAPIException e) {
                 throw new RuntimeException("Failed to reset the state of git repository " + git.getRepository().getDirectory().getName(), e);
             }
+            List<RevCommit> commits;
             try {
                 commits = revisionSelector.selectRevisions(git);
             } catch (Exception e) {
@@ -80,10 +90,12 @@ public class HistoryAnalyzer extends Analyzer {
                     }
                     progressBar.setExtraMessage("Inspecting " + commit.getName().substring(0, 8));
                     progressBar.step();
-                    SnapshotAnalyzer snapshotAnalyzer = new SnapshotAnalyzer(projectDirPath, getFilesRegex(), getMetricsManager(), isIncludeTests());
-                    SnapshotAnalysisResults snapshotAnalyzerResults = snapshotAnalyzer.analyze();
-                    analysisResults.addSnapshotAnalysisResults(commit.getName(), snapshotAnalyzerResults);
+                    SnapshotAnalysisResults commitResults = runSnapshotAnalysis(projectDirPath);
+                    analysisResults.addSnapshotAnalysisResults(commit.getName(), commitResults);
                 }
+            }
+            if (workTreeResults != null) {
+                analysisResults.addSnapshotAnalysisResults(WORK_TREE, workTreeResults);
             }
         } catch (IOException e) {
             throw new IOException("Could not open git repository " + projectDirPath, e);
@@ -99,6 +111,10 @@ public class HistoryAnalyzer extends Analyzer {
 
     private void resetHard(Git git) throws GitAPIException {
         git.reset().setMode(ResetCommand.ResetType.HARD).call();
+    }
+
+    private SnapshotAnalysisResults runSnapshotAnalysis(Path projectDirPath) throws IOException {
+        return new SnapshotAnalyzer(projectDirPath, getFilesRegex(), getMetricsManager(), isIncludeTests()).analyze();
     }
 
     private static class SigIntHandler extends Thread {

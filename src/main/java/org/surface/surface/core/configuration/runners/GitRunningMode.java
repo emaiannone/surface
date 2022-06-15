@@ -13,13 +13,15 @@ import org.surface.surface.core.engine.writers.FileWriter;
 public abstract class GitRunningMode extends RunningMode<GitRunResults> {
     private static final Logger LOGGER = LogManager.getLogger();
 
+    private final boolean excludeWorkTree;
     private final RevisionSelector revisionSelector;
     private String projectName;
     private String repoLocation;
     private SetupEnvironmentAction setupEnvironmentAction;
 
-    GitRunningMode(MetricsManager metricsManager, FileWriter writer, String filesRegex, boolean includeTests, RevisionSelector revisionSelector) {
+    GitRunningMode(MetricsManager metricsManager, FileWriter writer, String filesRegex, boolean includeTests, boolean excludeWorkTree, RevisionSelector revisionSelector) {
         super(metricsManager, writer, filesRegex, includeTests);
+        this.excludeWorkTree = excludeWorkTree;
         this.revisionSelector = revisionSelector;
     }
 
@@ -50,7 +52,7 @@ public abstract class GitRunningMode extends RunningMode<GitRunResults> {
     @Override
     public void run() throws Exception {
         HistoryAnalyzer historyAnalyzer = new HistoryAnalyzer(getProjectName(), getFilesRegex(),
-                getMetricsManager(), isIncludeTests(), revisionSelector, setupEnvironmentAction);
+                getMetricsManager(), isIncludeTests(), excludeWorkTree, revisionSelector, setupEnvironmentAction);
         HistoryAnalysisResults analysisResults = historyAnalyzer.analyze();
         GitRunResults gitRunResults = getRunResults();
         gitRunResults.setAnalysisResults(analysisResults);

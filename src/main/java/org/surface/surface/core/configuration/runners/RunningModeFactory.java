@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 
 public class RunningModeFactory {
     public static RunningMode<?> newRunningMode(String target, MetricsManager metricsManager, FileWriter writer,
-                                                String filesRegex, boolean includeTests,
+                                                String filesRegex, boolean includeTests, boolean excludeWorkTree,
                                                 RevisionSelector revisionSelector, Path workDirPath) {
         // NOTE This method must be updated when new run modes are implemented
         if (target == null) {
@@ -38,7 +38,7 @@ public class RunningModeFactory {
         }
 
         if (Utils.isPathToGitDirectory(path)) {
-            return new LocalGitRunningMode(path, metricsManager, writer, filesRegex, includeTests, revisionSelector, workDirPath);
+            return new LocalGitRunningMode(path, metricsManager, writer, filesRegex, includeTests, excludeWorkTree, revisionSelector, workDirPath);
         }
         if (Utils.isGitHubUrl(target)) {
             try {
@@ -48,7 +48,7 @@ public class RunningModeFactory {
             }
         }
         if (Utils.isPathToYamlFile(path)) {
-            return new FlexibleRunningMode(path, metricsManager, writer, filesRegex, includeTests, revisionSelector, workDirPath);
+            return new FlexibleRunningMode(path, metricsManager, writer, filesRegex, includeTests, excludeWorkTree, revisionSelector, workDirPath);
         }
         throw new IllegalArgumentException("The supplied target is not attributable to any supported run mode.");
     }

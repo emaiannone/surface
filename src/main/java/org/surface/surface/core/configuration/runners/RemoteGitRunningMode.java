@@ -12,9 +12,9 @@ import java.nio.file.Paths;
 
 public class RemoteGitRunningMode extends GitRunningMode {
     private static final String CODE_NAME = "REMOTE_GIT";
-    
+
     public RemoteGitRunningMode(URI repoUrl, MetricsManager metricsManager, FileWriter writer, String filesRegex, boolean includeTests, RevisionSelector revisionSelector, Path workDirPath) {
-        super(metricsManager, writer, filesRegex, includeTests, revisionSelector);
+        super(metricsManager, writer, filesRegex, includeTests, true, revisionSelector);
         setProjectName(Paths.get(repoUrl.getPath()).getFileName().toString());
         setRepoLocation(repoUrl.toString());
         setCodeName(CODE_NAME);
