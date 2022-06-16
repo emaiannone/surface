@@ -45,6 +45,12 @@ public class CLIOptions extends Options {
                 .desc("List of metrics to return or not with SURFACE. The list must be expressed as a comma-separate list of metrics codes, e.g., \"CAT,CMT,CIDA\" (no spaces between elements). The special argument \"ALL\" enables the execution of all metrics, shadowing all other codes in the list. If a code is preceded by a minus symbol (-), then the associated metric is excluded from the final report. If the format is invalid an error is raised. Any unrecognized code will be ignored. If there are not valid metrics to compute an error is raised.")
                 .build();
 
+        Option workDir = Option.builder(WORK_DIR)
+                .hasArg(true)
+                .required(true)
+                .desc("Path to a local directory where repositories will be copied (LOCAL_GIT or FLEXIBLE) or cloned (REMOTE_GIT or FLEXIBLE). Not evaluated in LOCAL_DIR mode. In FLEXIBLE mode this option represents the default directory where all remote repositories are cloned when not specified differently in the YAML file.")
+                .build();
+
         Option outFile = Option.builder(OUT_FILE)
                 .hasArg(true)
                 .required(true)
@@ -89,11 +95,6 @@ public class CLIOptions extends Options {
                 .addOption(at);
         revisionGroup.setRequired(false);
 
-        Option cloneDir = Option.builder(WORK_DIR)
-                .hasArg(true)
-                .desc("Path to a local directory where repositories will be copied (LOCAL_GIT or FLEXIBLE) or cloned (REMOTE_GIT or FLEXIBLE). Not evaluated in LOCAL_DIR mode. In FLEXIBLE mode this option represents the default directory where all remote repositories are cloned when not specified differently in the YAML file.")
-                .build();
-
         Option files = Option.builder(FILES)
                 .hasArg(true)
                 .required(false)
@@ -122,7 +123,7 @@ public class CLIOptions extends Options {
         addOption(metrics);
         addOption(outFile);
         addOptionGroup(revisionGroup);
-        addOption(cloneDir);
+        addOption(workDir);
         addOption(files);
         addOption(includeTests);
         addOption(excludeWorkTree);
