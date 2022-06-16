@@ -25,6 +25,9 @@ class CLIStarter {
             LOGGER.debug(e);
             System.exit(1);
         }
+        if (runner == null) {
+            System.exit(0);
+        }
         Surface surface = new Surface(runner);
         surface.run();
     }

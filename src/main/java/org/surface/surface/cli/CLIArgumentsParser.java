@@ -21,13 +21,22 @@ import java.util.regex.PatternSyntaxException;
 class CLIArgumentsParser {
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public static final String HEADER = "SURFACE: a lightweight tool for computing security metrics from Java source code\n\n";
+    public static final String SYNTAX = "java -jar surface.jar";
+    public static final String FOOTER = "\nPlease report any issue at https://github.com/emaiannone/surface";
+
     public static RunningMode<?> parse(String[] args) throws ParseException {
         // Fetch the indicated CLI options
         Options options = CLIOptions.getInstance();
         CommandLineParser cliParser = new DefaultParser();
         CommandLine commandLine = cliParser.parse(options, args);
-
+        HelpFormatter helpFormatter = new HelpFormatter();
         String target = commandLine.getOptionValue(CLIOptions.TARGET);
+
+        if (commandLine.hasOption(CLIOptions.HELP)) {
+            helpFormatter.printHelp(SYNTAX, HEADER, options, FOOTER, true);
+            return null;
+        }
 
         // Interpret Metrics
         MetricsManager metricsManager;

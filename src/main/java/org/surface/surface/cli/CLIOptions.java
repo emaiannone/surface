@@ -28,6 +28,8 @@ public class CLIOptions extends Options {
     public static final String INCLUDE_TESTS = "includeTests";
     public static final String EXCLUDE_WORK_TREE = "excludeWorkTree";
 
+    public static final String HELP = "help";
+
     private CLIOptions() {
         Option target = Option.builder(TARGET)
                 .hasArg(true)
@@ -110,6 +112,12 @@ public class CLIOptions extends Options {
                 .desc("(Optional) Flag excluding the changed files in the work tree. Enabled by default.")
                 .build();
 
+        Option help = Option.builder(HELP)
+                .hasArg(false)
+                .required(false)
+                .desc("Show the options available. Invalidates all other options if used.")
+                .build();
+
         addOption(target);
         addOption(metrics);
         addOption(outFile);
@@ -118,6 +126,7 @@ public class CLIOptions extends Options {
         addOption(files);
         addOption(includeTests);
         addOption(excludeWorkTree);
+        addOption(help);
     }
 
     public static CLIOptions getInstance() {
