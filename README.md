@@ -47,10 +47,58 @@ Surface accepts the following options:
   - `-from <arg>` analyzes all revisions starting from `<arg>` until HEAD.
   - `-to <arg>` analyzes all revision from the beginning to `<arg>`.
   - `-range <arg>` analyzes the revision range `<arg>`, that must follow the syntax `<from-sha>..<to-sha>`.
-- (Optional) `-exceludeWorkTree` disables the analysis of local uncommitted changes for `git` projects.
+- (Optional) `-excludeWorkTree` disables the analysis of local uncommitted changes for `git` projects.
 - (Optional) `-includeTests` allows the analysis of test classes (i.e., those having @Test-like annotations).
 - (Optional) `-help` displays the description of all command-line options accepted.
 
-## How to Configure Surface with a YAML File (FLEXIBLE mode)
+## How to Configure Surface with a YAML file (FLEXIBLE mode)
 
-## Example
+When Surface is supplied with a YAML configuration file it is run in the so-called FLEXIBLE mode. In this mode, Surface will interpret the configuration file to enable the analysis of multiple projects (either local or remote) at once. Each project can be configuration with individual configurations (e.g., revision or file filters), using the command-line arguments as default in case of missing YAML parameters.
+
+The YAML configuration file follows this structure:
+
+```
+projects:
+  - [id: <STRING>]
+    location: <PATH-TO-LOCAL-PROJECTS>
+    [metrics: <LIST-COMMA-SEPARATE-CODES>]
+    [files: <REG-EXP>]
+    [revisionFilter:
+      type: all|allow|deny|at|from|to|range
+      [value: <SHA>|<SHA>..<SHA>]
+    ]
+    [includeTests: true|false]
+    [excludeWorkTree: true|false]
+  - ...
+```
+
+Each parameters follows the same syntax of those defined by the command-line arguments. The YAML follows a slightly different structure than the command-line arguments:
+- `revisionFilter` is an obejct encompassing `-all`, `-allow`, `-deny`, `-at`, `-from`, `-to`, `-range` options.
+- `location` is the equivalent of `target`, except that you cannot point to another YAML file.
+
+## Examples
+
+### Analyze a local non-git project (LOCAL_DIR mode)
+
+`java -jar surface.jar -target path/to/project -workDir /home/myself -outFile /home/myself/results.json -files /dao/`
+
+Run Surface on a locally-stored project, analyzing only the files in "dao" sub-directory, using `/home/myself` as the working directory where to copy the project before analyzing it, and exporting the results in `/home/myself/results.json`.
+
+### Analyze a local git project (LOCAL_GIT mode)
+
+`java -jar surface.jar -target path/to/project -workDir /home/myself -outFile /home/myself/results.json -from abcd1234 -includeTests`
+
+Run Surface on a locally-stored git project, including the test files, from commit `abcd1234` (included) to the HEAD revision (included), using `/home/myself` as the working directory where to copy or clone the project before analyzing it, and exporting the results in `/home/myself/results.json`.
+
+### Analyze a local git project (REMOTE_GIT mode)
+
+`java -jar surface.jar -target https://github.com/org/project -workDir /home/myself -outFile /home/myself/results.json -range abcd1234..5678wxyz -excludeWorkTree`
+
+Run Surface on a locally-stored git project, including the test files, from commit `abcd1234` (excluded) to `5678wxyz` (included), using `/home/myself` as the working directory where to clone the project before analyzing it, and exporting the results in `/home/myself/results.json`. In addition, the extra analysis of any local uncommitted change will not be done (`-excludeWorkTree`).
+
+### Analyze multiple projects with YAML file (FLEXIBLE mode)
+
+`java -jar surface.jar -target config.yml -workDir /tmp -outFile /tmp/results.json -all`
+
+Run Surface following the configuration provided in `config.yml`, using `/tmp` as the working directory to copy or clone the projects before analyzing them, and exporting the results in `/tmp/results.json`.
+If no specified differently in the YAML file, the complete history of all `git` projects will be analyzed (`-all`).
