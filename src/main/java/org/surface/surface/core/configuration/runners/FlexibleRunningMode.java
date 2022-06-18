@@ -170,6 +170,27 @@ public class FlexibleRunningMode extends RunningMode<FlexibleRunResults> {
                 LOGGER.info("* Project \"{}\": No regular expression to filter files supplied. Using the default option.", projectId);
             }
 
+            // Interpret the Revision Filter
+            RevisionSelector revisionSelector;
+            if (project.revisionFilter == null) {
+                revisionSelector = defaultRevisionSelector;
+                LOGGER.info("* Project \"{}\": No revisions specified. Using the default option", projectId);
+            } else {
+                Pair<String, String> selectedRevision = project.revisionFilter.getSelectedRevision();
+                if (selectedRevision == null) {
+                    revisionSelector = defaultRevisionSelector;
+                    LOGGER.info("* Project \"{}\": No valid revision selector supplied. Using the default: {}", projectId, revisionSelector);
+                } else {
+                    try {
+                        revisionSelector = RevisionGroupInterpreter.interpretRevisionGroup(selectedRevision.getKey(), selectedRevision.getValue());
+                        LOGGER.info("* Project \"{}\": Going to analyze \"{} {}\" revisions", projectId, selectedRevision.getKey(), selectedRevision.getValue());
+                    } catch (IllegalArgumentException e) {
+                        revisionSelector = defaultRevisionSelector;
+                        LOGGER.info("* Project \"{}\": The supplied revision selector must fulfill the requirements of each type (see options documentation). Using the default: {}", projectId, revisionSelector);
+                    }
+                }
+            }
+
             // Check the inclusion of test files
             boolean includeTests = false;
             if (project.includeTests != null) {
@@ -191,27 +212,6 @@ public class FlexibleRunningMode extends RunningMode<FlexibleRunResults> {
             } else {
                 excludeWorkTree = defaultExcludeWorkTree;
                 LOGGER.info("* Project \"{}\": No indication on how to manage files in the work tree. Using the default option.", projectId);
-            }
-
-            // Interpret the Revision Filter
-            RevisionSelector revisionSelector;
-            if (project.revisionFilter == null) {
-                revisionSelector = defaultRevisionSelector;
-                LOGGER.info("* Project \"{}\": No revisions specified. Using the default option", projectId);
-            } else {
-                Pair<String, String> selectedRevision = project.revisionFilter.getSelectedRevision();
-                if (selectedRevision == null) {
-                    revisionSelector = defaultRevisionSelector;
-                    LOGGER.info("* Project \"{}\": No valid revision selector supplied. Using the default: {}", projectId, revisionSelector);
-                } else {
-                    try {
-                        revisionSelector = RevisionGroupInterpreter.interpretRevisionGroup(selectedRevision.getKey(), selectedRevision.getValue());
-                        LOGGER.info("* Project \"{}\": Going to analyze \"{} {}\" revisions", projectId, selectedRevision.getKey(), selectedRevision.getValue());
-                    } catch (IllegalArgumentException e) {
-                        revisionSelector = defaultRevisionSelector;
-                        LOGGER.info("* Project \"{}\": The supplied revision selector must fulfill the requirements of each type (see options documentation). Using the default: {}", projectId, revisionSelector);
-                    }
-                }
             }
 
             // Instantiate the appropriate analyzer

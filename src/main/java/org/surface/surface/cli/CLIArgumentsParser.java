@@ -92,23 +92,24 @@ class CLIArgumentsParser {
         }
 
         // Interpret the Revision group
-        RevisionSelector revisionSelector = null;
+        RevisionSelector revisionSelector;
         String revisionValue;
         String revisionModeSelected = options.getOptionGroup(options.getOption(CLIOptions.RANGE)).getSelected();
         if (revisionModeSelected == null) {
             LOGGER.info("* Going to analyze the HEAD revision (default).");
+            revisionValue = null;
         } else {
             revisionValue = commandLine.getOptionValue(revisionModeSelected);
-            try {
-                revisionSelector = RevisionGroupInterpreter.interpretRevisionGroup(revisionModeSelected, revisionValue);
-            } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException("The supplied revision option must fulfill the requirements of each type (see options documentation).", e);
-            }
-            if (revisionSelector.getRevisionString() != null) {
-                LOGGER.info("* Going to analyze \"{} {}\" revisions", revisionModeSelected, revisionValue);
-            } else {
-                LOGGER.info("* Going to analyze all revisions");
-            }
+        }
+        try {
+            revisionSelector = RevisionGroupInterpreter.interpretRevisionGroup(revisionModeSelected, revisionValue);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("The supplied revision option must fulfill the requirements of each type (see options documentation).", e);
+        }
+        if (revisionSelector.getRevisionString() != null) {
+            LOGGER.info("* Going to analyze \"{} {}\" revisions", revisionModeSelected, revisionValue);
+        } else {
+            LOGGER.info("* Going to analyze all revisions");
         }
 
         // Check the inclusion of test files
