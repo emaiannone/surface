@@ -20,7 +20,6 @@ import java.util.regex.PatternSyntaxException;
 
 class CLIArgumentsParser {
     private static final Logger LOGGER = LogManager.getLogger();
-
     public static final String HEADER = "Surface: a lightweight tool for computing security metrics from Java source code.\n\nOptions:";
     public static final String SYNTAX = "java -jar surface.jar";
     public static final String FOOTER = "\nPlease report any issue at https://github.com/emaiannone/surface";
@@ -40,17 +39,15 @@ class CLIArgumentsParser {
 
         // Validate the Working Directory
         Path workDirPath = null;
-        if (!Utils.isPathToLocalDirectory(Paths.get(target))) {
-            String workDirValue = commandLine.getOptionValue(CLIOptions.WORK_DIR);
-            if (workDirValue == null) {
-                throw new IllegalArgumentException("The working directory path must be indicated.");
-            }
-            workDirPath = Paths.get(workDirValue).toAbsolutePath();
-            if (!Utils.isPathToLocalDirectory(workDirPath)) {
-                throw new IllegalArgumentException("The working directory path must point to an existing directory.");
-            }
-            LOGGER.info("* Going to work in directory: " + workDirPath);
+        String workDirValue = commandLine.getOptionValue(CLIOptions.WORK_DIR);
+        if (workDirValue == null) {
+            throw new IllegalArgumentException("The working directory path must be indicated.");
         }
+        workDirPath = Paths.get(workDirValue).toAbsolutePath();
+        if (!Utils.isPathToLocalDirectory(workDirPath)) {
+            throw new IllegalArgumentException("The working directory path must point to an existing directory.");
+        }
+        LOGGER.info("* Going to work in directory: " + workDirPath);
 
         // Interpret Output File to get the Writer
         String outFileValue = commandLine.getOptionValue(CLIOptions.OUT_FILE);

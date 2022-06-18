@@ -20,7 +20,7 @@ public class RunningModeFactory {
         }
         Path path = Paths.get(target).toAbsolutePath();
         if (Utils.isPathToLocalDirectory(path)) {
-            return new LocalDirectoryRunningMode(path, writer, metricsManager, filesRegex, includeTests);
+            return new LocalDirectoryRunningMode(path, workDirPath, writer, metricsManager, filesRegex, includeTests);
         }
         if (Utils.isPathToGitDirectory(path)) {
             return new LocalGitRunningMode(path, workDirPath, writer, metricsManager, revisionSelector, filesRegex, excludeWorkTree, includeTests);

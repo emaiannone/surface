@@ -14,8 +14,8 @@ public abstract class RunningMode<T extends RunResults> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private T runResults;
-    private final MetricsManager metricsManager;
     private final FileWriter writer;
+    private final MetricsManager metricsManager;
     private final String filesRegex;
     private final boolean includeTests;
     private String codeName;
