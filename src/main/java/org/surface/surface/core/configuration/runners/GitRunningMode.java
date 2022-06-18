@@ -19,8 +19,11 @@ public abstract class GitRunningMode extends RunningMode<GitRunResults> {
     private String repoLocation;
     private SetupEnvironmentAction setupEnvironmentAction;
 
-    GitRunningMode(MetricsManager metricsManager, FileWriter writer, String filesRegex, boolean includeTests, boolean excludeWorkTree, RevisionSelector revisionSelector) {
-        super(metricsManager, writer, filesRegex, includeTests);
+    GitRunningMode(FileWriter writer, MetricsManager metricsManager, RevisionSelector revisionSelector, String filesRegex, boolean includeTests, boolean excludeWorkTree) {
+        super(writer, metricsManager, filesRegex, includeTests);
+        if (revisionSelector == null) {
+            throw new IllegalArgumentException("The revision selector must not be null.");
+        }
         this.excludeWorkTree = excludeWorkTree;
         this.revisionSelector = revisionSelector;
     }

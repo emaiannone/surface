@@ -20,7 +20,10 @@ public abstract class RunningMode<T extends RunResults> {
     private final boolean includeTests;
     private String codeName;
 
-    RunningMode(MetricsManager metricsManager, FileWriter writer, String filesRegex, boolean includeTests) {
+    RunningMode(FileWriter writer, MetricsManager metricsManager, String filesRegex, boolean includeTests) {
+        if (writer == null) {
+            throw new IllegalArgumentException("The writer to an output file must not be null.");
+        }
         this.metricsManager = metricsManager;
         this.writer = writer;
         this.filesRegex = filesRegex;

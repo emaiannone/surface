@@ -71,13 +71,17 @@ public class MetricsManager {
         this.metricsCodes = metricsCodes;
     }
 
-    public static List<String> getManagedMetricsCodes() {
+    public static List<String> getAllSupportedMetrics() {
         return Stream.concat(PROJECT_METRICS.keySet().stream(), CLASS_METRICS.keySet().stream())
                 .collect(Collectors.toList());
     }
 
-    public List<String> getMetricsCodes() {
+    public List<String> getLoadedMetrics() {
         return metricsCodes;
+    }
+
+    public int getNumberLoadedMetrics() {
+        return metricsCodes.size();
     }
 
     public List<ProjectMetric<?>> prepareProjectMetrics() {

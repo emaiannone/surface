@@ -17,8 +17,14 @@ public class LocalDirectoryRunningMode extends RunningMode<LocalDirectoryRunResu
 
     private final Path localDirPath;
 
-    public LocalDirectoryRunningMode(Path localDirPath, MetricsManager metricsManager, FileWriter writer, String filesRegex, boolean includeTests) {
-        super(metricsManager, writer, filesRegex, includeTests);
+    public LocalDirectoryRunningMode(Path localDirPath, FileWriter writer, MetricsManager metricsManager, String filesRegex, boolean includeTests) {
+        super(writer, metricsManager, filesRegex, includeTests);
+        if (localDirPath == null) {
+            throw new IllegalArgumentException("The path to the target directory must not be null.");
+        }
+        if (metricsManager == null || metricsManager.getLoadedMetrics().size() == 0) {
+            throw new IllegalArgumentException("The list of metrics to compute must not be null.");
+        }
         this.localDirPath = localDirPath;
         setRunResults(new LocalDirectoryRunResults());
         setCodeName(CODE_NAME);

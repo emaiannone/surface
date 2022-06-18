@@ -38,14 +38,19 @@ class CLIArgumentsParser {
             return null;
         }
 
-        // Interpret Metrics
-        MetricsManager metricsManager;
-        try {
-            metricsManager = MetricsFormulaInterpreter.interpretMetricsFormula(commandLine.getOptionValues(CLIOptions.METRICS));
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("The supplied metrics formula must be a list of comma-separate metric codes without any space in between.", e);
+        // Validate the Working Directory
+        Path workDirPath = null;
+        if (!Utils.isPathToLocalDirectory(Paths.get(target))) {
+            String workDirValue = commandLine.getOptionValue(CLIOptions.WORK_DIR);
+            if (workDirValue == null) {
+                throw new IllegalArgumentException("The working directory path must be indicated.");
+            }
+            workDirPath = Paths.get(workDirValue).toAbsolutePath();
+            if (!Utils.isPathToLocalDirectory(workDirPath)) {
+                throw new IllegalArgumentException("The working directory path must point to an existing directory.");
+            }
+            LOGGER.info("* Going to work in directory: " + workDirPath);
         }
-        LOGGER.info("* Going to compute the following metrics: {}", metricsManager.getMetricsCodes());
 
         // Interpret Output File to get the Writer
         String outFileValue = commandLine.getOptionValue(CLIOptions.OUT_FILE);
@@ -56,6 +61,20 @@ class CLIArgumentsParser {
             throw new IllegalArgumentException("The supplied output file path must point to a file of one of the supported type.", e);
         }
         LOGGER.info("* Going to export results in file: " + outFileValue);
+
+        // Interpret Metrics
+        MetricsManager metricsManager;
+        try {
+            metricsManager = MetricsFormulaInterpreter.interpretMetricsFormula(commandLine.getOptionValues(CLIOptions.METRICS));
+            if (metricsManager.getNumberLoadedMetrics() > 0) {
+                LOGGER.info("* Going to compute the following metrics: {}", metricsManager.getLoadedMetrics());
+            } else {
+                LOGGER.warn("* Failed to load any metric, likely because the supplied codes are invalid.");
+            }
+        } catch (IllegalArgumentException e) {
+            //throw new IllegalArgumentException("The supplied metrics formula must be a list of comma-separate metric codes without any space in between.", e);
+            metricsManager = null;
+        }
 
         // Validate regex on files
         String filesRegex = null;
@@ -72,6 +91,26 @@ class CLIArgumentsParser {
             LOGGER.info("* Going to analyze all .java files found (default).");
         }
 
+        // Interpret the Revision group
+        RevisionSelector revisionSelector = null;
+        String revisionValue;
+        String revisionModeSelected = options.getOptionGroup(options.getOption(CLIOptions.RANGE)).getSelected();
+        if (revisionModeSelected == null) {
+            LOGGER.info("* Going to analyze the HEAD revision (default).");
+        } else {
+            revisionValue = commandLine.getOptionValue(revisionModeSelected);
+            try {
+                revisionSelector = RevisionGroupInterpreter.interpretRevisionGroup(revisionModeSelected, revisionValue);
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("The supplied revision option must fulfill the requirements of each type (see options documentation).", e);
+            }
+            if (revisionSelector.getRevisionString() != null) {
+                LOGGER.info("* Going to analyze \"{} {}\" revisions", revisionModeSelected, revisionValue);
+            } else {
+                LOGGER.info("* Going to analyze all revisions");
+            }
+        }
+
         // Check the inclusion of test files
         boolean includeTests = false;
         if (commandLine.hasOption(CLIOptions.INCLUDE_TESTS)) {
@@ -85,43 +124,8 @@ class CLIArgumentsParser {
             LOGGER.info("* Going to exclude files in the current work tree.");
         }
 
-        // Interpret the Revision group
-        RevisionSelector revisionSelector;
-        String revisionValue;
-        String revisionModeSelected = options.getOptionGroup(options.getOption(CLIOptions.RANGE)).getSelected();
-        if (revisionModeSelected == null) {
-            LOGGER.info("* Going to analyze the HEAD revision (default).");
-            revisionValue = null;
-        } else {
-            revisionValue = commandLine.getOptionValue(revisionModeSelected);
-        }
-        try {
-            revisionSelector = RevisionGroupInterpreter.interpretRevisionGroup(revisionModeSelected, revisionValue);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("The supplied revision option must fulfill the requirements of each type (see options documentation).", e);
-        }
-        if (revisionSelector.getRevisionString() != null) {
-            LOGGER.info("* Going to analyze \"{} {}\" revisions", revisionModeSelected, revisionValue);
-        } else {
-            LOGGER.info("* Going to analyze all revisions");
-        }
-
-        // Validate the Working Directory
-        Path workDirPath = null;
-        if (!Utils.isPathToLocalDirectory(Paths.get(target))) {
-            String workDirValue = commandLine.getOptionValue(CLIOptions.WORK_DIR);
-            if (workDirValue == null) {
-                throw new IllegalArgumentException("The working directory path must be indicated.");
-            }
-            workDirPath = Paths.get(workDirValue).toAbsolutePath();
-            if (!Utils.isPathToLocalDirectory(workDirPath)) {
-                throw new IllegalArgumentException("The working directory path must point to an existing directory.");
-            }
-            LOGGER.info("* Going to clone in the following directory: " + workDirPath);
-        }
-
         // Interpret RunMode
-        RunningMode<?> runningMode = RunningModeFactory.newRunningMode(target, metricsManager, writer, filesRegex, includeTests, excludeWorkTree, revisionSelector, workDirPath);
+        RunningMode<?> runningMode = RunningModeFactory.newRunningMode(target, workDirPath, writer, metricsManager, filesRegex, revisionSelector, includeTests, excludeWorkTree);
         LOGGER.info("* Going to run in mode: {}", runningMode.getCodeName());
         return runningMode;
     }

@@ -37,16 +37,22 @@ public class FlexibleRunningMode extends RunningMode<FlexibleRunResults> {
     private static final String CODE_NAME = "FLEXIBLE";
 
     private final Path configFilePath;
+    private final Path workDirPath;
     private final boolean defaultExcludeWorkTree;
     private final RevisionSelector defaultRevisionSelector;
-    private final Path workDirPath;
 
-    public FlexibleRunningMode(Path configFilePath, MetricsManager metricsManager, FileWriter writer, String filesRegex, boolean includeTests, boolean defaultExcludeWorkTree, RevisionSelector defaultRevisionSelector, Path workDirPath) {
-        super(metricsManager, writer, filesRegex, includeTests);
+    public FlexibleRunningMode(Path configFilePath, Path workDirPath, FileWriter writer, MetricsManager defaultMetricsManager, RevisionSelector defaultRevisionSelector, String defaultFilesRegex, boolean defaultIncludeTests, boolean defaultExcludeWorkTree) {
+        super(writer, defaultMetricsManager, defaultFilesRegex, defaultIncludeTests);
+        if (configFilePath == null) {
+            throw new IllegalArgumentException("The path to the configuration file must not be null.");
+        }
+        if (workDirPath == null) {
+            throw new IllegalArgumentException("The working directory must not be null.");
+        }
         this.configFilePath = configFilePath;
+        this.workDirPath = workDirPath;
         this.defaultExcludeWorkTree = defaultExcludeWorkTree;
         this.defaultRevisionSelector = defaultRevisionSelector;
-        this.workDirPath = workDirPath;
         setCodeName(CODE_NAME);
         setRunResults(new FlexibleRunResults());
     }
@@ -91,7 +97,7 @@ public class FlexibleRunningMode extends RunningMode<FlexibleRunResults> {
     private Map<String, Analyzer> prepareAnalyzers() {
         Map<String, Analyzer> analyzers = new LinkedHashMap<>();
         List<String> ignoredProjects = new ArrayList<>();
-        LOGGER.info("* Starting {} mode: parsing configuration file {} and using all given options as default", CODE_NAME, configFilePath.toString());
+        LOGGER.info("* Starting {} mode: parsing configuration file {} and using command-line input options as default.", CODE_NAME, configFilePath.toString());
         Configuration configuration = readConfigFile();
         List<ProjectConfiguration> projects = configuration.projects;
         for (int i = 0, projectsSize = projects.size(); i < projectsSize; i++) {
@@ -100,7 +106,7 @@ public class FlexibleRunningMode extends RunningMode<FlexibleRunResults> {
             // Interpret ID
             String projectId = project.id;
             if (projectId == null || projectId.equals("")) {
-                LOGGER.warn("* Project #{} has an invalid ID. Using its index as ID.", i);
+                LOGGER.info("* Project #{} has an invalid ID. Using its index as ID.", i);
                 projectId = String.valueOf(i);
             }
 
@@ -134,11 +140,19 @@ public class FlexibleRunningMode extends RunningMode<FlexibleRunResults> {
             MetricsManager metricsManager;
             try {
                 metricsManager = MetricsFormulaInterpreter.interpretMetricsFormula(project.metrics, ",");
+                if (metricsManager.getNumberLoadedMetrics() == 0) {
+                    metricsManager = getMetricsManager();
+                    LOGGER.info("* Project \"{}\": Invalid metrics formula (read the documentation for the correct syntax). Using the default option.", projectId);
+                }
             } catch (RuntimeException e) {
                 metricsManager = getMetricsManager();
-                LOGGER.warn("* Project \"{}\": Invalid metrics formula: must be a list of comma-separate metric codes without any space in between. Using the default: {}", projectId, metricsManager.getMetricsCodes());
+                LOGGER.info("* Project \"{}\": Invalid metrics formula (read the documentation for the correct syntax). Using the default option.", projectId);
             }
-            LOGGER.debug("* Project \"{}\": Going to compute the following metrics: {}", projectId, metricsManager.getMetricsCodes());
+            if (metricsManager == null || metricsManager.getNumberLoadedMetrics() == 0) {
+                ignoredProjects.add(projectId);
+                LOGGER.warn("* Project \"{}\": No project-specific or default metric formula supplied. Ignoring project.", projectId);
+                continue;
+            }
 
             // Validate regex on files
             String filesRegex;
@@ -148,12 +162,12 @@ public class FlexibleRunningMode extends RunningMode<FlexibleRunResults> {
                     filesRegex = project.files;
                 } catch (PatternSyntaxException e) {
                     filesRegex = getFilesRegex();
-                    LOGGER.warn("Project \"{}\": The regular expression to filter files must be compilable. Using the default:{}", projectId, filesRegex);
+                    LOGGER.info("Project \"{}\": The regular expression to filter files must be compilable. Using the default:{}", projectId, filesRegex);
                 }
-                LOGGER.info("* Project \"{}\": Going to analyze only the .java files matching this expression {}", projectId, filesRegex);
+                LOGGER.info("* Project \"{}\": Going to analyze only the .java files matching this regular expression \"{}\"", projectId, filesRegex);
             } else {
                 filesRegex = getFilesRegex();
-                LOGGER.warn("* Project \"{}\": No regular expression to filter files supplied. Using the default option.", projectId);
+                LOGGER.info("* Project \"{}\": No regular expression to filter files supplied. Using the default option.", projectId);
             }
 
             // Check the inclusion of test files
@@ -183,19 +197,19 @@ public class FlexibleRunningMode extends RunningMode<FlexibleRunResults> {
             RevisionSelector revisionSelector;
             if (project.revisionFilter == null) {
                 revisionSelector = defaultRevisionSelector;
-                LOGGER.warn("* Project \"{}\": No revisions specified. Using the default option", projectId);
+                LOGGER.info("* Project \"{}\": No revisions specified. Using the default option", projectId);
             } else {
                 Pair<String, String> selectedRevision = project.revisionFilter.getSelectedRevision();
                 if (selectedRevision == null) {
                     revisionSelector = defaultRevisionSelector;
-                    LOGGER.warn("* Project \"{}\": No valid revision selector supplied. Using the default: {}", projectId, revisionSelector);
+                    LOGGER.info("* Project \"{}\": No valid revision selector supplied. Using the default: {}", projectId, revisionSelector);
                 } else {
                     try {
                         revisionSelector = RevisionGroupInterpreter.interpretRevisionGroup(selectedRevision.getKey(), selectedRevision.getValue());
                         LOGGER.info("* Project \"{}\": Going to analyze \"{} {}\" revisions", projectId, selectedRevision.getKey(), selectedRevision.getValue());
                     } catch (IllegalArgumentException e) {
                         revisionSelector = defaultRevisionSelector;
-                        LOGGER.warn("* Project \"{}\": The supplied revision selector must fulfill the requirements of each type (see options documentation). Using the default: {}", projectId, revisionSelector);
+                        LOGGER.info("* Project \"{}\": The supplied revision selector must fulfill the requirements of each type (see options documentation). Using the default: {}", projectId, revisionSelector);
                     }
                 }
             }
@@ -210,7 +224,7 @@ public class FlexibleRunningMode extends RunningMode<FlexibleRunResults> {
             analyzers.put(projectId, analyzer);
         }
         if (ignoredProjects.size() > 0) {
-            LOGGER.info("* The following projects will not be analyzed because of errors in the configuration file: {}", ignoredProjects);
+            LOGGER.warn("* The following projects will not be analyzed because of configuration errors: {}", ignoredProjects);
         }
         return analyzers;
     }

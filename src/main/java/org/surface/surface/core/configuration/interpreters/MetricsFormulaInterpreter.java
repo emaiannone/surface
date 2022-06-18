@@ -20,7 +20,7 @@ public class MetricsFormulaInterpreter {
         }
         Set<String> selectedMetrics = new LinkedHashSet<>();
 
-        List<String> supportedCodes = MetricsManager.getManagedMetricsCodes();
+        List<String> supportedCodes = MetricsManager.getAllSupportedMetrics();
         for (String part : metricsString) {
             if (part == null || part.equals("")) {
                 throw new IllegalArgumentException("The input metrics formula has an invalid code.");
@@ -47,9 +47,6 @@ public class MetricsFormulaInterpreter {
                     }
                 }
             }
-        }
-        if (selectedMetrics.size() == 0) {
-            throw new IllegalArgumentException("The input metrics formula resulted in an empty set of metrics.");
         }
         List<String> metricsCodes = new ArrayList<>(selectedMetrics);
         return new MetricsManager(metricsCodes);

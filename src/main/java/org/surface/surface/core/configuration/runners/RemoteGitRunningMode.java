@@ -13,8 +13,17 @@ import java.nio.file.Paths;
 public class RemoteGitRunningMode extends GitRunningMode {
     private static final String CODE_NAME = "REMOTE_GIT";
 
-    public RemoteGitRunningMode(URI repoUrl, MetricsManager metricsManager, FileWriter writer, String filesRegex, boolean includeTests, RevisionSelector revisionSelector, Path workDirPath) {
-        super(metricsManager, writer, filesRegex, includeTests, true, revisionSelector);
+    public RemoteGitRunningMode(URI repoUrl, Path workDirPath, FileWriter writer, MetricsManager metricsManager, RevisionSelector revisionSelector, String filesRegex, boolean includeTests) {
+        super(writer, metricsManager, revisionSelector, filesRegex, includeTests, true);
+        if (repoUrl == null) {
+            throw new IllegalArgumentException("The URL to the target repository must not be null.");
+        }
+        if (workDirPath == null) {
+            throw new IllegalArgumentException("The working directory must not be null.");
+        }
+        if (metricsManager == null || metricsManager.getLoadedMetrics().size() == 0) {
+            throw new IllegalArgumentException("The list of metrics to compute must not be null.");
+        }
         setProjectName(Paths.get(repoUrl.getPath()).getFileName().toString());
         setRepoLocation(repoUrl.toString());
         setCodeName(CODE_NAME);
