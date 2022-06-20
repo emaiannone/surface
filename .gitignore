@@ -31,3 +31,4 @@ target/**
 
 # CSV exports
 *_results.csv
+.DS_STORE
