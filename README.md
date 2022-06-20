@@ -21,9 +21,16 @@ Currently, it supports **14 security metrics** from those defined by Alshammari 
 
 # How to Build Surface
 
+Requirements:
+
+- JDK Version 8
+- Maven
+
 First, clone this repository into your local working directory. Then, move inside the projects' root directory and run `mvn package` (make sure you have `maven` installed). This command will generate the JAR with all the dependencies inside the `target` directory, which can be freely renamed if desired.
 
 # How to Run Surface
+
+- JRE Version 8
 
 The Surface executable JAR can be run using `java -jar` command. The basic syntax is the following:  
 `java -jar surface.jar [-all | -allow <arg> | -at <arg> | -deny <arg> | -from <arg> | -range <arg> | -to <arg>] [-excludeWorkTree] [-files <arg>] [-help] [-includeTests] -metrics <arg> -outFile <arg>  -target <arg> [-workDir <arg>]`
