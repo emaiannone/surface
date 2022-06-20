@@ -30,6 +30,8 @@ First, clone this repository into your local working directory. Then, move insid
 
 # How to Run Surface
 
+Requirements:
+
 - JRE Version 8
 
 The Surface executable JAR can be run using `java -jar` command. The basic syntax is the following:  
