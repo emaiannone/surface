@@ -31,19 +31,16 @@ public class CLIOptions extends Options {
     private CLIOptions() {
         Option target = Option.builder(TARGET)
                 .hasArg(true)
-                .required(true)
                 .desc("Path to either (i) a local non-git directory (LOCAL_DIR), (ii) a local git directory (LOCAL_GIT), (iii) a remote URL to a GitHub repository (REMOTE_GIT), or (iv) a local path to a YAML file (FLEXIBLE). SURFACE behaves differently depending on the type of target: (LOCAL_DIR) it scans the specified directory recursively to search for .java files to analyze; (LOCAL_GIT) it behaves like in LOCAL but allows the selection of specific revisions; (REMOTE_GIT) it clones the GitHub repository inside the directory indicated by the -" + WORK_DIR + " option and runs the analysis on it, also allowing the selection of specific revisions; (FLEXIBLE) parses the YAML that dictates how SURFACE must operate. The specification of the YAML file for FLEXIBLE mode are reported in the README at https://github.com/emaiannone/surface. All the directories cloned during the execution of SURFACE will be deleted at the end (either successful or erroneous).")
                 .build();
 
         Option workDir = Option.builder(WORK_DIR)
                 .hasArg(true)
-                .required(true)
                 .desc("Path to a local directory where repositories will be copied (LOCAL_GIT or FLEXIBLE) or cloned (REMOTE_GIT or FLEXIBLE). Not evaluated in LOCAL_DIR mode. In FLEXIBLE mode this option represents the default directory where all remote repositories are cloned when not specified differently in the YAML file.")
                 .build();
 
         Option outFile = Option.builder(OUT_FILE)
                 .hasArg(true)
-                .required(true)
                 .desc("Path to a file where to store the results. If the file already exists, its content will be overwritten. The output format is determined by the extension of the supplied filename. Currently, SURFACE only supports JSON files (with .json extension).")
                 .build();
 

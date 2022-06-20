@@ -52,6 +52,9 @@ class CLIArgumentsParser {
         // Interpret Output File to get the Writer
         String outFileValue = commandLine.getOptionValue(CLIOptions.OUT_FILE);
         FileWriter writer;
+        if (outFileValue == null) {
+            throw new IllegalArgumentException("The output file must be indicated.");
+        }
         try {
             writer = OutFileInterpreter.interpretOutString(outFileValue);
         } catch (IllegalArgumentException e) {
