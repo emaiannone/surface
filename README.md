@@ -103,7 +103,7 @@ Run Surface on a locally-stored git project, including the test files, from comm
 
 `java -jar surface.jar -target https://github.com/org/project -workDir /home/myself -outFile /home/myself/results.json -range abcd1234..5678wxyz -excludeWorkTree`
 
-Run Surface on a locally-stored git project, including the test files, from commit `abcd1234` (excluded) to `5678wxyz` (included), using `/home/myself` as the working directory where the project will be cloned before analyzing it, and exporting the results in `/home/myself/results.json`. In addition, the extra analysis of any local uncommitted change will not be done (`-excludeWorkTree`).
+Run Surface on a remotely-stored git project, including the test files, from commit `abcd1234` (excluded) to `5678wxyz` (included), using `/home/myself` as the working directory where the project will be cloned before analyzing it, and exporting the results in `/home/myself/results.json`. In addition, the extra analysis of any local uncommitted change will not be done (`-excludeWorkTree`).
 
 ### Analyze multiple projects with YAML file (FLEXIBLE mode)
 
