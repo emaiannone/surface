@@ -276,7 +276,7 @@ public class FlexibleRunningMode extends RunningMode<FlexibleRunResults> {
                 return new ImmutablePair<>(type, "");
             }
             if (value != null
-                    && type.equalsIgnoreCase(SingleRevisionSelector.CODE)
+                    && type.equalsIgnoreCase(AtRevisionSelector.CODE)
                     || type.equalsIgnoreCase(RangeRevisionSelector.CODE)
                     || type.equalsIgnoreCase(FromRevisionSelector.CODE)
                     || type.equalsIgnoreCase(ToRevisionSelector.CODE)

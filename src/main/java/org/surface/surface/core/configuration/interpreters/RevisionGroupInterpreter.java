@@ -18,7 +18,7 @@ public class RevisionGroupInterpreter {
         SUPPORTED_SELECTORS.put(AllowRevisionSelector.CODE.toLowerCase(), AllowRevisionSelector.class);
         SUPPORTED_SELECTORS.put(DenyRevisionSelector.CODE.toLowerCase(), DenyRevisionSelector.class);
         SUPPORTED_SELECTORS.put(AllRevisionSelector.CODE.toLowerCase(), AllRevisionSelector.class);
-        SUPPORTED_SELECTORS.put(SingleRevisionSelector.CODE.toLowerCase(), SingleRevisionSelector.class);
+        SUPPORTED_SELECTORS.put(AtRevisionSelector.CODE.toLowerCase(), AtRevisionSelector.class);
     }
 
     public static RevisionSelector interpretRevisionGroup(String revisionMode, String revisionString) {

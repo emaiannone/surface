@@ -20,7 +20,7 @@ public class CLIOptions extends Options {
     public static final String ALLOW = AllowRevisionSelector.CODE.toLowerCase();
     public static final String DENY = DenyRevisionSelector.CODE.toLowerCase();
     public static final String ALL = AllRevisionSelector.CODE.toLowerCase();
-    public static final String AT = SingleRevisionSelector.CODE.toLowerCase();
+    public static final String AT = AtRevisionSelector.CODE.toLowerCase();
 
     public static final String FILES = "files";
     public static final String INCLUDE_TESTS = "includeTests";
@@ -29,22 +29,22 @@ public class CLIOptions extends Options {
     public static final String HELP = "help";
 
     private CLIOptions() {
-        Option target = Option.builder(TARGET)
+        Option targetOpt = Option.builder(TARGET)
                 .hasArg(true)
                 .desc("Path to either (i) a local non-git directory (LOCAL_DIR), (ii) a local git directory (LOCAL_GIT), (iii) a remote URL to a GitHub repository (REMOTE_GIT), or (iv) a local path to a YAML file (FLEXIBLE). SURFACE behaves differently depending on the type of target: (LOCAL_DIR) it scans the specified directory recursively to search for .java files to analyze; (LOCAL_GIT) it behaves like in LOCAL but allows the selection of specific revisions; (REMOTE_GIT) it clones the GitHub repository inside the directory indicated by the -" + WORK_DIR + " option and runs the analysis on it, also allowing the selection of specific revisions; (FLEXIBLE) parses the YAML that dictates how SURFACE must operate. The specification of the YAML file for FLEXIBLE mode are reported in the README at https://github.com/emaiannone/surface. All the directories cloned during the execution of SURFACE will be deleted at the end (either successful or erroneous).")
                 .build();
 
-        Option workDir = Option.builder(WORK_DIR)
+        Option workDirOpt = Option.builder(WORK_DIR)
                 .hasArg(true)
                 .desc("Path to a local directory where repositories will be copied (LOCAL_GIT or FLEXIBLE) or cloned (REMOTE_GIT or FLEXIBLE). Not evaluated in LOCAL_DIR mode. In FLEXIBLE mode this option represents the default directory where all remote repositories are cloned when not specified differently in the YAML file.")
                 .build();
 
-        Option outFile = Option.builder(OUT_FILE)
+        Option outFileOpt = Option.builder(OUT_FILE)
                 .hasArg(true)
                 .desc("Path to a file where to store the results. If the file already exists, its content will be overwritten. The output format is determined by the extension of the supplied filename. Currently, SURFACE only supports JSON files (with .json extension).")
                 .build();
 
-        Option metrics = Option.builder(METRICS)
+        Option metricsOpt = Option.builder(METRICS)
                 .hasArg(true)
                 .numberOfArgs(Option.UNLIMITED_VALUES)
                 .valueSeparator(',')
@@ -89,35 +89,35 @@ public class CLIOptions extends Options {
                 .addOption(at);
         revisionGroup.setRequired(false);
 
-        Option files = Option.builder(FILES)
+        Option filesOpt = Option.builder(FILES)
                 .hasArg(true)
                 .desc("Regular expression to select the .java files on which SURFACE will operate. If not specified, all the parsable .java files in the target project will be considered. In FLEXIBLE mode this option represents default regular expression used when not specified differently in the YAML file. Note that the regular expression matches the entire string, as it is surrounded by \".*\", and ")
                 .build();
 
-        Option includeTests = Option.builder(INCLUDE_TESTS)
+        Option includeTestsOpt = Option.builder(INCLUDE_TESTS)
                 .hasArg(false)
                 .desc("Flag admitting test files (i.e., classes with \"Test\"-like annotations, e.g. @Test or @ParameterizedTest. Disabled by default.")
                 .build();
 
-        Option excludeWorkTree = Option.builder(EXCLUDE_WORK_TREE)
+        Option excludeWorkTreeOpt = Option.builder(EXCLUDE_WORK_TREE)
                 .hasArg(false)
                 .desc("Flag excluding the changed files in the work tree. Enabled by default.")
                 .build();
 
-        Option help = Option.builder(HELP)
+        Option helpOpt = Option.builder(HELP)
                 .hasArg(false)
                 .desc("Show the options available. Invalidates all other options if used.")
                 .build();
 
-        addOption(target);
-        addOption(metrics);
-        addOption(outFile);
+        addOption(targetOpt);
+        addOption(workDirOpt);
+        addOption(metricsOpt);
+        addOption(outFileOpt);
         addOptionGroup(revisionGroup);
-        addOption(workDir);
-        addOption(files);
-        addOption(includeTests);
-        addOption(excludeWorkTree);
-        addOption(help);
+        addOption(filesOpt);
+        addOption(includeTestsOpt);
+        addOption(excludeWorkTreeOpt);
+        addOption(helpOpt);
     }
 
     public static CLIOptions getInstance() {

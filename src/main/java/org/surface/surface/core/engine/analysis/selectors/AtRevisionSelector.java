@@ -8,10 +8,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SingleRevisionSelector extends RevisionSelector {
+public class AtRevisionSelector extends RevisionSelector {
     public static final String CODE = "AT";
 
-    public SingleRevisionSelector(String revisionString) {
+    public AtRevisionSelector(String revisionString) {
         super(revisionString);
         if (!isAlphaNumeric(revisionString)) {
             throw new IllegalArgumentException("The revision must an alphanumeric string.");

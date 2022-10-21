@@ -38,7 +38,7 @@ class CLIArgumentsParser {
         }
 
         // Validate the Working Directory
-        Path workDirPath = null;
+        Path workDirPath;
         String workDirValue = commandLine.getOptionValue(CLIOptions.WORK_DIR);
         if (workDirValue == null) {
             throw new IllegalArgumentException("The working directory path must be indicated.");
