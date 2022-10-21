@@ -26,6 +26,9 @@ public class ProjectMetricsCalculator {
         ProjectMetricsResults projectMetricsResults = new ProjectMetricsResults(projectInspectorResults.getProjectRoot());
         // Class-level metrics
         for (ClassInspectorResults classResults : projectInspectorResults) {
+            if (!classResults.isCritical()) {
+                continue;
+            }
             ClassMetricsResults classMetricsResults = new ClassMetricsResults(classResults);
             // Class-level metrics
             List<ClassMetric<?>> classMetrics = metricsManager.prepareClassMetrics();

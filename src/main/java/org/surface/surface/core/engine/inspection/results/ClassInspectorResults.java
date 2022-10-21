@@ -138,12 +138,20 @@ public class ClassInspectorResults implements InspectorResults {
         return this.correspondingFieldDeclarations;
     }
 
+    public int getNumberClassifiedAttributes() {
+        return getClassifiedAttributes().size();
+    }
+
+    public int getNumberAllClassifiedMethods() {
+        return getAllClassifiedMethods().size();
+    }
+
     public boolean isUsingReflection() {
         return usingReflection;
     }
 
     public boolean isCritical() {
-        return getClassifiedAttributes().size() + getAllClassifiedMethods().size() > 0;
+        return getNumberClassifiedAttributes() + getNumberAllClassifiedMethods() > 0;
     }
 
     public boolean isFinal() {

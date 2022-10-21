@@ -50,13 +50,14 @@ public class ProjectInspectorResults implements InspectorResults, Iterable<Class
     }
 
     public Set<ClassInspectorResults> getCriticalClasses() {
-        Set<ClassInspectorResults> criticalClasses = new LinkedHashSet<>();
-        for (ClassInspectorResults classResults : results) {
-            if (classResults.isCritical()) {
-                criticalClasses.add(classResults);
-            }
-        }
+        Set<ClassInspectorResults> criticalClasses = results.stream()
+                .filter(ClassInspectorResults::isCritical)
+                .collect(Collectors.toCollection(HashSet::new));
         return Collections.unmodifiableSet(criticalClasses);
+    }
+
+    public int getNumberCriticalClasses() {
+        return getCriticalClasses().size();
     }
 
     @Override

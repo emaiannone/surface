@@ -7,7 +7,7 @@ public class CCTImpl extends CCT {
 
     @Override
     public IntMetricValue compute(ProjectInspectorResults projectResults) {
-        int value = projectResults.getCriticalClasses().size();
+        int value = projectResults.getNumberCriticalClasses();
         return new IntMetricValue(getName(), getCode(), value);
     }
 }

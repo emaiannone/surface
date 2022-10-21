@@ -12,6 +12,7 @@ public class ClassMetricsResults implements MetricsResults, Iterable<MetricValue
     private static final String CLASS_NAME = "className";
     private static final String FILE_PATH = "filePath";
     private static final String CLASS_METRICS = "classMetrics";
+    private static final String CLASSIFIED_COMPONENTS = "classifiedComponents";
 
     private final String classFullyQualifiedName;
     private final Path filePath;
@@ -66,6 +67,7 @@ public class ClassMetricsResults implements MetricsResults, Iterable<MetricValue
         map.put(CLASS_NAME, getClassFullyQualifiedName());
         map.put(FILE_PATH, getFilePath(basePath).toString());
         map.put(CLASS_METRICS, getMetrics());
+        map.put(CLASSIFIED_COMPONENTS, classifiedAttributesAndMethodsNames);
         return map;
     }
 

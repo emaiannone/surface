@@ -7,7 +7,7 @@ public class CMTImpl extends CMT {
 
     @Override
     public IntMetricValue compute(ClassInspectorResults classResults) {
-        int value = classResults.getAllClassifiedMethods().size();
+        int value = classResults.getNumberAllClassifiedMethods();
         return new IntMetricValue(getName(), getCode(), value);
     }
 }

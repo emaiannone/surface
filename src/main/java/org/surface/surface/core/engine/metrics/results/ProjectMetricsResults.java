@@ -11,7 +11,7 @@ public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetr
     private static final String PROJECT_NAME = "projectName";
     private static final String PROJECT_DIR = "projectDir";
     private static final String PROJECT_METRICS = "projectMetrics";
-    private static final String CLASSES = "classes";
+    private static final String CRITICAL_CLASSES = "criticalClasses";
     private final Path projectRoot;
     private final Set<ClassMetricsResults> classMetricsResults;
     private final List<MetricValue<?>> metricValues;
@@ -88,7 +88,7 @@ public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetr
         for (ClassMetricsResults classMetricsResult : getClassMetricsResults()) {
             classes.add(classMetricsResult.toMap(getProjectPath()));
         }
-        map.put(CLASSES, classes);
+        map.put(CRITICAL_CLASSES, classes);
         return map;
     }
 

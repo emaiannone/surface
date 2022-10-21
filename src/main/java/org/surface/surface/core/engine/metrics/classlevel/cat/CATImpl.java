@@ -7,7 +7,7 @@ public class CATImpl extends CAT {
 
     @Override
     public IntMetricValue compute(ClassInspectorResults classResults) {
-        int value = classResults.getClassifiedAttributes().size();
+        int value = classResults.getNumberClassifiedAttributes();
         return new IntMetricValue(getName(), getCode(), value);
     }
 }

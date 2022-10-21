@@ -12,7 +12,7 @@ public class HistoryAnalysisResults implements AnalysisResults {
     private static final String WORKING_DIR = "workingDir";
     private static final String REVISIONS = "revisions";
     private static final String METRICS = "projectMetrics";
-    private static final String CLASSES = "classes";
+    private static final String CRITICAL_CLASSES = "criticalClasses";
     private static final String REVISION = "revision";
 
     public HistoryAnalysisResults() {
@@ -47,12 +47,12 @@ public class HistoryAnalysisResults implements AnalysisResults {
         for (Map.Entry<String, SnapshotAnalysisResults> entry : allSnapshotAnalysisResults.entrySet()) {
             Map<String, Object> projectResults = entry.getValue().getProjectMetricsResultsAsMap();
             Object metrics = projectResults.remove(METRICS);
-            Object classes = projectResults.remove(CLASSES);
+            Object classes = projectResults.remove(CRITICAL_CLASSES);
             projectResults.remove(PROJECT_NAME);
             projectResults.remove(WORKING_DIR);
             projectResults.put(REVISION, entry.getKey());
             projectResults.put(METRICS, metrics);
-            projectResults.put(CLASSES, classes);
+            projectResults.put(CRITICAL_CLASSES, classes);
             revisions.add(projectResults);
         }
         content.put(REVISIONS, revisions);
