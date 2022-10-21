@@ -40,9 +40,9 @@ The Surface executable JAR can be run using `java -jar` command. The basic synta
 Surface accepts the following options:
 
 - `-target <arg>` indicates the target of the analyses. Surface accepts four types of targets:
-  - A path to a locally stored non-`git` project (**LOCAL_DIR** mode).
-  - A path to a locally stored `git` project (**LOCAL_GIT** mode).
-  - A URL to GitHub hosted project (**REMOTE_GIT** mode).
+  - A path to a locally-stored non-`git` project (**LOCAL_DIR** mode).
+  - A path to a locally-stored `git` project (**LOCAL_GIT** mode).
+  - A URL to a remote `git` project (**REMOTE_GIT** mode).
   - A path to a YAML configuration file (**FLEXIBLE** mode).
 - `-metrics <arg>` indicates the list of metrics to analyze. `<arg>` is a list of comma-separated strings of metrics codes (see above the list of supported metrics). The special keyword "ALL" enables the execution of all metrics. If one metric code is preceded by the minus symbol (-), then the associated metric will not be computed.
 - `-workDir <arg>` indicates the local directory where Surface will copy the locally-stored projects or clone the projects from the remote. 

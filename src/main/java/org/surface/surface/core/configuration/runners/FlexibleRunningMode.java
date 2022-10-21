@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.validator.routines.UrlValidator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.surface.surface.core.Utils;
@@ -120,7 +121,7 @@ public class FlexibleRunningMode extends RunningMode<FlexibleRunResults> {
                 if (Utils.isPathToGitDirectory(path)) {
                     setupEnvironmentAction = new CopySetupEnvironmentAction(projectId, workDirPath, path);
                 }
-                if (Utils.isGitHubUrl(project.location)) {
+                if (UrlValidator.getInstance().isValid(project.location)) {
                     try {
                         setupEnvironmentAction = new CloneSetupEnvironmentAction(projectId, workDirPath, new URI(project.location));
                     } catch (URISyntaxException e) {

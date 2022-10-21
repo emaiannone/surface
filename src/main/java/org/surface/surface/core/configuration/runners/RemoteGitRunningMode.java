@@ -19,7 +19,7 @@ public class RemoteGitRunningMode extends GitRunningMode {
             throw new IllegalArgumentException("The URL to the target repository must not be null.");
         }
         if (metricsManager == null || metricsManager.getLoadedMetrics().size() == 0) {
-            throw new IllegalArgumentException("The list of metrics to compute must not be null.");
+            throw new IllegalArgumentException("The list of metrics to compute must not be null or empty.");
         }
         setProjectName(Paths.get(repoUrl.getPath()).getFileName().toString());
         setRepoLocation(repoUrl.toString());

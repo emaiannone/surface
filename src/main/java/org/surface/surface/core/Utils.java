@@ -1,7 +1,6 @@
 package org.surface.surface.core;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.validator.routines.UrlValidator;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -15,7 +14,6 @@ public class Utils {
     private static final String YML = "yml";
     private static final String YAML = "yaml";
     private static final String JAVA = "java";
-    private static final String GITHUB = "github.com";
 
     public static boolean isGitDirectory(File file) {
         return file.isDirectory() &&
@@ -53,9 +51,5 @@ public class Utils {
             throwable = throwable.getCause();
         }
         return result;
-    }
-
-    public static boolean isGitHubUrl(String target) {
-        return UrlValidator.getInstance().isValid(target) && target.contains(GITHUB);
     }
 }

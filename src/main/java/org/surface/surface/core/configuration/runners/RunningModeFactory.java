@@ -1,5 +1,6 @@
 package org.surface.surface.core.configuration.runners;
 
+import org.apache.commons.validator.routines.UrlValidator;
 import org.surface.surface.core.Utils;
 import org.surface.surface.core.engine.analysis.selectors.RevisionSelector;
 import org.surface.surface.core.engine.metrics.api.MetricsManager;
@@ -25,10 +26,11 @@ public class RunningModeFactory {
         if (Utils.isPathToGitDirectory(path)) {
             return new LocalGitRunningMode(path, workDirPath, writer, metricsManager, revisionSelector, filesRegex, excludeWorkTree, includeTests);
         }
-        if (Utils.isGitHubUrl(target)) {
+        if (UrlValidator.getInstance().isValid(target)) {
             try {
                 return new RemoteGitRunningMode(new URI(target), workDirPath, writer, metricsManager, revisionSelector, filesRegex, includeTests);
-            } catch (URISyntaxException e) {
+            }
+            catch (URISyntaxException e) {
                 throw new IllegalArgumentException("The target string is a malformed URL.");
             }
         }

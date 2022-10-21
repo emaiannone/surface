@@ -125,7 +125,7 @@ class CLIArgumentsParser {
             LOGGER.info("* Going to exclude files in the current work tree.");
         }
 
-        // Interpret RunMode
+        // Create the appropriate RunningMode
         RunningMode<?> runningMode = RunningModeFactory.newRunningMode(target, workDirPath, writer, metricsManager, filesRegex, revisionSelector, includeTests, excludeWorkTree);
         LOGGER.info("* Going to run in mode: {}", runningMode.getCodeName());
         return runningMode;
