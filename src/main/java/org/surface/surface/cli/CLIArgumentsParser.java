@@ -56,7 +56,7 @@ class CLIArgumentsParser {
             throw new IllegalArgumentException("The output file must be indicated.");
         }
         try {
-            writer = OutFileInterpreter.interpretOutString(outFileValue);
+            writer = new OutFileInterpreter().interpret(outFileValue);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("The supplied output file path must point to a file of one of the supported type.", e);
         }
@@ -65,7 +65,7 @@ class CLIArgumentsParser {
         // Interpret Metrics
         MetricsManager metricsManager;
         try {
-            metricsManager = MetricsFormulaInterpreter.interpretMetricsFormula(commandLine.getOptionValues(CLIOptions.METRICS));
+            metricsManager = new MetricsFormulaInterpreter().interpret(commandLine.getOptionValues(CLIOptions.METRICS));
             if (metricsManager.getNumberLoadedMetrics() > 0) {
                 LOGGER.info("* Going to compute the following metrics: {}", metricsManager.getLoadedMetrics());
             } else {
@@ -102,7 +102,7 @@ class CLIArgumentsParser {
             revisionValue = commandLine.getOptionValue(revisionModeSelected);
         }
         try {
-            revisionSelector = RevisionGroupInterpreter.interpretRevisionGroup(revisionModeSelected, revisionValue);
+            revisionSelector = new RevisionGroupInterpreter().interpret(revisionModeSelected + RevisionGroupInterpreter.SEP + revisionValue);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("The supplied revision option must fulfill the requirements of each type (see options documentation).", e);
         }

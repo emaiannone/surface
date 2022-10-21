@@ -2,29 +2,34 @@ package org.surface.surface.core.configuration.interpreters;
 
 import org.surface.surface.core.engine.metrics.api.MetricsManager;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-public class MetricsFormulaInterpreter {
+public class MetricsFormulaInterpreter implements InputStringInterpreter<MetricsManager> {
     private static final String ALL = "ALL";
+    private static final String[] SEPS = {","};
 
-    public static MetricsManager interpretMetricsFormula(String metricsString, String sep) {
-        return interpretMetricsFormula(metricsString.split(sep));
+    public MetricsManager interpret(String[] inputArray) {
+        return interpret(String.join(SEPS[0], inputArray));
     }
 
-    public static MetricsManager interpretMetricsFormula(String[] metricsString) {
-        if (metricsString == null || metricsString.length == 0 || metricsString[0].equals("")) {
-            throw new IllegalArgumentException("The input metrics formula must not be null, empty, or with an empty string as its only element.");
+    public MetricsManager interpret(String inputString) {
+        if (inputString == null || inputString.isEmpty()) {
+            throw new IllegalArgumentException("The input metrics formula must not be null or empty.");
         }
-        Set<String> selectedMetrics = new LinkedHashSet<>();
-
-        List<String> supportedCodes = MetricsManager.getAllSupportedMetrics();
-        for (String part : metricsString) {
-            if (part == null || part.equals("")) {
-                throw new IllegalArgumentException("The input metrics formula has an invalid code.");
+        String[] formulaParts = null;
+        for (String sep : SEPS) {
+            formulaParts = inputString.split(sep);
+            // If the splitting failed
+            if (formulaParts[0].equals(inputString)) {
+                continue;
             }
+            break;
+        }
+        // Drop any empty or null parts
+        String[] cleanFormulaParts = Arrays.stream(formulaParts).filter(Objects::nonNull).filter(p -> !p.isEmpty()).toArray(String[]::new);
+        Set<String> selectedMetrics = new LinkedHashSet<>();
+        List<String> supportedCodes = MetricsManager.getAllSupportedMetrics();
+        for (String part : cleanFormulaParts) {
             if (part.equals(ALL)) {
                 selectedMetrics.addAll(supportedCodes);
             } else {

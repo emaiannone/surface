@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
-public class OutFileInterpreter {
+public class OutFileInterpreter implements InputStringInterpreter<FileWriter> {
     private static final Map<String, Class<? extends FileWriter>> SUPPORTED_FILE_TYPES;
     static {
         // NOTE Any new file type must be added here to be recognized by the CLI parser
@@ -20,8 +20,8 @@ public class OutFileInterpreter {
         SUPPORTED_FILE_TYPES.put(JsonFileWriter.CODE.toLowerCase(), JsonFileWriter.class);
     }
 
-    public static FileWriter interpretOutString(String outString) {
-        Path outFilePath = Paths.get(outString).toAbsolutePath();
+    public FileWriter interpret(String inputString) {
+        Path outFilePath = Paths.get(inputString).toAbsolutePath();
         File file = outFilePath.toFile();
         String extension = FilenameUtils.getExtension(file.toString());
         if (extension == null || extension.equals("")) {

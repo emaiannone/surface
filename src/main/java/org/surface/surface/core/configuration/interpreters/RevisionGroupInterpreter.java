@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RevisionGroupInterpreter {
+    public static final String SEP = ":";
     private static final Map<String, Class<? extends RevisionSelector>> SUPPORTED_SELECTORS;
     static {
         // NOTE Any new selection type must be added here to be recognized by the CLI parser
@@ -21,7 +22,13 @@ public class RevisionGroupInterpreter {
         SUPPORTED_SELECTORS.put(AtRevisionSelector.CODE.toLowerCase(), AtRevisionSelector.class);
     }
 
-    public static RevisionSelector interpretRevisionGroup(String revisionMode, String revisionString) {
+    public RevisionSelector interpret(String inputString) {
+        if (!inputString.contains(SEP)) {
+            throw new IllegalArgumentException("The revision string must have a separating character (" + SEP + ").");
+        }
+        String[] parts = inputString.split(SEP);
+        String revisionMode = parts[0];
+        String revisionString = parts[1];
         RevisionSelector revisionSelector;
         try {
             Class<? extends RevisionSelector> aClass = SUPPORTED_SELECTORS.get(revisionMode);

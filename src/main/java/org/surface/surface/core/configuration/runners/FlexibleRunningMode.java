@@ -139,7 +139,7 @@ public class FlexibleRunningMode extends RunningMode<FlexibleRunResults> {
             // Interpret Metrics
             MetricsManager metricsManager;
             try {
-                metricsManager = MetricsFormulaInterpreter.interpretMetricsFormula(project.metrics, ",");
+                metricsManager = new MetricsFormulaInterpreter().interpret(project.metrics);
                 if (metricsManager.getNumberLoadedMetrics() == 0) {
                     metricsManager = getMetricsManager();
                     LOGGER.info("* Project \"{}\": Invalid metrics formula (read the documentation for the correct syntax). Using the default option.", projectId);
@@ -182,7 +182,7 @@ public class FlexibleRunningMode extends RunningMode<FlexibleRunResults> {
                     LOGGER.info("* Project \"{}\": No valid revision selector supplied. Using the default: {}", projectId, revisionSelector);
                 } else {
                     try {
-                        revisionSelector = RevisionGroupInterpreter.interpretRevisionGroup(selectedRevision.getKey(), selectedRevision.getValue());
+                        revisionSelector = new RevisionGroupInterpreter().interpret(selectedRevision.getKey() + RevisionGroupInterpreter.SEP + selectedRevision.getValue());
                         LOGGER.info("* Project \"{}\": Going to analyze \"{} {}\" revisions", projectId, selectedRevision.getKey(), selectedRevision.getValue());
                     } catch (IllegalArgumentException e) {
                         revisionSelector = defaultRevisionSelector;
