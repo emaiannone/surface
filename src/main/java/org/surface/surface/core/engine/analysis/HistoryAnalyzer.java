@@ -28,13 +28,15 @@ public class HistoryAnalyzer extends Analyzer {
     public static final String WORK_TREE = "WORK_TREE";
     private static final Logger LOGGER = LogManager.getLogger();
     private final String projectName;
+    private final String repoLocation;
     private final boolean excludeWorkTree;
     private final RevisionSelector revisionSelector;
     private final SetupEnvironmentAction setupEnvironmentAction;
 
-    public HistoryAnalyzer(String projectName, String filesRegex, MetricsManager metricsManager, boolean includeTests, boolean excludeWorkTree, RevisionSelector revisionSelector, SetupEnvironmentAction setupEnvironmentAction) {
+    public HistoryAnalyzer(String projectName, String repoLocation, String filesRegex, MetricsManager metricsManager, boolean includeTests, boolean excludeWorkTree, RevisionSelector revisionSelector, SetupEnvironmentAction setupEnvironmentAction) {
         super(filesRegex, metricsManager, includeTests);
         this.projectName = projectName;
+        this.repoLocation = repoLocation;
         this.excludeWorkTree = excludeWorkTree;
         this.revisionSelector = revisionSelector;
         this.setupEnvironmentAction = setupEnvironmentAction;
@@ -47,7 +49,7 @@ public class HistoryAnalyzer extends Analyzer {
         SigIntHandler sigIntHandler = new SigIntHandler(tmpDirPath);
         Runtime.getRuntime().addShutdownHook(sigIntHandler);
 
-        HistoryAnalysisResults analysisResults = new HistoryAnalysisResults();
+        HistoryAnalysisResults analysisResults = new HistoryAnalysisResults(repoLocation);
         List<String> notProcessedCommits = new ArrayList<>();
         try (Git git = Git.open(projectDirPath.toFile())) {
             SnapshotAnalysisResults workTreeResults = null;

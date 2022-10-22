@@ -1,6 +1,6 @@
 package org.surface.surface.core.engine.analysis;
 
-import org.surface.surface.core.engine.analysis.results.AnalysisResults;
+import org.surface.surface.core.engine.analysis.results.FormattableAnalysisResults;
 import org.surface.surface.core.engine.metrics.api.MetricsManager;
 
 public abstract class Analyzer {
@@ -26,5 +26,5 @@ public abstract class Analyzer {
         return includeTests;
     }
 
-    public abstract AnalysisResults analyze() throws Exception;
+    public abstract FormattableAnalysisResults analyze() throws Exception;
 }

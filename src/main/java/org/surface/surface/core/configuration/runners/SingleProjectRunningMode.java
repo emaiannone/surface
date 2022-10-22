@@ -1,19 +1,18 @@
 package org.surface.surface.core.configuration.runners;
 
-import org.surface.surface.core.configuration.runners.results.RunResults;
 import org.surface.surface.core.engine.analysis.setup.SetupEnvironmentAction;
+import org.surface.surface.core.engine.exporters.RunResultsExporter;
 import org.surface.surface.core.engine.metrics.api.MetricsManager;
-import org.surface.surface.core.engine.writers.FileWriter;
 
 import java.nio.file.Path;
 
-public abstract class SingleProjectRunningMode<T extends RunResults> extends RunningMode<T> {
+public abstract class SingleProjectRunningMode extends RunningMode {
     private final Path workDirPath;
     private String projectName;
     private SetupEnvironmentAction setupEnvironmentAction;
 
-    SingleProjectRunningMode(Path workDirPath, FileWriter writer, MetricsManager metricsManager, String filesRegex, boolean includeTests) {
-        super(writer, metricsManager, filesRegex, includeTests);
+    SingleProjectRunningMode(Path workDirPath, RunResultsExporter runResultsExporter, MetricsManager metricsManager, String filesRegex, boolean includeTests) {
+        super(runResultsExporter, metricsManager, filesRegex, includeTests);
         if (workDirPath == null) {
             throw new IllegalArgumentException("The working directory must not be null.");
         }

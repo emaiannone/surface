@@ -5,17 +5,20 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class HistoryAnalysisResults implements AnalysisResults {
+public class HistoryAnalysisResults implements FormattableAnalysisResults {
+    private final String repoLocation;
     private final Map<String, SnapshotAnalysisResults> allSnapshotAnalysisResults;
 
-    private static final String PROJECT_NAME = "projectName";
-    private static final String WORKING_DIR = "workingDir";
-    private static final String REVISIONS = "revisions";
-    private static final String METRICS = "projectMetrics";
-    private static final String CRITICAL_CLASSES = "criticalClasses";
-    private static final String REVISION = "revision";
+    public static final String PROJECT_NAME = "projectName";
+    public static final String LOCATION = "location";
+    public static final String WORKING_DIR = "workingDir";
+    public static final String REVISIONS = "revisions";
+    public static final String METRICS = "projectMetrics";
+    public static final String CRITICAL_CLASSES = "criticalClasses";
+    public static final String REVISION = "revision";
 
-    public HistoryAnalysisResults() {
+    public HistoryAnalysisResults(String repoLocation) {
+        this.repoLocation = repoLocation;
         this.allSnapshotAnalysisResults = new LinkedHashMap<>();
     }
 
@@ -39,13 +42,15 @@ public class HistoryAnalysisResults implements AnalysisResults {
         return new LinkedHashMap<>(allSnapshotAnalysisResults);
     }
 
-    public Map<String, Object> getProjectMetricsResultsAsMap() {
+    @Override
+    public Map<String, Object> asMap() {
         Map<String, Object> content = new LinkedHashMap<>();
         List<Object> revisions = new ArrayList<>();
         content.put(PROJECT_NAME, getProjectName());
+        content.put(LOCATION, repoLocation);
         content.put(WORKING_DIR, getProjectPath());
         for (Map.Entry<String, SnapshotAnalysisResults> entry : allSnapshotAnalysisResults.entrySet()) {
-            Map<String, Object> projectResults = entry.getValue().getProjectMetricsResultsAsMap();
+            Map<String, Object> projectResults = entry.getValue().asMap();
             Object metrics = projectResults.remove(METRICS);
             Object classes = projectResults.remove(CRITICAL_CLASSES);
             projectResults.remove(PROJECT_NAME);

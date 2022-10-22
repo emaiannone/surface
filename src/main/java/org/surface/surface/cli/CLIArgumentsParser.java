@@ -10,8 +10,8 @@ import org.surface.surface.core.configuration.interpreters.RevisionGroupInterpre
 import org.surface.surface.core.configuration.runners.RunningMode;
 import org.surface.surface.core.configuration.runners.RunningModeFactory;
 import org.surface.surface.core.engine.analysis.selectors.RevisionSelector;
+import org.surface.surface.core.engine.exporters.RunResultsExporter;
 import org.surface.surface.core.engine.metrics.api.MetricsManager;
-import org.surface.surface.core.engine.writers.FileWriter;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,7 +24,7 @@ class CLIArgumentsParser {
     public static final String SYNTAX = "java -jar surface.jar";
     public static final String FOOTER = "\nPlease report any issue at https://github.com/emaiannone/surface";
 
-    public static RunningMode<?> parse(String[] args) throws ParseException {
+    public static RunningMode parse(String[] args) throws ParseException {
         // Fetch the indicated CLI options
         Options options = CLIOptions.getInstance();
         CommandLineParser cliParser = new DefaultParser();
@@ -51,12 +51,12 @@ class CLIArgumentsParser {
 
         // Interpret Output File to get the Writer
         String outFileValue = commandLine.getOptionValue(CLIOptions.OUT_FILE);
-        FileWriter writer;
+        RunResultsExporter runResultsExporter;
         if (outFileValue == null) {
             throw new IllegalArgumentException("The output file must be indicated.");
         }
         try {
-            writer = new OutFileInterpreter().interpret(outFileValue);
+            runResultsExporter = new OutFileInterpreter().interpret(outFileValue);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("The supplied output file path must point to a file of one of the supported type.", e);
         }
@@ -126,7 +126,7 @@ class CLIArgumentsParser {
         }
 
         // Create the appropriate RunningMode
-        RunningMode<?> runningMode = RunningModeFactory.newRunningMode(target, workDirPath, writer, metricsManager, filesRegex, revisionSelector, includeTests, excludeWorkTree);
+        RunningMode runningMode = RunningModeFactory.newRunningMode(target, workDirPath, runResultsExporter, metricsManager, filesRegex, revisionSelector, includeTests, excludeWorkTree);
         LOGGER.info("* Going to run in mode: {}", runningMode.getCodeName());
         return runningMode;
     }

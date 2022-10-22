@@ -9,10 +9,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ClassMetricsResults implements MetricsResults, Iterable<MetricValue<?>> {
-    private static final String CLASS_NAME = "className";
-    private static final String FILE_PATH = "filePath";
-    private static final String CLASS_METRICS = "classMetrics";
-    private static final String CLASSIFIED_COMPONENTS = "classifiedComponents";
+    public static final String CLASS_NAME = "className";
+    public static final String FILE_PATH = "filePath";
+    public static final String CLASS_METRICS = "classMetrics";
+    public static final String CLASSIFIED_ATTRIBUTES = "classifiedAttributes";
 
     private final String classFullyQualifiedName;
     private final Path filePath;
@@ -41,10 +41,6 @@ public class ClassMetricsResults implements MetricsResults, Iterable<MetricValue
         return filePath;
     }
 
-    public Map<String, Set<String>> getClassifiedAttributesAndMethodsNames() {
-        return classifiedAttributesAndMethodsNames;
-    }
-
     public List<MetricValue<?>> getMetricValues() {
         return Collections.unmodifiableList(metricValues);
     }
@@ -54,7 +50,7 @@ public class ClassMetricsResults implements MetricsResults, Iterable<MetricValue
         return getMetricValues().iterator();
     }
 
-    private Map<String, Object> getMetrics() {
+    private Map<String, Object> getMetricsAsMap() {
         Map<String, Object> metricsAsMap = new LinkedHashMap<>();
         for (MetricValue<?> classValue : metricValues) {
             metricsAsMap.put(classValue.getMetricCode(), classValue.getValue());
@@ -62,13 +58,41 @@ public class ClassMetricsResults implements MetricsResults, Iterable<MetricValue
         return metricsAsMap;
     }
 
+    private String getMetricsAsPlain() {
+        List<String> metricStrings = getMetricsAsMap().entrySet()
+                .stream()
+                .map(m -> m.getKey() + "=" + m.getValue())
+                .collect(Collectors.toList());
+        return String.join(", ", metricStrings);
+    }
+
+    private String getClassifiedAttributesAsPlain() {
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, Set<String>> attribute : classifiedAttributesAndMethodsNames.entrySet()) {
+            List<String> methods = attribute.getValue()
+                    .stream()
+                    .map(String::toString)
+                    .collect(Collectors.toList());
+            sb.append(attribute.getKey()).append(": ").append(String.join(", ", methods)).append("\n");
+        }
+        return sb.toString();
+    }
+
     public Map<String, Object> toMap(Path basePath) {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put(CLASS_NAME, getClassFullyQualifiedName());
         map.put(FILE_PATH, getFilePath(basePath).toString());
-        map.put(CLASS_METRICS, getMetrics());
-        map.put(CLASSIFIED_COMPONENTS, classifiedAttributesAndMethodsNames);
+        map.put(CLASS_METRICS, getMetricsAsMap());
+        map.put(CLASSIFIED_ATTRIBUTES, classifiedAttributesAndMethodsNames);
         return map;
+    }
+
+    public String toPlain(Path basePath) {
+        // Convert the content into a human-readable format
+        return "Class: " + getClassFullyQualifiedName() + "\n" +
+                "File: " + getFilePath(basePath).toString() + "\n" +
+                "Class Metrics: " + getMetricsAsPlain() + "\n" +
+                "Classified Attributes: " + getClassifiedAttributesAsPlain().replace("\n", "\n  ");
     }
 
     @Override

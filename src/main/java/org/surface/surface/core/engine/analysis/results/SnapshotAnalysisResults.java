@@ -4,7 +4,7 @@ import org.surface.surface.core.engine.metrics.results.ProjectMetricsResults;
 
 import java.util.Map;
 
-public class SnapshotAnalysisResults implements AnalysisResults {
+public class SnapshotAnalysisResults implements FormattableAnalysisResults {
     private final String projectDirPath;
     private final ProjectMetricsResults projectMetricsResults;
 
@@ -25,7 +25,8 @@ public class SnapshotAnalysisResults implements AnalysisResults {
         return projectMetricsResults.getProjectName();
     }
 
-    public Map<String, Object> getProjectMetricsResultsAsMap() {
+    @Override
+    public Map<String, Object> asMap() {
         return projectMetricsResults.toMap();
     }
 }

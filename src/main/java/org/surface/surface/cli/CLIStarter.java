@@ -12,7 +12,7 @@ class CLIStarter {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public static void main(String[] args) {
-        RunningMode<?> runner = null;
+        RunningMode runner = null;
         try {
             runner = CLIArgumentsParser.parse(args);
         } catch (Exception e) {

@@ -10,9 +10,9 @@ import java.util.List;
 public class Surface {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final RunningMode<?> runningMode;
+    private final RunningMode runningMode;
 
-    public Surface(RunningMode<?> runningMode) {
+    public Surface(RunningMode runningMode) {
         this.runningMode = runningMode;
     }
 

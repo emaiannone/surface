@@ -11,17 +11,16 @@ import org.apache.logging.log4j.Logger;
 import org.surface.surface.core.Utils;
 import org.surface.surface.core.configuration.interpreters.MetricsFormulaInterpreter;
 import org.surface.surface.core.configuration.interpreters.RevisionGroupInterpreter;
-import org.surface.surface.core.configuration.runners.results.FlexibleRunResults;
 import org.surface.surface.core.engine.analysis.Analyzer;
 import org.surface.surface.core.engine.analysis.HistoryAnalyzer;
 import org.surface.surface.core.engine.analysis.SnapshotAnalyzer;
-import org.surface.surface.core.engine.analysis.results.AnalysisResults;
+import org.surface.surface.core.engine.analysis.results.FormattableAnalysisResults;
 import org.surface.surface.core.engine.analysis.selectors.*;
 import org.surface.surface.core.engine.analysis.setup.CloneSetupEnvironmentAction;
 import org.surface.surface.core.engine.analysis.setup.CopySetupEnvironmentAction;
 import org.surface.surface.core.engine.analysis.setup.SetupEnvironmentAction;
+import org.surface.surface.core.engine.exporters.RunResultsExporter;
 import org.surface.surface.core.engine.metrics.api.MetricsManager;
-import org.surface.surface.core.engine.writers.FileWriter;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +32,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-public class FlexibleRunningMode extends RunningMode<FlexibleRunResults> {
+public class FlexibleRunningMode extends RunningMode {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String CODE_NAME = "FLEXIBLE";
 
@@ -42,8 +41,8 @@ public class FlexibleRunningMode extends RunningMode<FlexibleRunResults> {
     private final boolean defaultExcludeWorkTree;
     private final RevisionSelector defaultRevisionSelector;
 
-    public FlexibleRunningMode(Path configFilePath, Path workDirPath, FileWriter writer, MetricsManager defaultMetricsManager, RevisionSelector defaultRevisionSelector, String defaultFilesRegex, boolean defaultIncludeTests, boolean defaultExcludeWorkTree) {
-        super(writer, defaultMetricsManager, defaultFilesRegex, defaultIncludeTests);
+    public FlexibleRunningMode(Path configFilePath, Path workDirPath, RunResultsExporter runResultsExporter, MetricsManager defaultMetricsManager, RevisionSelector defaultRevisionSelector, String defaultFilesRegex, boolean defaultIncludeTests, boolean defaultExcludeWorkTree) {
+        super(runResultsExporter, defaultMetricsManager, defaultFilesRegex, defaultIncludeTests);
         if (configFilePath == null) {
             throw new IllegalArgumentException("The path to the configuration file must not be null.");
         }
@@ -55,12 +54,10 @@ public class FlexibleRunningMode extends RunningMode<FlexibleRunResults> {
         this.defaultExcludeWorkTree = defaultExcludeWorkTree;
         this.defaultRevisionSelector = defaultRevisionSelector;
         setCodeName(CODE_NAME);
-        setRunResults(new FlexibleRunResults());
     }
 
     @Override
     public void run() {
-        FlexibleRunResults runResults = new FlexibleRunResults();
         Map<String, Analyzer> analyzers = prepareAnalyzers();
         if (analyzers.size() == 0) {
             throw new RuntimeException("Could not run any analyzer because all projects specifications in the configuration file had errors.");
@@ -70,15 +67,16 @@ public class FlexibleRunningMode extends RunningMode<FlexibleRunResults> {
         for (Map.Entry<String, Analyzer> analyzerEntry : analyzers.entrySet()) {
             String projectIdKey = analyzerEntry.getKey();
             try {
-                AnalysisResults analysisResults = analyzerEntry.getValue().analyze();
+                FormattableAnalysisResults analysisResults = analyzerEntry.getValue().analyze();
+                // TODO Move this while into addAnalysisResults()
                 // Assign a new but similar ID if there is a collision
-                while (runResults.containsKey(projectIdKey)) {
+                while (getRunResults().containsKey(projectIdKey)) {
                     projectIdKey += "_" + UUID.randomUUID();
                 }
-                runResults.addAnalysisResults(projectIdKey, analysisResults);
+                addAnalysisResults(projectIdKey, analysisResults);
                 try {
-                    exportResults(runResults);
-                    LOGGER.info("* Results updated in {}", getWriter().getOutFile());
+                    exportResults();
+                    LOGGER.info("* Results updated in {}", getFormatter().getOutFile());
                 } catch (IOException e) {
                     failedProjects.add(projectIdKey);
                     LOGGER.error("* Found a problem during the export of the results for project \"" + projectIdKey + "\". Going to the next one. Details:");
@@ -220,7 +218,7 @@ public class FlexibleRunningMode extends RunningMode<FlexibleRunResults> {
             if (isSnapshot) {
                 analyzer = new SnapshotAnalyzer(path, filesRegex, metricsManager, includeTests);
             } else {
-                analyzer = new HistoryAnalyzer(projectId, filesRegex, metricsManager, includeTests, excludeWorkTree, revisionSelector, setupEnvironmentAction);
+                analyzer = new HistoryAnalyzer(projectId, project.location, filesRegex, metricsManager, includeTests, excludeWorkTree, revisionSelector, setupEnvironmentAction);
             }
             analyzers.put(projectId, analyzer);
         }

@@ -8,10 +8,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetricsResults> {
-    private static final String PROJECT_NAME = "projectName";
-    private static final String PROJECT_DIR = "projectDir";
-    private static final String PROJECT_METRICS = "projectMetrics";
-    private static final String CRITICAL_CLASSES = "criticalClasses";
+    public static final String PROJECT_NAME = "projectName";
+    public static final String PROJECT_DIR = "projectDir";
+    public static final String PROJECT_METRICS = "projectMetrics";
+    public static final String CRITICAL_CLASSES = "criticalClasses";
+
     private final Path projectRoot;
     private final Set<ClassMetricsResults> classMetricsResults;
     private final List<MetricValue<?>> metricValues;
@@ -63,12 +64,20 @@ public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetr
         return map;
     }
 
-    private Map<String, Object> getMetrics() {
+    private Map<String, Object> getMetricsAsMap() {
         Map<String, Object> metricsAsMap = new LinkedHashMap<>();
         for (MetricValue<?> projectValue : metricValues) {
             metricsAsMap.put(projectValue.getMetricCode(), projectValue.getValue());
         }
         return metricsAsMap;
+    }
+
+    private String getMetricsAsPlain() {
+        List<String> metricStrings = getMetricsAsMap().entrySet()
+                .stream()
+                .map(m -> m.getKey() + "=" + m.getValue())
+                .collect(Collectors.toList());
+        return String.join(", ", metricStrings);
     }
 
     private List<String> getClassMetricsCodes() {
@@ -79,17 +88,32 @@ public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetr
                 .collect(Collectors.toList());
     }
 
+    private String getCriticalClassesAsPlain() {
+        StringBuilder sb = new StringBuilder();
+        for (ClassMetricsResults classMetricsResult : getClassMetricsResults()) {
+            sb.append(classMetricsResult.toPlain(getProjectPath())).append("\n");
+        }
+        return sb.toString();
+    }
+
     public Map<String, Object> toMap() {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put(PROJECT_NAME, getProjectName());
         map.put(PROJECT_DIR, getProjectPath().toString());
-        map.put(PROJECT_METRICS, getMetrics());
+        map.put(PROJECT_METRICS, getMetricsAsMap());
         List<Map<?, ?>> classes = new ArrayList<>();
         for (ClassMetricsResults classMetricsResult : getClassMetricsResults()) {
             classes.add(classMetricsResult.toMap(getProjectPath()));
         }
         map.put(CRITICAL_CLASSES, classes);
         return map;
+    }
+
+    public String toPlain() {
+        return "Project: " + getProjectName() + "\n" +
+                "Directory: " + getProjectPath().toString() + "\n" +
+                "Project Metrics: " + getMetricsAsPlain() + "\n" +
+                "Critical Classes: " + getCriticalClassesAsPlain().replace("\n", "\n  ");
     }
 
     @Override

@@ -3,39 +3,39 @@ package org.surface.surface.core.configuration.runners;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.surface.surface.core.configuration.runners.results.RunResults;
+import org.surface.surface.core.engine.analysis.results.FormattableAnalysisResults;
+import org.surface.surface.core.engine.exporters.RunResultsExporter;
 import org.surface.surface.core.engine.metrics.api.MetricsManager;
-import org.surface.surface.core.engine.writers.FileWriter;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
-public abstract class RunningMode<T extends RunResults> {
+public abstract class RunningMode {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private T runResults;
-    private final FileWriter writer;
     private final MetricsManager metricsManager;
+    private final RunResultsExporter runResultsExporter;
     private final String filesRegex;
     private final boolean includeTests;
+    private final RunResults runResults;
     private String codeName;
 
-    RunningMode(FileWriter writer, MetricsManager metricsManager, String filesRegex, boolean includeTests) {
-        if (writer == null) {
+    RunningMode(RunResultsExporter runResultsExporter, MetricsManager metricsManager, String filesRegex, boolean includeTests) {
+        if (runResultsExporter == null) {
             throw new IllegalArgumentException("The writer to an output file must not be null.");
         }
         this.metricsManager = metricsManager;
-        this.writer = writer;
+        this.runResultsExporter = runResultsExporter;
         this.filesRegex = filesRegex;
         this.includeTests = includeTests;
+        this.runResults = new RunResults();
     }
 
     public MetricsManager getMetricsManager() {
         return metricsManager;
     }
 
-    public FileWriter getWriter() {
-        return writer;
+    public RunResultsExporter getFormatter() {
+        return runResultsExporter;
     }
 
     public String getFilesRegex() {
@@ -50,27 +50,26 @@ public abstract class RunningMode<T extends RunResults> {
         return codeName;
     }
 
-    public T getRunResults() {
+    public RunResults getRunResults() {
         return runResults;
+    }
+
+    public void addAnalysisResults(String project, FormattableAnalysisResults results) {
+        runResults.addAnalysisResults(project, results);
     }
 
     public void setCodeName(String codeName) {
         this.codeName = codeName;
     }
 
-    public void setRunResults(T runResults) {
-        this.runResults = runResults;
-    }
-
-    void exportResults(T runResults) throws IOException {
-        LOGGER.debug("* Exporting results to {}", writer.getOutFile());
+    void exportResults() throws IOException {
+        LOGGER.debug("* Exporting results to {}", runResultsExporter.getOutFile());
         try {
-            List<Map<String, Object>> export = runResults.export();
-            LOGGER.trace("Results exported: {}", export);
-            writer.write(export);
-            LOGGER.debug("* Exporting completed to {}", writer.getOutFile());
+            String exportString = runResultsExporter.export(runResults);
+            LOGGER.trace("Results exported: {}", exportString);
+            LOGGER.debug("* Exporting completed to {}", runResultsExporter.getOutFile());
         } catch (IOException e) {
-            throw new IOException("Failed to export to " + writer.getOutFile(), e);
+            throw new IOException("Failed to export to " + runResultsExporter.getOutFile(), e);
         }
     }
 
