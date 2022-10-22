@@ -9,20 +9,25 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ClassMetricsResults implements MetricsResults, Iterable<MetricValue<?>> {
-    public static final String CLASS_NAME = "className";
-    public static final String FILE_PATH = "filePath";
-    public static final String CLASS_METRICS = "classMetrics";
-    public static final String CLASSIFIED_ATTRIBUTES = "classifiedAttributes";
+    private static final String CLASS_NAME = "className";
+    private static final String FILE_PATH = "filePath";
+    private static final String CLASS_METRICS = "classMetrics";
+    private static final String CLASSIFIED_ATTRIBUTES_METHODS = "classifiedAttributesMethods";
+    private static final String OTHER_CLASSIFIED_METHODS = "otherClassifiedMethods";
 
     private final String classFullyQualifiedName;
     private final Path filePath;
-    private final Map<String, Set<String>> classifiedAttributesAndMethodsNames;
+    private final Map<String, Set<String>> classifiedAttributesMethodsNames;
+    private final Set<String> otherClassifiedMethodsNames;
     private final List<MetricValue<?>> metricValues;
 
     public ClassMetricsResults(ClassInspectorResults classResults) {
         this.classFullyQualifiedName = classResults.getFullyQualifiedClassName();
         this.filePath = classResults.getFilepath();
-        this.classifiedAttributesAndMethodsNames = classResults.getClassifiedAttributesAndMethodsNames();
+        this.classifiedAttributesMethodsNames = classResults.getClassifiedAttributesAndMethodsNames();
+        Set<String> otherClassifiedMethodsNames = classResults.getOtherClassifiedMethodsNames();
+        otherClassifiedMethodsNames.removeAll(classResults.getUsageClassifiedMethodsNames());
+        this.otherClassifiedMethodsNames = otherClassifiedMethodsNames;
         this.metricValues = new ArrayList<>();
     }
 
@@ -66,16 +71,16 @@ public class ClassMetricsResults implements MetricsResults, Iterable<MetricValue
         return String.join(", ", metricStrings);
     }
 
-    private String getClassifiedAttributesAsPlain() {
-        StringBuilder sb = new StringBuilder();
-        for (Map.Entry<String, Set<String>> attribute : classifiedAttributesAndMethodsNames.entrySet()) {
+    private String getClassifiedAttributesMethodsAsPlain() {
+        List<String> attributes = new ArrayList<>();
+        for (Map.Entry<String, Set<String>> attribute : classifiedAttributesMethodsNames.entrySet()) {
             List<String> methods = attribute.getValue()
                     .stream()
                     .map(String::toString)
                     .collect(Collectors.toList());
-            sb.append(attribute.getKey()).append(": ").append(String.join(", ", methods)).append("\n");
+            attributes.add(attribute.getKey() + ": " + String.join(", ", methods));
         }
-        return sb.toString();
+        return String.join("\n", attributes);
     }
 
     public Map<String, Object> toMap(Path basePath) {
@@ -83,15 +88,17 @@ public class ClassMetricsResults implements MetricsResults, Iterable<MetricValue
         map.put(CLASS_NAME, getClassFullyQualifiedName());
         map.put(FILE_PATH, getFilePath(basePath).toString());
         map.put(CLASS_METRICS, getMetricsAsMap());
-        map.put(CLASSIFIED_ATTRIBUTES, classifiedAttributesAndMethodsNames);
+        map.put(CLASSIFIED_ATTRIBUTES_METHODS, classifiedAttributesMethodsNames);
+        map.put(OTHER_CLASSIFIED_METHODS, otherClassifiedMethodsNames);
         return map;
     }
 
     public String toPlain(Path basePath) {
         return "Class: " + getClassFullyQualifiedName() + "\n" +
-                "File: " + getFilePath(basePath).toString() + "\n" +
-                "Class Metrics: " + getMetricsAsPlain() + "\n" +
-                "Classified Attributes:\n\t" + getClassifiedAttributesAsPlain().replace("\n", "\n\t");
+                "\tFile: " + getFilePath(basePath).toString() + "\n" +
+                "\tClass Metrics: " + getMetricsAsPlain() + "\n" +
+                "\tClassified Attributes:\n\t\t" + getClassifiedAttributesMethodsAsPlain().replace("\n", "\n\t\t") + "\n" +
+                "\tOther Classified Methods:" + (otherClassifiedMethodsNames.size() > 0 ? "\n\t" + String.join(",", otherClassifiedMethodsNames).replace("\n", "\n\t") : " None");
     }
 
     @Override

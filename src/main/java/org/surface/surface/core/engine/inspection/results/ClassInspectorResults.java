@@ -182,6 +182,20 @@ public class ClassInspectorResults implements InspectorResults {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
+    public Set<String> getUsageClassifiedMethodsNames() {
+        return getUsageClassifiedMethods()
+                .stream()
+                .map(m -> m.getSignature().toString())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    public Set<String> getOtherClassifiedMethodsNames() {
+        return getUsageClassifiedMethods()
+                .stream()
+                .map(m -> m.getSignature().toString())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
     public Map<String, Set<String>> getClassifiedAttributesAndMethodsNames() {
         Map<String, Set<String>> res = new LinkedHashMap<>();
         for (Map.Entry<VariableDeclarator, Set<MethodDeclaration>> entry : getClassifiedAttributesAndMethods().entrySet()) {
@@ -202,7 +216,8 @@ public class ClassInspectorResults implements InspectorResults {
         getClassifiedAttributesAndMethodsNames()
                 .forEach((key, value) -> classifiedAttributesStrings.add("\n\t" + key + " -> " + value));
         builder.append(String.join(", ", classifiedAttributesStrings));
-        List<String> otherMethodsString = otherClassifiedMethods.stream().map(m -> m.getSignature().toString()).collect(Collectors.toList());
+        List<String> otherMethodsString = otherClassifiedMethods.stream()
+                .map(m -> m.getSignature().toString()).collect(Collectors.toList());
         builder.append("\n\tOther Classified Methods: ").append(otherMethodsString);
         return builder.toString();
     }

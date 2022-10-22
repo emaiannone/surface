@@ -29,10 +29,10 @@ public class ProjectInspector extends Inspector {
     private final boolean includeTests;
 
     public ProjectInspector(Path projectAbsolutePath, String filesRegex, boolean includeTests) {
-        SymbolSolverCollectionStrategy symbolSolverCollectionStrategy = new SymbolSolverCollectionStrategy();
-        symbolSolverCollectionStrategy.getParserConfiguration().setStoreTokens(false);
-        symbolSolverCollectionStrategy.getParserConfiguration().setAttributeComments(false);
-        this.projectRoot = symbolSolverCollectionStrategy.collect(projectAbsolutePath);
+        SymbolSolverCollectionStrategy strategy = new SymbolSolverCollectionStrategy();
+        strategy.getParserConfiguration().setStoreTokens(false);
+        strategy.getParserConfiguration().setAttributeComments(false);
+        this.projectRoot = strategy.collect(projectAbsolutePath);
         this.filesRegex = filesRegex;
         this.includeTests = includeTests;
     }
@@ -68,7 +68,6 @@ public class ProjectInspector extends Inspector {
                         if (typeDeclaration.isClassOrInterfaceDeclaration()) {
                             ClassOrInterfaceDeclaration classOrInterfaceDecl = typeDeclaration.asClassOrInterfaceDeclaration();
                             // Consider classes only
-                            String name = classOrInterfaceDecl.getFullyQualifiedName().orElse(classOrInterfaceDecl.getNameAsString());
                             if (classOrInterfaceDecl.isInterface()) {
                                 LOGGER.debug("* Ignoring interface file {}", filePath);
                                 continue;

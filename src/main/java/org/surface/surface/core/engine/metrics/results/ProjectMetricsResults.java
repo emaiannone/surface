@@ -89,14 +89,10 @@ public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetr
     }
 
     public String getCriticalClassesAsPlain() {
-        if (getClassMetricsResults().size() == 0) {
-            return "None";
-        }
-        StringBuilder sb = new StringBuilder();
-        for (ClassMetricsResults classMetricsResult : getClassMetricsResults()) {
-            sb.append(classMetricsResult.toPlain(getProjectPath())).append("\n");
-        }
-        return sb.toString().trim();
+        List<String> classes = classMetricsResults.stream()
+                .map(c -> c.toPlain(getProjectPath()))
+                .collect(Collectors.toList());
+        return String.join("\n", classes);
     }
 
     public Map<String, Object> toMap() {
@@ -116,7 +112,7 @@ public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetr
         return "Project: " + getProjectName() + "\n" +
                 "Directory: " + getProjectPath().toString() + "\n" +
                 "Project Metrics: " + getMetricsAsPlain() + "\n" +
-                "Critical Classes:\n\t" + getCriticalClassesAsPlain().replace("\n", "\n\t");
+                "Critical Classes:" + (getClassMetricsResults().size() > 0 ? "\n\t" + getCriticalClassesAsPlain().replace("\n", "\n\t") : " None");
     }
 
     @Override
