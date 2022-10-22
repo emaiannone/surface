@@ -29,4 +29,9 @@ public class SnapshotAnalysisResults implements FormattableAnalysisResults {
     public Map<String, Object> asMap() {
         return projectMetricsResults.toMap();
     }
+
+    @Override
+    public String asPlain() {
+        return projectMetricsResults.toPlain();
+    }
 }

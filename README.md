@@ -46,7 +46,7 @@ Surface accepts the following options:
   - A path to a YAML configuration file (**FLEXIBLE** mode).
 - `-metrics <arg>` indicates the list of metrics to analyze. `<arg>` is a list of comma-separated strings of metrics codes (see above the list of supported metrics). The special keyword "ALL" enables the execution of all metrics. If one metric code is preceded by the minus symbol (-), then the associated metric will not be computed.
 - `-workDir <arg>` indicates the local directory where Surface will copy the locally-stored projects or clone the projects from the remote. 
-- `-outFile <arg>` indicates the file where to export the JSON results. Must have `.json` extension. 
+- `-outFile <arg>` indicates the file where to export the JSON or TEXT results. Must have `.json` or `.txt` extension. 
 - (Optional) `-files <arg>` selects the subset of files to analyze based on the regular expression `<arg>` applied to the names.
 - (Optional) One among `-all`, `-allow`, `-at`, `-deny`, `-from`, `-range`, `-to` to select the revisions (commits) to analyze. If not specified, only the HEAD revision will be analyzed. Not interpreted when the target project has no history (not a `git` project):
   - `-all` analyzes all revisions.

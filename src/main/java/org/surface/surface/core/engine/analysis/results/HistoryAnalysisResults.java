@@ -9,13 +9,13 @@ public class HistoryAnalysisResults implements FormattableAnalysisResults {
     private final String repoLocation;
     private final Map<String, SnapshotAnalysisResults> allSnapshotAnalysisResults;
 
-    public static final String PROJECT_NAME = "projectName";
-    public static final String LOCATION = "location";
-    public static final String WORKING_DIR = "workingDir";
-    public static final String REVISIONS = "revisions";
-    public static final String METRICS = "projectMetrics";
-    public static final String CRITICAL_CLASSES = "criticalClasses";
-    public static final String REVISION = "revision";
+    private static final String PROJECT_NAME = "projectName";
+    private static final String LOCATION = "location";
+    private static final String PROJECT_DIR = "projectDir";
+    private static final String REVISIONS = "revisions";
+    private static final String METRICS = "projectMetrics";
+    private static final String CRITICAL_CLASSES = "criticalClasses";
+    private static final String REVISION = "revision";
 
     public HistoryAnalysisResults(String repoLocation) {
         this.repoLocation = repoLocation;
@@ -42,26 +42,50 @@ public class HistoryAnalysisResults implements FormattableAnalysisResults {
         return new LinkedHashMap<>(allSnapshotAnalysisResults);
     }
 
-    @Override
-    public Map<String, Object> asMap() {
-        Map<String, Object> content = new LinkedHashMap<>();
-        List<Object> revisions = new ArrayList<>();
-        content.put(PROJECT_NAME, getProjectName());
-        content.put(LOCATION, repoLocation);
-        content.put(WORKING_DIR, getProjectPath());
+    private List<Map<String, Object>> getRevisionsAsList() {
+        List<Map<String, Object>> revisions = new ArrayList<>();
         for (Map.Entry<String, SnapshotAnalysisResults> entry : allSnapshotAnalysisResults.entrySet()) {
-            Map<String, Object> projectResults = entry.getValue().asMap();
+            Map<String, Object> projectResults = entry.getValue().getProjectMetricsResults().toMap();
             Object metrics = projectResults.remove(METRICS);
             Object classes = projectResults.remove(CRITICAL_CLASSES);
             projectResults.remove(PROJECT_NAME);
-            projectResults.remove(WORKING_DIR);
+            projectResults.remove(PROJECT_DIR);
             projectResults.put(REVISION, entry.getKey());
             projectResults.put(METRICS, metrics);
             projectResults.put(CRITICAL_CLASSES, classes);
             revisions.add(projectResults);
         }
-        content.put(REVISIONS, revisions);
+        return revisions;
+    }
+
+    private String getRevisionsAsPlain() {
+        List<String> revisionsStrings = new ArrayList<>();
+        for (Map.Entry<String, SnapshotAnalysisResults> entry : allSnapshotAnalysisResults.entrySet()) {
+            SnapshotAnalysisResults snapshotAnalysisResults = entry.getValue();
+            String revisionString = "Revision: " + entry.getKey() + "\n" +
+                    "Project Metrics: " + snapshotAnalysisResults.getProjectMetricsResults().getMetricsAsPlain() + "\n" +
+                    "Critical Classes:\n\t" + snapshotAnalysisResults.getProjectMetricsResults().getCriticalClassesAsPlain().replace("\n", "\n\t");
+            revisionsStrings.add(revisionString);
+        }
+        return String.join("\n\n", revisionsStrings);
+    }
+
+    @Override
+    public Map<String, Object> asMap() {
+        Map<String, Object> content = new LinkedHashMap<>();
+        content.put(PROJECT_NAME, getProjectName());
+        content.put(LOCATION, repoLocation);
+        content.put(PROJECT_DIR, getProjectPath());
+        content.put(REVISIONS, getRevisionsAsList());
         return content;
+    }
+
+    @Override
+    public String asPlain() {
+        return "Project: " + getProjectName() + "\n" +
+                "Location: " + repoLocation + "\n" +
+                "Project Directory: " + getProjectPath() + "\n" +
+                "Revisions:\n\t" + getRevisionsAsPlain().replace("\n", "\n\t");
     }
 
     public void addAll(HistoryAnalysisResults analysisResults) {

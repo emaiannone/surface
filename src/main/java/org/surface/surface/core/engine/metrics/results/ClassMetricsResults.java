@@ -88,11 +88,10 @@ public class ClassMetricsResults implements MetricsResults, Iterable<MetricValue
     }
 
     public String toPlain(Path basePath) {
-        // Convert the content into a human-readable format
         return "Class: " + getClassFullyQualifiedName() + "\n" +
                 "File: " + getFilePath(basePath).toString() + "\n" +
                 "Class Metrics: " + getMetricsAsPlain() + "\n" +
-                "Classified Attributes: " + getClassifiedAttributesAsPlain().replace("\n", "\n  ");
+                "Classified Attributes:\n\t" + getClassifiedAttributesAsPlain().replace("\n", "\n\t");
     }
 
     @Override

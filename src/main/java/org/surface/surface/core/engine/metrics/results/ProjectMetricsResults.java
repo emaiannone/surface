@@ -8,10 +8,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetricsResults> {
-    public static final String PROJECT_NAME = "projectName";
-    public static final String PROJECT_DIR = "projectDir";
-    public static final String PROJECT_METRICS = "projectMetrics";
-    public static final String CRITICAL_CLASSES = "criticalClasses";
+    private static final String PROJECT_NAME = "projectName";
+    private static final String PROJECT_DIR = "projectDir";
+    private static final String PROJECT_METRICS = "projectMetrics";
+    private static final String CRITICAL_CLASSES = "criticalClasses";
 
     private final Path projectRoot;
     private final Set<ClassMetricsResults> classMetricsResults;
@@ -52,6 +52,14 @@ public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetr
         return Collections.unmodifiableList(metricValues);
     }
 
+    private List<String> getClassMetricsCodes() {
+        return classMetricsResults.stream()
+                .flatMap(mr -> mr.getMetricValues().stream())
+                .map(MetricValue::getMetricCode)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
     public Map<String, List<MetricValue<?>>> classMetricsGroupedByCode() {
         Map<String, List<MetricValue<?>>> map = new LinkedHashMap<>();
         for (String classMetricsCode : getClassMetricsCodes()) {
@@ -72,7 +80,7 @@ public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetr
         return metricsAsMap;
     }
 
-    private String getMetricsAsPlain() {
+    public String getMetricsAsPlain() {
         List<String> metricStrings = getMetricsAsMap().entrySet()
                 .stream()
                 .map(m -> m.getKey() + "=" + m.getValue())
@@ -80,20 +88,15 @@ public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetr
         return String.join(", ", metricStrings);
     }
 
-    private List<String> getClassMetricsCodes() {
-        return classMetricsResults.stream()
-                .flatMap(mr -> mr.getMetricValues().stream())
-                .map(MetricValue::getMetricCode)
-                .distinct()
-                .collect(Collectors.toList());
-    }
-
-    private String getCriticalClassesAsPlain() {
+    public String getCriticalClassesAsPlain() {
+        if (getClassMetricsResults().size() == 0) {
+            return "None";
+        }
         StringBuilder sb = new StringBuilder();
         for (ClassMetricsResults classMetricsResult : getClassMetricsResults()) {
             sb.append(classMetricsResult.toPlain(getProjectPath())).append("\n");
         }
-        return sb.toString();
+        return sb.toString().trim();
     }
 
     public Map<String, Object> toMap() {
@@ -113,7 +116,7 @@ public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetr
         return "Project: " + getProjectName() + "\n" +
                 "Directory: " + getProjectPath().toString() + "\n" +
                 "Project Metrics: " + getMetricsAsPlain() + "\n" +
-                "Critical Classes: " + getCriticalClassesAsPlain().replace("\n", "\n  ");
+                "Critical Classes:\n\t" + getCriticalClassesAsPlain().replace("\n", "\n\t");
     }
 
     @Override

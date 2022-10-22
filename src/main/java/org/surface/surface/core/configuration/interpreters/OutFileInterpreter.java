@@ -2,6 +2,7 @@ package org.surface.surface.core.configuration.interpreters;
 
 import org.apache.commons.io.FilenameUtils;
 import org.surface.surface.core.engine.exporters.JsonRunResultsExporter;
+import org.surface.surface.core.engine.exporters.PlainRunResultsExporter;
 import org.surface.surface.core.engine.exporters.RunResultsExporter;
 
 import java.io.File;
@@ -18,6 +19,7 @@ public class OutFileInterpreter implements InputStringInterpreter<RunResultsExpo
         // NOTE Any new file type must be added here to be recognized by the CLI parser
         SUPPORTED_FILE_TYPES = new HashMap<>();
         SUPPORTED_FILE_TYPES.put(JsonRunResultsExporter.CODE.toLowerCase(), JsonRunResultsExporter.class);
+        SUPPORTED_FILE_TYPES.put(PlainRunResultsExporter.CODE.toLowerCase(), PlainRunResultsExporter.class);
     }
 
     public RunResultsExporter interpret(String inputString) {
