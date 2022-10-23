@@ -8,8 +8,8 @@ public class CIDACached extends CIDA {
     private final CIDAImpl cida;
     private DoubleMetricValue cachedResult;
 
-    public CIDACached(CAT CAT) {
-        this.cida = new CIDAImpl(CAT);
+    public CIDACached(CAT cat) {
+        this.cida = new CIDAImpl(cat);
         this.cachedResult = null;
     }
 

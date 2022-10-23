@@ -20,6 +20,8 @@ import org.surface.surface.core.engine.metrics.classlevel.cmw.CMW;
 import org.surface.surface.core.engine.metrics.classlevel.cmw.CMWCached;
 import org.surface.surface.core.engine.metrics.classlevel.coa.COA;
 import org.surface.surface.core.engine.metrics.classlevel.coa.COACached;
+import org.surface.surface.core.engine.metrics.classlevel.cwmp.CWMP;
+import org.surface.surface.core.engine.metrics.classlevel.cwmp.CWMPCached;
 import org.surface.surface.core.engine.metrics.classlevel.rpb.RPB;
 import org.surface.surface.core.engine.metrics.classlevel.rpb.RPBCached;
 import org.surface.surface.core.engine.metrics.projectlevel.cce.CCE;
@@ -69,6 +71,7 @@ public class MetricsManager {
         CLASS_METRICS.put(CAAI.CODE, "getCaai");
         CLASS_METRICS.put(CAIW.CODE, "getCaiw");
         CLASS_METRICS.put(CMW.CODE, "getCmw");
+        CLASS_METRICS.put(CWMP.CODE, "getCwmp");
     }
 
     private final List<String> metricsCodes;
@@ -178,6 +181,7 @@ public class MetricsManager {
         private final CCDA ccda;
         private final COA coa;
         private final CMW cmw;
+        private final CWMP cwmp;
         private final CMAI cmai;
         private final CAAI caai;
         private final CAIW caiw;
@@ -191,6 +195,7 @@ public class MetricsManager {
             this.ccda = new CCDACached(cat);
             this.coa = new COACached(cmt);
             this.cmw = new CMWCached(cmt);
+            this.cwmp = new CWMPCached();
             this.cmai = new CMAICached(cat);
             this.caai = new CAAICached(cat);
             this.caiw = new CAIWCached(cat);
@@ -222,6 +227,10 @@ public class MetricsManager {
 
         CMW getCmw() {
             return cmw;
+        }
+
+        CWMP getCwmp() {
+            return cwmp;
         }
 
         CMAI getCmai() {

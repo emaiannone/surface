@@ -8,8 +8,8 @@ public class CCDACached extends CCDA {
     private final CCDAImpl ccda;
     private DoubleMetricValue cachedResult;
 
-    public CCDACached(CAT CAT) {
-        this.ccda = new CCDAImpl(CAT);
+    public CCDACached(CAT cat) {
+        this.ccda = new CCDAImpl(cat);
         this.cachedResult = null;
     }
 
