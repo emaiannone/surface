@@ -2,6 +2,8 @@ package org.surface.surface.core.engine.metrics.api;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.surface.surface.core.engine.metrics.classlevel.caai.CAAI;
+import org.surface.surface.core.engine.metrics.classlevel.caai.CAAICached;
 import org.surface.surface.core.engine.metrics.classlevel.caiw.CAIW;
 import org.surface.surface.core.engine.metrics.classlevel.caiw.CAIWCached;
 import org.surface.surface.core.engine.metrics.classlevel.cat.CAT;
@@ -10,6 +12,8 @@ import org.surface.surface.core.engine.metrics.classlevel.ccda.CCDA;
 import org.surface.surface.core.engine.metrics.classlevel.ccda.CCDACached;
 import org.surface.surface.core.engine.metrics.classlevel.cida.CIDA;
 import org.surface.surface.core.engine.metrics.classlevel.cida.CIDACached;
+import org.surface.surface.core.engine.metrics.classlevel.cmai.CMAI;
+import org.surface.surface.core.engine.metrics.classlevel.cmai.CMAICached;
 import org.surface.surface.core.engine.metrics.classlevel.cmt.CMT;
 import org.surface.surface.core.engine.metrics.classlevel.cmt.CMTCached;
 import org.surface.surface.core.engine.metrics.classlevel.cmw.CMW;
@@ -61,6 +65,8 @@ public class MetricsManager {
         CLASS_METRICS.put(CCDA.CODE, "getCcda");
         CLASS_METRICS.put(COA.CODE, "getCoa");
         CLASS_METRICS.put(RPB.CODE, "getRpb");
+        CLASS_METRICS.put(CMAI.CODE, "getCmai");
+        CLASS_METRICS.put(CAAI.CODE, "getCaai");
         CLASS_METRICS.put(CAIW.CODE, "getCaiw");
         CLASS_METRICS.put(CMW.CODE, "getCmw");
     }
@@ -97,6 +103,7 @@ public class MetricsManager {
                 }
             } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 // If something goes wrong, ignore this metric and continue
+                LOGGER.error("* There have been errors while computing metric {}\n{}", metricsCode, e.getMessage());
             }
         }
         return projectMetrics;
@@ -121,100 +128,112 @@ public class MetricsManager {
     }
 
     private static class ProjectMetricsStructure {
-        private final CCT CCT;
-        private final CDP CDP;
-        private final CSCP CSCP;
-        private final CCE CCE;
-        private final CME CME;
-        private final CSP CSP;
+        private final CCT cct;
+        private final CDP cdp;
+        private final CSCP cscp;
+        private final CCE cce;
+        private final CME cme;
+        private final CSP csp;
 
         ProjectMetricsStructure() {
             // NOTE Create here all existing metrics and compose them
-            this.CCT = new CCTCached();
-            this.CDP = new CDPCached(CCT);
-            this.CSCP = new CSCPCached(CCT);
-            this.CCE = new CCECached(CCT);
-            this.CME = new CMECached();
-            this.CSP = new CSPCached();
+            this.cct = new CCTCached();
+            this.cdp = new CDPCached(cct);
+            this.cscp = new CSCPCached(cct);
+            this.cce = new CCECached(cct);
+            this.cme = new CMECached();
+            this.csp = new CSPCached();
         }
 
         CCT getCct() {
-            return CCT;
+            return cct;
         }
 
         CDP getCdp() {
-            return CDP;
+            return cdp;
         }
 
         CSCP getCscp() {
-            return CSCP;
+            return cscp;
         }
 
-        CCE getCCE() {
-            return CCE;
+        CCE getCce() {
+            return cce;
         }
 
-        CME getCME() {
-            return CME;
+        CME getCme() {
+            return cme;
         }
 
         CSP getCsp() {
-            return CSP;
+            return csp;
         }
     }
 
     private static class ClassMetricsStructure {
-        private final CAT CAT;
-        private final CMT CMT;
-        private final RPB RPB;
-        private final CIDA CIDA;
-        private final CCDA CCDA;
-        private final COA COA;
-        private final CMW CMW;
-        private final CAIW CAIW;
+        private final CAT cat;
+        private final CMT cmt;
+        private final RPB rpb;
+        private final CIDA cida;
+        private final CCDA ccda;
+        private final COA coa;
+        private final CMW cmw;
+        private final CMAI cmai;
+        private final CAAI caai;
+        private final CAIW caiw;
 
         ClassMetricsStructure() {
             // NOTE Create here all existing metrics and compose them
-            this.CAT = new CATCached();
-            this.CMT = new CMTCached();
-            this.RPB = new RPBCached();
-            this.CIDA = new CIDACached(CAT);
-            this.CCDA = new CCDACached(CAT);
-            this.COA = new COACached(CMT);
-            this.CMW = new CMWCached(CMT);
-            this.CAIW = new CAIWCached(CAT);
+            this.cat = new CATCached();
+            this.cmt = new CMTCached();
+            this.rpb = new RPBCached();
+            this.cida = new CIDACached(cat);
+            this.ccda = new CCDACached(cat);
+            this.coa = new COACached(cmt);
+            this.cmw = new CMWCached(cmt);
+            this.cmai = new CMAICached(cat);
+            this.caai = new CAAICached(cat);
+            this.caiw = new CAIWCached(cat);
         }
 
         CAT getCat() {
-            return CAT;
+            return cat;
         }
 
         CMT getCmt() {
-            return CMT;
+            return cmt;
         }
 
         RPB getRpb() {
-            return RPB;
+            return rpb;
         }
 
         CIDA getCida() {
-            return CIDA;
+            return cida;
         }
 
         CCDA getCcda() {
-            return CCDA;
+            return ccda;
         }
 
         COA getCoa() {
-            return COA;
+            return coa;
         }
 
         CMW getCmw() {
-            return CMW;
+            return cmw;
+        }
+
+        CMAI getCmai() {
+            return cmai;
+        }
+
+        CAAI getCaai() {
+            return caai;
         }
 
         CAIW getCaiw() {
-            return CAIW;
+            return caiw;
         }
     }
 

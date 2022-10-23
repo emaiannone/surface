@@ -78,20 +78,12 @@ public class ClassInspectorResults implements InspectorResults {
         return Collections.unmodifiableSet(getAttributesMethods().keySet());
     }
 
-    public Set<MethodDeclaration> getUsageClassifiedMethods(VariableDeclarator variableDeclarator) {
+    public Set<MethodDeclaration> getClassifiedUsageMethods(VariableDeclarator variableDeclarator) {
         return Collections.unmodifiableSet(getAttributesMethods().get(variableDeclarator));
     }
 
-    public Set<MethodDeclaration> getAllUsageClassifiedMethods() {
-        Set<MethodDeclaration> collect = getAttributesMethods().values()
-                .stream()
-                .flatMap(Collection::stream)
-                .collect(Collectors.toCollection(LinkedHashSet::new));
-        return Collections.unmodifiableSet(collect);
-    }
-
     public Set<MethodDeclaration> getAllClassifiedMethods() {
-        Set<MethodDeclaration> allClassifiedMethods = new LinkedHashSet<>(getAllUsageClassifiedMethods());
+        Set<MethodDeclaration> allClassifiedMethods = new LinkedHashSet<>(getAllClassifiedUsageMethods());
         allClassifiedMethods.addAll(keywordMatchedClassifiedMethods);
         return Collections.unmodifiableSet(allClassifiedMethods);
     }
@@ -104,12 +96,28 @@ public class ClassInspectorResults implements InspectorResults {
         return getAttributesMethods().keySet().size();
     }
 
-    public int getNumberUsageClassifiedMethods(VariableDeclarator variableDeclarator) {
+    public int getNumberClassifiedMutators(VariableDeclarator variableDeclarator) {
+        return attributesMutators.get(variableDeclarator).size();
+    }
+
+    public int getNumberClassifiedAccessors(VariableDeclarator variableDeclarator) {
+        return attributesAccessors.get(variableDeclarator).size();
+    }
+
+    public int getNumberClassifiedUsageMethods(VariableDeclarator variableDeclarator) {
         return getAttributesMethods().get(variableDeclarator).size();
     }
 
-    public int getNumberAllUsageClassifiedMethods() {
-        return getAllUsageClassifiedMethods().size();
+    public int getNumberAllClassifiedMutators() {
+        return getAllClassifiedMutators().size();
+    }
+
+    public int getNumberAllClassifiedAccessors() {
+        return getAllClassifiedAccessors().size();
+    }
+
+    public int getNumberAllClassifiedUsageMethods() {
+        return getAllClassifiedUsageMethods().size();
     }
 
     public int getNumberAllClassifiedMethods() {
@@ -198,8 +206,8 @@ public class ClassInspectorResults implements InspectorResults {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
-    public Set<String> getUsageClassifiedMethodsNames() {
-        return getAllUsageClassifiedMethods()
+    public Set<String> getClassifiedUsageMethodsNames() {
+        return getAllClassifiedUsageMethods()
                 .stream()
                 .map(m -> m.getSignature().toString())
                 .collect(Collectors.toCollection(LinkedHashSet::new));
@@ -278,6 +286,25 @@ public class ClassInspectorResults implements InspectorResults {
 
     private Set<MethodDeclaration> getKeywordMatchedClassifiedMethods() {
         return Collections.unmodifiableSet(keywordMatchedClassifiedMethods);
+    }
+
+    private Set<MethodDeclaration> mergeMethods(Map<VariableDeclarator, Set<MethodDeclaration>> map) {
+        return map.values()
+                .stream()
+                .flatMap(Collection::stream)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    private Set<MethodDeclaration> getAllClassifiedUsageMethods() {
+        return Collections.unmodifiableSet(mergeMethods(getAttributesMethods()));
+    }
+
+    private Set<MethodDeclaration> getAllClassifiedMutators() {
+        return Collections.unmodifiableSet(mergeMethods(attributesMutators));
+    }
+
+    private Set<MethodDeclaration> getAllClassifiedAccessors() {
+        return Collections.unmodifiableSet(mergeMethods(attributesAccessors));
     }
 
     private List<ResolvedReferenceType> getIndirectAncestors(List<ResolvedReferenceType> ancestors) {

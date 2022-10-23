@@ -8,10 +8,10 @@ import org.surface.surface.core.engine.metrics.results.values.DoubleMetricValue;
 import java.util.Set;
 
 public class CCDAImpl extends CCDA {
-    private final CAT CAT;
+    private final CAT cat;
 
-    public CCDAImpl(CAT CAT) {
-        this.CAT = CAT;
+    public CCDAImpl(CAT cat) {
+        this.cat = cat;
     }
 
     @Override
@@ -23,8 +23,8 @@ public class CCDAImpl extends CCDA {
                 nonPrivateStatic++;
             }
         }
-        int caValue = CAT.compute(classResults).getValue();
-        double value = caValue != 0.0 ? (double) nonPrivateStatic / caValue : 0.0;
+        int catValue = cat.compute(classResults).getValue();
+        double value = catValue != 0.0 ? (double) nonPrivateStatic / catValue : 0.0;
         return new DoubleMetricValue(getName(), getCode(), value);
     }
 }

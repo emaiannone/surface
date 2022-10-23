@@ -1,22 +1,22 @@
-package org.surface.surface.core.engine.metrics.classlevel.caiw;
+package org.surface.surface.core.engine.metrics.classlevel.cmai;
 
 import org.surface.surface.core.engine.inspection.results.ClassInspectorResults;
 import org.surface.surface.core.engine.metrics.classlevel.cat.CAT;
 import org.surface.surface.core.engine.metrics.results.values.DoubleMetricValue;
 
-public class CAIWCached extends CAIW {
-    private final CAIWImpl caiw;
+public class CMAICached extends CMAI {
+    private final CMAIImpl cmai;
     private DoubleMetricValue cachedResult;
 
-    public CAIWCached(CAT cat) {
-        this.caiw = new CAIWImpl(cat);
+    public CMAICached(CAT CAT) {
+        this.cmai = new CMAIImpl(CAT);
         this.cachedResult = null;
     }
 
     @Override
     public DoubleMetricValue compute(ClassInspectorResults classResults) {
         if (cachedResult == null) {
-            cachedResult = caiw.compute(classResults);
+            cachedResult = cmai.compute(classResults);
         }
         return cachedResult;
     }

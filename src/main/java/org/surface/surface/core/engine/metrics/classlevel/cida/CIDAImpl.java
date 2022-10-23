@@ -8,10 +8,10 @@ import org.surface.surface.core.engine.metrics.results.values.DoubleMetricValue;
 import java.util.Set;
 
 public class CIDAImpl extends CIDA {
-    private final CAT CAT;
+    private final CAT cat;
 
-    public CIDAImpl(CAT CAT) {
-        this.CAT = CAT;
+    public CIDAImpl(CAT cat) {
+        this.cat = cat;
     }
 
     @Override
@@ -23,8 +23,8 @@ public class CIDAImpl extends CIDA {
                 nonPrivateNonStatic++;
             }
         }
-        int caValue = CAT.compute(classResults).getValue();
-        double value = caValue != 0.0 ? (double) nonPrivateNonStatic / caValue : 0.0;
+        int catValue = cat.compute(classResults).getValue();
+        double value = catValue != 0.0 ? (double) nonPrivateNonStatic / catValue : 0.0;
         return new DoubleMetricValue(getName(), getCode(), value);
     }
 }
