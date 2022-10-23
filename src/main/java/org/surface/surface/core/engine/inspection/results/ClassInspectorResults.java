@@ -96,6 +96,14 @@ public class ClassInspectorResults implements InspectorResults {
         return getAttributesMethods().keySet().size();
     }
 
+    public boolean isMutated(VariableDeclarator variableDeclarator) {
+        return attributesMutators.containsKey(variableDeclarator);
+    }
+
+    public boolean isAccessed(VariableDeclarator variableDeclarator) {
+        return attributesAccessors.containsKey(variableDeclarator);
+    }
+
     public int getNumberClassifiedMutators(VariableDeclarator variableDeclarator) {
         return attributesMutators.get(variableDeclarator).size();
     }
