@@ -41,19 +41,27 @@ public class ProjectInspectorResults implements InspectorResults, Iterable<Class
         return null;
     }
 
-    public Set<MethodDeclaration> getClassifiedMethods() {
-        return Collections.unmodifiableSet(
-                results.stream()
-                        .map(ClassInspectorResults::getAllClassifiedMethods)
-                        .flatMap(Collection::stream)
-                        .collect(Collectors.toSet()));
+    public Set<MethodDeclaration> getAllClassifiedMethods() {
+        Set<MethodDeclaration> collect = results.stream()
+                .map(ClassInspectorResults::getAllClassifiedMethods)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        return Collections.unmodifiableSet(collect);
     }
 
     public Set<ClassInspectorResults> getCriticalClasses() {
         Set<ClassInspectorResults> criticalClasses = results.stream()
                 .filter(ClassInspectorResults::isCritical)
-                .collect(Collectors.toCollection(HashSet::new));
+                .collect(Collectors.toCollection(LinkedHashSet::new));
         return Collections.unmodifiableSet(criticalClasses);
+    }
+
+    public int getNumberClasses() {
+        return results.size();
+    }
+
+    public int getNumberAllClassifiedMethods() {
+        return getAllClassifiedMethods().size();
     }
 
     public int getNumberCriticalClasses() {

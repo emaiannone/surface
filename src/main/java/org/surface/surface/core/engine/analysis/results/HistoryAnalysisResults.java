@@ -61,10 +61,11 @@ public class HistoryAnalysisResults implements FormattableAnalysisResults {
     private String getRevisionsAsPlain() {
         List<String> revisionsStrings = new ArrayList<>();
         for (Map.Entry<String, SnapshotAnalysisResults> entry : allSnapshotAnalysisResults.entrySet()) {
-            SnapshotAnalysisResults snapshotAnalysisResults = entry.getValue();
+            SnapshotAnalysisResults res = entry.getValue();
+            String classesNames = res.getProjectMetricsResults().getCriticalClassesAsPlain();
             String revisionString = "Revision: " + entry.getKey() + "\n" +
-                    "Project Metrics: " + snapshotAnalysisResults.getProjectMetricsResults().getMetricsAsPlain() + "\n" +
-                    "Critical Classes:\n\t" + snapshotAnalysisResults.getProjectMetricsResults().getCriticalClassesAsPlain().replace("\n", "\n\t");
+                    "Project Metrics: " + res.getProjectMetricsResults().getMetricsAsPlain() + "\n" +
+                    "Critical Classes: " + (res.getProjectMetricsResults().getNumberCriticalClasses() > 0 ? "\n\t" + classesNames.replace("\n", "\n\t") : classesNames);
             revisionsStrings.add(revisionString);
         }
         return String.join("\n\n", revisionsStrings);

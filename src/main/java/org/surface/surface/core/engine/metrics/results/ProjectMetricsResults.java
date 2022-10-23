@@ -88,11 +88,21 @@ public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetr
         return String.join(", ", metricStrings);
     }
 
-    public String getCriticalClassesAsPlain() {
-        List<String> classes = classMetricsResults.stream()
+    public int getNumberCriticalClasses() {
+        return classMetricsResults.size();
+    }
+
+    public List<String> getCriticalClassesNames() {
+        return classMetricsResults.stream()
                 .map(c -> c.toPlain(getProjectPath()))
                 .collect(Collectors.toList());
-        return String.join("\n", classes);
+    }
+
+    public String getCriticalClassesAsPlain() {
+        if (classMetricsResults.size() == 0) {
+            return "None";
+        }
+        return String.join("\n", getCriticalClassesNames());
     }
 
     public Map<String, Object> toMap() {
@@ -101,7 +111,7 @@ public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetr
         map.put(PROJECT_DIR, getProjectPath().toString());
         map.put(PROJECT_METRICS, getMetricsAsMap());
         List<Map<?, ?>> classes = new ArrayList<>();
-        for (ClassMetricsResults classMetricsResult : getClassMetricsResults()) {
+        for (ClassMetricsResults classMetricsResult : classMetricsResults) {
             classes.add(classMetricsResult.toMap(getProjectPath()));
         }
         map.put(CRITICAL_CLASSES, classes);
@@ -109,10 +119,11 @@ public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetr
     }
 
     public String toPlain() {
+        System.out.println(getClassMetricsResults().size());
         return "Project: " + getProjectName() + "\n" +
                 "Directory: " + getProjectPath().toString() + "\n" +
                 "Project Metrics: " + getMetricsAsPlain() + "\n" +
-                "Critical Classes:" + (getClassMetricsResults().size() > 0 ? "\n\t" + getCriticalClassesAsPlain().replace("\n", "\n\t") : " None");
+                "Critical Classes: " + (getNumberCriticalClasses() > 0 ? "\n\t" + getCriticalClassesAsPlain().replace("\n", "\n\t") : getCriticalClassesAsPlain());
     }
 
     @Override

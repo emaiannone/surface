@@ -1,17 +1,19 @@
 package org.surface.surface.core.engine.inspection;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
-import com.github.javaparser.ast.expr.FieldAccessExpr;
-import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName;
+import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.resolution.Resolvable;
 import com.github.javaparser.resolution.declarations.ResolvedValueDeclaration;
 import org.surface.surface.core.engine.inspection.results.ClassInspectorResults;
 
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -22,93 +24,113 @@ class ClassInspector extends Inspector {
     private final Path filepath;
     private final List<Pattern> patterns;
 
+    // TODO Move their logic into dedicate classes
+    private static final Map<Class <? extends Node>, String> MUTATOR_NODES;
+    private static final Map<Class <? extends Node>, String> ACCESSOR_NODES;
+    static {
+        MUTATOR_NODES = new LinkedHashMap<>();
+        MUTATOR_NODES.put(AssignExpr.class, "getTarget");
+        MUTATOR_NODES.put(UnaryExpr.class, "getExpression");
+        ACCESSOR_NODES = new LinkedHashMap<>();
+        ACCESSOR_NODES.put(AssignExpr.class, "getValue");
+        ACCESSOR_NODES.put(MethodCallExpr.class, "getArguments");
+        ACCESSOR_NODES.put(AssertStmt.class, "getCheck");
+        ACCESSOR_NODES.put(IfStmt.class, "getCondition");
+        ACCESSOR_NODES.put(SwitchStmt.class, "getSelector");
+        ACCESSOR_NODES.put(DoStmt.class, "getCondition");
+        ACCESSOR_NODES.put(WhileStmt.class, "getCondition");
+        ACCESSOR_NODES.put(ForStmt.class, "getCompare");
+        ACCESSOR_NODES.put(ReturnStmt.class, "getExpression");
+    }
+
     public ClassInspector(ClassOrInterfaceDeclaration classDeclaration, Path filepath) {
         this.classDeclaration = classDeclaration;
         this.filepath = filepath;
         this.patterns = ClassifiedPatterns.getInstance().getPatterns();
     }
 
-    /**
-     * Inspect the class given to the constructor in search of classified attributes and their related classified methods.
-     *
-     * @return the object representing the results of the inspection of the given class.
-     * The results are always not null.
-     * If the inspection does not find any classified attribute, the results map will have no content at all.
-     * if the inspection does not find any classified method, the results map will only contain the classified attributes (key).
-     */
     public ClassInspectorResults inspect() {
-        ClassInspectorResults results = new ClassInspectorResults(classDeclaration, filepath);
+        ClassInspectorResults inspectionResults = new ClassInspectorResults(classDeclaration, filepath);
         Set<VariableDeclarator> classifiedAttributes = getClassifiedAttributes(new LinkedHashSet<>(classDeclaration.getFields()));
         if (classifiedAttributes.size() > 0) {
-            Map<VariableDeclarator, Set<MethodDeclaration>> classifiedMethodsMap = getUsageClassifiedMethods(classifiedAttributes);
-            for (Map.Entry<VariableDeclarator, Set<MethodDeclaration>> variableDeclaratorSetEntry : classifiedMethodsMap.entrySet()) {
-                results.put(variableDeclaratorSetEntry.getKey(), variableDeclaratorSetEntry.getValue());
-            }
-            // Other classified methods (i.e., name match)
-            Set<MethodDeclaration> classifiedMethods = getOtherClassifiedMethods(new LinkedHashSet<>(classDeclaration.getMethods()));
-            classifiedMethods.forEach(results::addOtherClassifiedMethod);
+            Map<VariableDeclarator, Set<MethodDeclaration>> attributesMutators = getUsageMethods(classifiedAttributes, MUTATOR_NODES);
+            Map<VariableDeclarator, Set<MethodDeclaration>> attributesAccessors = getUsageMethods(classifiedAttributes, ACCESSOR_NODES);
+            attributesMutators.forEach(inspectionResults::addMutators);
+            attributesAccessors.forEach(inspectionResults::addAccessors);
+            // Keyword-matched classified methods
+            Set<MethodDeclaration> keywordMatchedClassifiedMethods = getKeywordMatchedClassifiedMethods(new LinkedHashSet<>(classDeclaration.getMethods()));
+            inspectionResults.addKeywordMatchedClassifiedMethods(keywordMatchedClassifiedMethods);
         }
-        results.setUsingReflection(isUsingReflection());
-        return results;
+        inspectionResults.setUsingReflection(isUsingReflection());
+        return inspectionResults;
     }
 
     private Set<VariableDeclarator> getClassifiedAttributes(Set<FieldDeclaration> fieldDeclarations) {
         return fieldDeclarations.stream()
                 .flatMap(f -> f.getVariables().stream())
                 .filter(this::isClassified)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
-    /**
-     * Inspect the class given to the constructor in search of the classified methods that uses the given classified attributes.
-     *
-     * @param classifiedAttributes the set of classified attribute for which search for methods that uses (read/write) them.
-     * @return a {@link Map} containing for each classified attribute {@link VariableDeclarator} a set of its matched classified methods {@link MethodDeclaration}.
-     * Attributes without any matched methods, will result with an empty set of methods.
-     */
-    private Map<VariableDeclarator, Set<MethodDeclaration>> getUsageClassifiedMethods(Set<VariableDeclarator> classifiedAttributes) {
-        // All classified attributes start with an empty set of methods
-        Map<VariableDeclarator, Set<MethodDeclaration>> resultMap = new LinkedHashMap<>();
-        for (VariableDeclarator variableDeclarator : classifiedAttributes) {
-            resultMap.put(variableDeclarator, new LinkedHashSet<>());
+    private Map<VariableDeclarator, Set<MethodDeclaration>> getUsageMethods(Set<VariableDeclarator> attributes, Map<Class <? extends Node>, String> nodeTypesToTraverse) {
+        // Initialization: all attributes start with an empty set of methods
+        Map<VariableDeclarator, Set<MethodDeclaration>> usageMethods = new LinkedHashMap<>();
+        for (VariableDeclarator classifiedAttr : attributes) {
+            usageMethods.put(classifiedAttr, new LinkedHashSet<>());
         }
 
         for (MethodDeclaration method : classDeclaration.getMethods()) {
-            Set<VariableDeclarator> unmatchedClassifiedAttrSet = new LinkedHashSet<>(classifiedAttributes);
-            List<NodeWithSimpleName<?>> usageNodes = new ArrayList<>();
-            usageNodes.addAll(method.findAll(NameExpr.class));
-            usageNodes.addAll(method.findAll(FieldAccessExpr.class));
-            for (int i = 0; i < usageNodes.size() && unmatchedClassifiedAttrSet.size() > 0; i++) {
-                NodeWithSimpleName<?> usageNode = usageNodes.get(i);
-                VariableDeclarator matchedClassifiedAttr = unmatchedClassifiedAttrSet.stream()
-                        .filter(ca -> ca.getNameAsString().equals(usageNode.getNameAsString()))
-                        .findFirst().orElse(null);
-                if (matchedClassifiedAttr != null) {
+            // Usage nodes collection phase
+            for (Map.Entry<Class<? extends Node>, String> nodeType : nodeTypesToTraverse.entrySet()) {
+                List<? extends Node> foundNodes = method.findAll(nodeType.getKey());
+                for (Node foundNode : foundNodes) {
                     try {
-                        // FIXME This is working, but it seems a bad solution... I would like a list of object that are both NodeWithSimpleName and Resolvable<ResolvedValueDeclaration>
-                        if (usageNode instanceof Resolvable<?>) {
-                            if (((Resolvable<ResolvedValueDeclaration>) usageNode).resolve().isField()) {
-                                Set<MethodDeclaration> classifiedMethods = resultMap.get(matchedClassifiedAttr);
-                                classifiedMethods.add(method);
-                                resultMap.put(matchedClassifiedAttr, classifiedMethods);
-                                unmatchedClassifiedAttrSet.remove(matchedClassifiedAttr);
+                        Object invokeResult = foundNode.getClass().getMethod(nodeType.getValue()).invoke(foundNode);
+                        // Can be Node or Optional<Node>
+                        Node visitStartNode = invokeResult instanceof Optional ? (((Optional<Node>) invokeResult).orElse(null)) : (Node) invokeResult;
+                        if (visitStartNode == null) {
+                            continue;
+                        }
+                        Set<NodeWithSimpleName<?>> usageNodes = new LinkedHashSet<>();
+                        usageNodes.addAll(visitStartNode.findAll(NameExpr.class));
+                        usageNodes.addAll(visitStartNode.findAll(FieldAccessExpr.class));
+                        // Verification phase: which attributes does this method use?
+                        for (NodeWithSimpleName<?> usageNode : usageNodes) {
+                            // For each attribute that matched with the name
+                            Set<VariableDeclarator> matchedAttributes = attributes.stream()
+                                    .filter(attr -> attr.getNameAsString().equals(usageNode.getNameAsString()))
+                                    .collect(Collectors.toCollection(LinkedHashSet::new));
+                            for (VariableDeclarator matchedAttribute : matchedAttributes) {
+                                try {
+                                    // FIXME This works, but it seems a bad solution... I would like a list of object that are both NodeWithSimpleName and Resolvable<ResolvedValueDeclaration>
+                                    // Ensure that the name can be resolve into a field, i.e., is it really referring to that attribute?
+                                    if (usageNode instanceof Resolvable) {
+                                        if (((Resolvable<ResolvedValueDeclaration>) usageNode).resolve().isField()) {
+                                            usageMethods.get(matchedAttribute).add(method);
+                                        }
+                                    }
+                                } catch (RuntimeException | StackOverflowError ignored) {
+                                    //TODO Improve with logging ERROR. In any case, any raised exception should ignore this usageNode
+                                    // resolve() raises a number of issues: UnsupportedOperationException, UnsolvedSymbolException, a pure RuntimeException, StackOverflowError
+                                }
                             }
                         }
-                    } catch (RuntimeException | StackOverflowError ignored) {
-                        //TODO Improve with logging ERROR. In any case, any raised exception should ignore this usageNode
-                        // resolve() raises a number of issues: UnsupportedOperationException, UnsolvedSymbolException, a pure RuntimeException, StackOverflowError
+                    } catch (NoSuchMethodException
+                             | InvocationTargetException
+                             | IllegalAccessException ignored) {
+                        // TODO Improve logging ERROR
                     }
                 }
             }
         }
-        return resultMap;
+        return usageMethods;
     }
 
-    private Set<MethodDeclaration> getOtherClassifiedMethods(Set<MethodDeclaration> methodDeclarations) {
+    private Set<MethodDeclaration> getKeywordMatchedClassifiedMethods(Set<MethodDeclaration> methodDeclarations) {
         // Check whether the method name or any or the parameters matches one of the patterns
         return methodDeclarations.stream()
                 .filter(m -> isClassified(m) || m.getParameters().stream().anyMatch(this::isClassified))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     private boolean isClassified(NodeWithSimpleName<?> node) {

@@ -10,42 +10,56 @@ import com.github.javaparser.resolution.types.ResolvedReferenceType;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ClassInspectorResults implements InspectorResults {
     private final ClassOrInterfaceDeclaration classOrInterfaceDeclaration;
-    // TODO Create a ClassifiedAttribute class, having VariableDeclarator and FieldDeclaration
-    // TODO I don't like Usage and Other classified methods names... consider an alternative and clearer naming
     private final Path filepath;
-    private final Map<VariableDeclarator, Set<MethodDeclaration>> classifiedAttributesAndMethods;
-    private final Set<MethodDeclaration> otherClassifiedMethods;
+    private final Map<VariableDeclarator, Set<MethodDeclaration>> attributesMutators;
+    private final Map<VariableDeclarator, Set<MethodDeclaration>> attributesAccessors;
+    private final Set<MethodDeclaration> keywordMatchedClassifiedMethods;
     private boolean usingReflection;
 
-    private Set<FieldDeclaration> correspondingFieldDeclarations;
-    private List<ResolvedReferenceType> superClasses;
+    // TODO Create a ClassifiedAttribute class, having VariableDeclarator and the corresponding FieldDeclarations (to remove correspondingFieldDeclarations)
+    private Set<FieldDeclaration> correspondingFieldDeclsCached;
+    private List<ResolvedReferenceType> superClassesCached;
 
     public ClassInspectorResults(ClassOrInterfaceDeclaration classOrInterfaceDeclaration, Path filepath) {
         this.classOrInterfaceDeclaration = classOrInterfaceDeclaration;
         this.filepath = filepath;
-        this.classifiedAttributesAndMethods = new LinkedHashMap<>();
-        this.otherClassifiedMethods = new LinkedHashSet<>();
-        this.correspondingFieldDeclarations = null;
-        this.superClasses = null;
+        this.attributesMutators = new LinkedHashMap<>();
+        this.attributesAccessors = new LinkedHashMap<>();
+        this.keywordMatchedClassifiedMethods = new LinkedHashSet<>();
+        this.correspondingFieldDeclsCached = null;
+        this.superClassesCached = null;
     }
 
-    public void put(VariableDeclarator variableDeclarator, Set<MethodDeclaration> methodDeclarations) {
-        classifiedAttributesAndMethods.put(variableDeclarator, methodDeclarations);
+    public void addAccessors(VariableDeclarator attribute, Set<MethodDeclaration> newAccessors) {
+        addMethods(attributesAccessors, attribute, newAccessors);
     }
 
-    public void addOtherClassifiedMethod(MethodDeclaration methodDeclaration) {
-        otherClassifiedMethods.add(methodDeclaration);
+    public void addMutators(VariableDeclarator attribute, Set<MethodDeclaration> newMutators) {
+        addMethods(attributesMutators, attribute, newMutators);
+    }
+
+    public void addKeywordMatchedClassifiedMethods(Set<MethodDeclaration> methods) {
+        keywordMatchedClassifiedMethods.addAll(methods);
+    }
+
+    public void addAccessor(VariableDeclarator attribute, MethodDeclaration newAccessor) {
+        addMethod(attributesAccessors, attribute, newAccessor);
+    }
+
+    public void addMutator(VariableDeclarator attribute, MethodDeclaration newMutator) {
+        addMethod(attributesMutators, attribute, newMutator);
+    }
+
+    public void addKeywordMatchedClassifiedMethod(MethodDeclaration method) {
+        keywordMatchedClassifiedMethods.add(method);
     }
 
     public void setUsingReflection(boolean usingReflection) {
         this.usingReflection = usingReflection;
-    }
-
-    private String getClassName() {
-        return classOrInterfaceDeclaration.getNameAsString();
     }
 
     public String getFullyQualifiedClassName() {
@@ -56,94 +70,86 @@ public class ClassInspectorResults implements InspectorResults {
         return filepath;
     }
 
-    public Set<MethodDeclaration> getAllMethods() {
+    public Set<MethodDeclaration> getClassMethods() {
         return Collections.unmodifiableSet(new LinkedHashSet<>(classOrInterfaceDeclaration.getMethods()));
     }
 
-    private Map<VariableDeclarator, Set<MethodDeclaration>> getClassifiedAttributesAndMethods() {
-        return Collections.unmodifiableMap(classifiedAttributesAndMethods);
-    }
-
     public Set<VariableDeclarator> getClassifiedAttributes() {
-        return Collections.unmodifiableSet(classifiedAttributesAndMethods.keySet());
-    }
-
-    public Set<MethodDeclaration> getAllClassifiedMethods() {
-        Set<MethodDeclaration> allClassifiedMethods = new LinkedHashSet<>(getUsageClassifiedMethods());
-        allClassifiedMethods.addAll(otherClassifiedMethods);
-        return Collections.unmodifiableSet(allClassifiedMethods);
+        return Collections.unmodifiableSet(getAttributesMethods().keySet());
     }
 
     public Set<MethodDeclaration> getUsageClassifiedMethods(VariableDeclarator variableDeclarator) {
-        return Collections.unmodifiableSet(classifiedAttributesAndMethods.get(variableDeclarator));
+        return Collections.unmodifiableSet(getAttributesMethods().get(variableDeclarator));
     }
 
-    public Set<MethodDeclaration> getUsageClassifiedMethods() {
-        return Collections.unmodifiableSet(
-                classifiedAttributesAndMethods.values()
-                        .stream()
-                        .flatMap(Collection::stream)
-                        .collect(Collectors.toSet()));
+    public Set<MethodDeclaration> getAllUsageClassifiedMethods() {
+        Set<MethodDeclaration> collect = getAttributesMethods().values()
+                .stream()
+                .flatMap(Collection::stream)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        return Collections.unmodifiableSet(collect);
     }
 
-    public Set<MethodDeclaration> getOtherClassifiedMethods() {
-        return Collections.unmodifiableSet(otherClassifiedMethods);
+    public Set<MethodDeclaration> getAllClassifiedMethods() {
+        Set<MethodDeclaration> allClassifiedMethods = new LinkedHashSet<>(getAllUsageClassifiedMethods());
+        allClassifiedMethods.addAll(keywordMatchedClassifiedMethods);
+        return Collections.unmodifiableSet(allClassifiedMethods);
+    }
+
+    public int getNumberClassMethods() {
+        return classOrInterfaceDeclaration.getMethods().size();
+    }
+
+    public int getNumberClassifiedAttributes() {
+        return getAttributesMethods().keySet().size();
+    }
+
+    public int getNumberUsageClassifiedMethods(VariableDeclarator variableDeclarator) {
+        return getAttributesMethods().get(variableDeclarator).size();
+    }
+
+    public int getNumberAllUsageClassifiedMethods() {
+        return getAllUsageClassifiedMethods().size();
+    }
+
+    public int getNumberAllClassifiedMethods() {
+        return getAllClassifiedMethods().size();
     }
 
     public List<ResolvedReferenceType> getSuperclasses() {
         // If already computed, return it
-        if (this.superClasses != null) {
-            return this.superClasses;
+        if (this.superClassesCached != null) {
+            return this.superClassesCached;
         }
-        this.superClasses = new ArrayList<>();
+        this.superClassesCached = new ArrayList<>();
         try {
             List<ResolvedReferenceType> directAncestors = classOrInterfaceDeclaration.resolve().getAncestors(true);
-            this.superClasses.addAll(getIndirectAncestors(directAncestors));
+            this.superClassesCached.addAll(getIndirectAncestors(directAncestors));
         } catch (RuntimeException e) {
             //TODO Improve with logging ERROR. In any case, return an empty list
             // resolve() raises a number of issues: UnsupportedOperationException, UnsolvedSymbolException, a pure RuntimeException, StackOverflowError
         }
-        return this.superClasses;
-    }
-
-    private List<ResolvedReferenceType> getIndirectAncestors(List<ResolvedReferenceType> ancestors) {
-        List<ResolvedReferenceType> allAncestors = new ArrayList<>(ancestors);
-        for (ResolvedReferenceType ancestor : ancestors) {
-            ResolvedReferenceTypeDeclaration resolvedReferenceTypeDeclaration = ancestor.getTypeDeclaration().orElse(null);
-            if (resolvedReferenceTypeDeclaration != null) {
-                List<ResolvedReferenceType> directAncestors = resolvedReferenceTypeDeclaration.getAncestors(true);
-                allAncestors.addAll(getIndirectAncestors(directAncestors));
-            }
-        }
-        return allAncestors;
+        return this.superClassesCached;
     }
 
     public Set<FieldDeclaration> getCorrespondingFieldDeclarations() {
         // If already computed, return it
-        if (this.correspondingFieldDeclarations != null) {
-            return this.correspondingFieldDeclarations;
+        if (this.correspondingFieldDeclsCached != null) {
+            return this.correspondingFieldDeclsCached;
         }
-        this.correspondingFieldDeclarations = new LinkedHashSet<>();
+        this.correspondingFieldDeclsCached = new LinkedHashSet<>();
         for (VariableDeclarator classifiedAttribute : getClassifiedAttributes()) {
             try {
                 FieldDeclaration correspondingFieldDecl = classifiedAttribute.resolve().asField().toAst().orElse(null);
                 if (correspondingFieldDecl != null) {
-                    this.correspondingFieldDeclarations.add(correspondingFieldDecl);
+                    this.correspondingFieldDeclsCached.add(correspondingFieldDecl);
                 }
             } catch (RuntimeException ignore) {
                 //TODO Improve with logging ERROR. In any case, skip this classifiedAttribute
                 // resolve() raises a number of issues: UnsupportedOperationException, UnsolvedSymbolException, a pure RuntimeException, StackOverflowError
             }
         }
-        return this.correspondingFieldDeclarations;
-    }
-
-    public int getNumberClassifiedAttributes() {
-        return getClassifiedAttributes().size();
-    }
-
-    public int getNumberAllClassifiedMethods() {
-        return getAllClassifiedMethods().size();
+        return this.correspondingFieldDeclsCached;
     }
 
     public boolean isUsingReflection() {
@@ -168,6 +174,16 @@ public class ClassInspectorResults implements InspectorResults {
         return false;
     }
 
+    @Override
+    public String toString() {
+        List<String> classifiedAttributesStrings = new ArrayList<>();
+        getClassifiedAttributesMethodsNames()
+                .forEach((key, value) -> classifiedAttributesStrings.add("\n\t" + key + " -> " + value));
+        List<String> keywordMethodsString = new ArrayList<>(getKeywordMatchedClassifiedMethodsNames());
+        return "Classified Attributes of " + getFullyQualifiedClassName() + String.join(", ", classifiedAttributesStrings) +
+                "\n\tKeyword-matched Classified Methods: " + String.join(", ", keywordMethodsString);
+    }
+
     public Set<String> getClassifiedAttributesNames() {
         return getClassifiedAttributes()
                 .stream()
@@ -183,42 +199,96 @@ public class ClassInspectorResults implements InspectorResults {
     }
 
     public Set<String> getUsageClassifiedMethodsNames() {
-        return getUsageClassifiedMethods()
+        return getAllUsageClassifiedMethods()
                 .stream()
                 .map(m -> m.getSignature().toString())
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
-    public Set<String> getOtherClassifiedMethodsNames() {
-        return getUsageClassifiedMethods()
+    public Set<String> getKeywordMatchedClassifiedMethodsNames() {
+        return keywordMatchedClassifiedMethods
                 .stream()
                 .map(m -> m.getSignature().toString())
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
-    public Map<String, Set<String>> getClassifiedAttributesAndMethodsNames() {
-        Map<String, Set<String>> res = new LinkedHashMap<>();
-        for (Map.Entry<VariableDeclarator, Set<MethodDeclaration>> entry : getClassifiedAttributesAndMethods().entrySet()) {
-            String attributeName = entry.getKey().getNameAsString();
-            LinkedHashSet<String> methodNames = entry.getValue()
-                    .stream()
-                    .map(m -> m.getSignature().toString())
-                    .collect(Collectors.toCollection(LinkedHashSet::new));
-            res.put(attributeName, methodNames);
+    public Map<String, Set<String>> getClassifiedAttributesMutatorsNames() {
+        return getNames(attributesMutators);
+    }
+
+    public Map<String, Set<String>> getClassifiedAttributesAccessorsNames() {
+        return getNames(attributesAccessors);
+    }
+
+    public Map<String, Set<String>> getClassifiedAttributesMethodsNames() {
+        return getNames(getAttributesMethods());
+    }
+
+    private void addMethod(Map<VariableDeclarator, Set<MethodDeclaration>> structure, VariableDeclarator attribute, MethodDeclaration newMethod) {
+        Set<MethodDeclaration> methods;
+        if (structure.containsKey(attribute)) {
+            methods = structure.computeIfAbsent(attribute, k -> new LinkedHashSet<>());
+        } else {
+            methods = new LinkedHashSet<>();
+            structure.put(attribute, methods);
         }
+        methods.add(newMethod);
+    }
+
+    private void addMethods(Map<VariableDeclarator, Set<MethodDeclaration>> structure, VariableDeclarator attribute, Set<MethodDeclaration> newMethods) {
+        Set<MethodDeclaration> methods;
+        if (structure.containsKey(attribute)) {
+            methods = structure.computeIfAbsent(attribute, k -> new LinkedHashSet<>());
+        } else {
+            methods = new LinkedHashSet<>();
+            structure.put(attribute, methods);
+        }
+        methods.addAll(newMethods);
+    }
+
+    private String getClassName() {
+        return classOrInterfaceDeclaration.getNameAsString();
+    }
+
+    private Map<String, Set<String>> getNames(Map<VariableDeclarator, Set<MethodDeclaration>> map) {
+        Map<String, Set<String>> res = new LinkedHashMap<>();
+        map.forEach((k, v) -> res.put(
+                        k.getNameAsString(),
+                        v.stream().map(m -> m.getSignature().toString()).collect(Collectors.toCollection(LinkedHashSet::new))
+                )
+        );
         return res;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder("Classified Attributes of " + getFullyQualifiedClassName());
-        List<String> classifiedAttributesStrings = new ArrayList<>();
-        getClassifiedAttributesAndMethodsNames()
-                .forEach((key, value) -> classifiedAttributesStrings.add("\n\t" + key + " -> " + value));
-        builder.append(String.join(", ", classifiedAttributesStrings));
-        List<String> otherMethodsString = otherClassifiedMethods.stream()
-                .map(m -> m.getSignature().toString()).collect(Collectors.toList());
-        builder.append("\n\tOther Classified Methods: ").append(otherMethodsString);
-        return builder.toString();
+    private Map<VariableDeclarator, Set<MethodDeclaration>> getAttributesMethods() {
+        Map<VariableDeclarator, Set<MethodDeclaration>> attributesMethods = new LinkedHashMap<>(attributesMutators);
+        attributesAccessors.forEach((k, v) -> attributesMethods
+                .merge(k, v, (a, b) -> Stream.concat(a.stream(), b.stream()).collect(Collectors.toCollection(LinkedHashSet::new)))
+        );
+        return Collections.unmodifiableMap(attributesMethods);
+    }
+
+    private Map<VariableDeclarator, Set<MethodDeclaration>> getAttributesMutators() {
+        return Collections.unmodifiableMap(attributesMutators);
+    }
+
+    private Map<VariableDeclarator, Set<MethodDeclaration>> getAttributesAccessors() {
+        return Collections.unmodifiableMap(attributesAccessors);
+    }
+
+    private Set<MethodDeclaration> getKeywordMatchedClassifiedMethods() {
+        return Collections.unmodifiableSet(keywordMatchedClassifiedMethods);
+    }
+
+    private List<ResolvedReferenceType> getIndirectAncestors(List<ResolvedReferenceType> ancestors) {
+        List<ResolvedReferenceType> allAncestors = new ArrayList<>(ancestors);
+        for (ResolvedReferenceType ancestor : ancestors) {
+            ResolvedReferenceTypeDeclaration resolvedReferenceTypeDeclaration = ancestor.getTypeDeclaration().orElse(null);
+            if (resolvedReferenceTypeDeclaration != null) {
+                List<ResolvedReferenceType> directAncestors = resolvedReferenceTypeDeclaration.getAncestors(true);
+                allAncestors.addAll(getIndirectAncestors(directAncestors));
+            }
+        }
+        return allAncestors;
     }
 }
