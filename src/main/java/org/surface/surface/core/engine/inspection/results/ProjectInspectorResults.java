@@ -1,5 +1,6 @@
 package org.surface.surface.core.engine.inspection.results;
 
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.utils.ProjectRoot;
 
@@ -54,9 +55,28 @@ public class ProjectInspectorResults implements InspectorResults {
         return Collections.unmodifiableSet(collect);
     }
 
-    public Set<ClassInspectorResults> getCriticalClasses() {
-        Set<ClassInspectorResults> criticalClasses = classResults.stream()
+    public Set<ClassOrInterfaceDeclaration> getCriticalClasses() {
+        Set<ClassOrInterfaceDeclaration> criticalClasses = classResults.stream()
                 .filter(ClassInspectorResults::isCritical)
+                .map(ClassInspectorResults::getClassOrInterfaceDeclaration)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        return Collections.unmodifiableSet(criticalClasses);
+    }
+
+    public Set<ClassOrInterfaceDeclaration> getSerializableCriticalClasses() {
+        Set<ClassOrInterfaceDeclaration> criticalClasses = classResults.stream()
+                .filter(ClassInspectorResults::isCritical)
+                .filter(ClassInspectorResults::isSerializable)
+                .map(ClassInspectorResults::getClassOrInterfaceDeclaration)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        return Collections.unmodifiableSet(criticalClasses);
+    }
+
+    public Set<ClassOrInterfaceDeclaration> getCriticalClassesUncalledAccessor() {
+        Set<ClassOrInterfaceDeclaration> criticalClasses = classResults.stream()
+                .filter(ClassInspectorResults::isCritical)
+                .filter(cir -> cir.getNumberUncalledClassifiedAccessors() > 0)
+                .map(ClassInspectorResults::getClassOrInterfaceDeclaration)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
         return Collections.unmodifiableSet(criticalClasses);
     }
@@ -69,8 +89,16 @@ public class ProjectInspectorResults implements InspectorResults {
         return getAllClassifiedMethods().size();
     }
 
+    public int getNumberSerializableCriticalClasses() {
+        return getSerializableCriticalClasses().size();
+    }
+
     public int getNumberCriticalClasses() {
         return getCriticalClasses().size();
+    }
+
+    public int getNumberCriticalClassesUncalledAccessor() {
+        return getCriticalClassesUncalledAccessor().size();
     }
 
     @Override

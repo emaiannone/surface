@@ -41,6 +41,10 @@ public class ClassInspectorResults implements InspectorResults {
         this.superClassesCached = null;
     }
 
+    public ClassOrInterfaceDeclaration getClassOrInterfaceDeclaration() {
+        return classOrInterfaceDeclaration;
+    }
+
     public void addAccessors(VariableDeclarator attribute, Set<MethodDeclaration> newAccessors) {
         addMethods(attributesAccessors, attribute, newAccessors);
     }
@@ -150,7 +154,9 @@ public class ClassInspectorResults implements InspectorResults {
         return getAllClassifiedMethods().size();
     }
 
-    // TODO any method calling resolve() (e.g., getSuperclass, getSuperclasses, getAttributeFields, etc.) could be moved into ClassInspector as they are actually inspections, and not just queries
+    // TODO any method calling resolve() (e.g., getSuperclass, getSuperclasses, getAttributeFields, getUncalledClassifiedAccessors, etc.)
+    //  could be moved into ClassInspector as they are actually inspections, and not just queries.
+    //  In doing so, we avoid re-computing them multiple times
     public ResolvedReferenceTypeDeclaration getSuperclass() {
         try {
             return classOrInterfaceDeclaration.resolve()
