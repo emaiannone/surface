@@ -14,19 +14,19 @@ public class CSPImpl extends CSP {
     @Override
     public DoubleMetricValue compute(ProjectInspectorResults projectResults) {
         Map<String, Double> values = new LinkedHashMap<>();
-        for (ClassInspectorResults classResults : projectResults) {
-            List<ResolvedReferenceType> superclasses = classResults.getSuperclasses();
+        for (ClassInspectorResults classResults : projectResults.getClassResults()) {
+            List<ResolvedReferenceType> superclasses = classResults.getAllSuperclasses();
             int totalSuperClasses = superclasses.size();
             // FQN name match seems weak... fine for now
             int criticalSuperClasses = 0;
             for (ResolvedReferenceType superclass : superclasses) {
-                ClassInspectorResults superClassResults = projectResults.getClassResults(superclass.getQualifiedName());
+                ClassInspectorResults superClassResults = projectResults.getClassResult(superclass.getQualifiedName());
                 if (superClassResults != null && superClassResults.isCritical()) {
                     criticalSuperClasses++;
                 }
             }
             double metricValue = totalSuperClasses != 0.0 ? (double) criticalSuperClasses / totalSuperClasses : 0.0;
-            values.put(classResults.getFullyQualifiedClassName(), metricValue);
+            values.put(classResults.getClassFullyQualifiedName(), metricValue);
         }
         double value = values.values().stream().mapToDouble(x -> x).average().orElse(0.0);
         return new DoubleMetricValue(getName(), getCode(), value);

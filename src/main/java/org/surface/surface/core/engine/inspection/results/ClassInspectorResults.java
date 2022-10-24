@@ -5,6 +5,7 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.resolution.declarations.ResolvedReferenceTypeDeclaration;
+import com.github.javaparser.resolution.declarations.ResolvedTypeDeclaration;
 import com.github.javaparser.resolution.types.ResolvedReferenceType;
 
 import java.nio.file.Path;
@@ -20,7 +21,7 @@ public class ClassInspectorResults implements InspectorResults {
     private final Set<MethodDeclaration> keywordMatchedClassifiedMethods;
     private boolean usingReflection;
 
-    // TODO Create a ClassifiedAttribute class, having VariableDeclarator and the corresponding FieldDeclarations (to remove correspondingFieldDeclarations)
+    // TODO Create a ClassifiedAttribute class, having VariableDeclarator, the corresponding FieldDeclarations, and the mutators and accessors (to remove the two Maps and correspondingFieldDeclarations)
     private Set<FieldDeclaration> correspondingFieldDeclsCached;
     private List<ResolvedReferenceType> superClassesCached;
 
@@ -62,7 +63,7 @@ public class ClassInspectorResults implements InspectorResults {
         this.usingReflection = usingReflection;
     }
 
-    public String getFullyQualifiedClassName() {
+    public String getClassFullyQualifiedName() {
         return classOrInterfaceDeclaration.getFullyQualifiedName().orElse(getClassName());
     }
 
@@ -132,7 +133,19 @@ public class ClassInspectorResults implements InspectorResults {
         return getAllClassifiedMethods().size();
     }
 
-    public List<ResolvedReferenceType> getSuperclasses() {
+    public ResolvedReferenceTypeDeclaration getSuperclass() {
+        return classOrInterfaceDeclaration.resolve()
+                .getAncestors(true)
+                .stream()
+                .map(rrt -> rrt.getTypeDeclaration().orElse(null))
+                .filter(Objects::nonNull)
+                .filter(ResolvedTypeDeclaration::isClass)
+                .findFirst()
+                .orElse(null);
+
+    }
+
+    public List<ResolvedReferenceType> getAllSuperclasses() {
         // If already computed, return it
         if (this.superClassesCached != null) {
             return this.superClassesCached;
@@ -181,7 +194,7 @@ public class ClassInspectorResults implements InspectorResults {
     }
 
     public boolean isSerializable() {
-        List<ResolvedReferenceType> ancestors = getSuperclasses();
+        List<ResolvedReferenceType> ancestors = getAllSuperclasses();
         for (ResolvedReferenceType ancestor : ancestors) {
             if (ancestor.getQualifiedName().equals("java.io.Serializable")) {
                 return true;
@@ -196,7 +209,7 @@ public class ClassInspectorResults implements InspectorResults {
         getClassifiedAttributesMethodsNames()
                 .forEach((key, value) -> classifiedAttributesStrings.add("\n\t" + key + " -> " + value));
         List<String> keywordMethodsString = new ArrayList<>(getKeywordMatchedClassifiedMethodsNames());
-        return "Classified Attributes of " + getFullyQualifiedClassName() + String.join(", ", classifiedAttributesStrings) +
+        return "Classified Attributes of " + getClassFullyQualifiedName() + String.join(", ", classifiedAttributesStrings) +
                 "\n\tKeyword-matched Classified Methods: " + String.join(", ", keywordMethodsString);
     }
 

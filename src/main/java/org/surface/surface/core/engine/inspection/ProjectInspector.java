@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.surface.surface.core.engine.inspection.results.ClassInspectorResults;
+import org.surface.surface.core.engine.inspection.results.InheritanceInspectorResults;
 import org.surface.surface.core.engine.inspection.results.ProjectInspectorResults;
 
 import java.io.IOException;
@@ -86,10 +87,13 @@ public class ProjectInspector extends Inspector {
                             }
                             ClassInspector classInspector = new ClassInspector(classOrInterfaceDecl, compilationUnit.getStorage().get().getPath());
                             ClassInspectorResults classResults = classInspector.inspect();
-                            projectInspectorResults.add(classResults);
+                            projectInspectorResults.addClassResult(classResults);
                         }
                     }
                 }
+                InheritanceInspector inheritanceInspector = new InheritanceInspector(projectInspectorResults.getClassResults());
+                InheritanceInspectorResults inheritanceResults = inheritanceInspector.inspect();
+                projectInspectorResults.addInheritanceResult(inheritanceResults);
             }
             LOGGER.debug("* Preliminary Inspection ended");
             LOGGER.trace("Preliminary Inspection results:\n\t{}", projectInspectorResults.toString().replaceAll("\n", "\n\t"));

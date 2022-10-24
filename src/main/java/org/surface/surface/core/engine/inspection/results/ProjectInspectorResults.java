@@ -3,46 +3,47 @@ package org.surface.surface.core.engine.inspection.results;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.utils.ProjectRoot;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ProjectInspectorResults implements InspectorResults, Iterable<ClassInspectorResults> {
+public class ProjectInspectorResults implements InspectorResults {
     private final ProjectRoot projectRoot;
-    private final Set<ClassInspectorResults> results;
+    private final Set<ClassInspectorResults> classResults;
+    private final Set<InheritanceInspectorResults> inheritanceResults;
 
     public ProjectInspectorResults(ProjectRoot projectRoot) {
         this.projectRoot = projectRoot;
-        this.results = new LinkedHashSet<>();
+        this.classResults = new LinkedHashSet<>();
+        this.inheritanceResults = new LinkedHashSet<>();
     }
 
-    public void add(ClassInspectorResults classResults) {
-        results.add(classResults);
+    public void addClassResult(ClassInspectorResults classResult) {
+        this.classResults.add(classResult);
     }
 
-    public Set<ClassInspectorResults> getResults() {
-        return Collections.unmodifiableSet(results);
+    public void addInheritanceResult(InheritanceInspectorResults inheritanceResult) {
+        this.inheritanceResults.add(inheritanceResult);
     }
 
-    @Override
-    public Iterator<ClassInspectorResults> iterator() {
-        return getResults().iterator();
+    public Set<ClassInspectorResults> getClassResults() {
+        return Collections.unmodifiableSet(classResults);
+    }
+
+    public ClassInspectorResults getClassResult(String classQualifiedName) {
+        return classResults.stream()
+                .filter(ir -> ir.getClassFullyQualifiedName().equals(classQualifiedName))
+                .findFirst().orElse(null);
     }
 
     public ProjectRoot getProjectRoot() {
         return projectRoot;
     }
 
-    public ClassInspectorResults getClassResults(String classQualifiedName) {
-        for (ClassInspectorResults res : results) {
-            if (res.getFullyQualifiedClassName().equals(classQualifiedName)) {
-                return res;
-            }
-        }
-        return null;
-    }
-
     public Set<MethodDeclaration> getAllClassifiedMethods() {
-        Set<MethodDeclaration> collect = results.stream()
+        Set<MethodDeclaration> collect = classResults.stream()
                 .map(ClassInspectorResults::getAllClassifiedMethods)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
@@ -50,14 +51,14 @@ public class ProjectInspectorResults implements InspectorResults, Iterable<Class
     }
 
     public Set<ClassInspectorResults> getCriticalClasses() {
-        Set<ClassInspectorResults> criticalClasses = results.stream()
+        Set<ClassInspectorResults> criticalClasses = classResults.stream()
                 .filter(ClassInspectorResults::isCritical)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
         return Collections.unmodifiableSet(criticalClasses);
     }
 
     public int getNumberClasses() {
-        return results.size();
+        return classResults.size();
     }
 
     public int getNumberAllClassifiedMethods() {
@@ -71,7 +72,7 @@ public class ProjectInspectorResults implements InspectorResults, Iterable<Class
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder("Project: " + projectRoot.getRoot().toAbsolutePath());
-        for (ClassInspectorResults entries : results) {
+        for (ClassInspectorResults entries : classResults) {
             builder.append("\n");
             builder.append(entries);
         }

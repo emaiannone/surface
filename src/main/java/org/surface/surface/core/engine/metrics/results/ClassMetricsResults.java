@@ -24,7 +24,7 @@ public class ClassMetricsResults implements MetricsResults, Iterable<MetricValue
     private final List<MetricValue<?>> metricValues;
 
     public ClassMetricsResults(ClassInspectorResults classResults) {
-        this.classFullyQualifiedName = classResults.getFullyQualifiedClassName();
+        this.classFullyQualifiedName = classResults.getClassFullyQualifiedName();
         this.filePath = classResults.getFilepath();
 
         this.classifiedAttributesMutatorsNames = classResults.getClassifiedAttributesMutatorsNames();

@@ -2,6 +2,7 @@ package org.surface.surface.core.engine.inspection;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -86,32 +87,38 @@ class ClassInspector extends Inspector {
                 for (Node foundNode : foundNodes) {
                     try {
                         Object invokeResult = foundNode.getClass().getMethod(nodeType.getValue()).invoke(foundNode);
-                        // Can be Node or Optional<Node>
-                        Node visitStartNode = invokeResult instanceof Optional ? (((Optional<Node>) invokeResult).orElse(null)) : (Node) invokeResult;
-                        if (visitStartNode == null) {
-                            continue;
+                        // Can be Optional<Node>, Node, or NodeList<Expression> -> Put them all in a collection and iterate on all
+                        Set<Node> nodesToVisit = new LinkedHashSet<>();
+                        if (invokeResult instanceof Optional<?>) {
+                            nodesToVisit.add(((Optional<Node>) invokeResult).orElse(null));
+                        } else if (invokeResult instanceof Node) {
+                            nodesToVisit.add((Node) invokeResult);
+                        } else if (invokeResult instanceof NodeList<?>) {
+                            nodesToVisit.addAll(new ArrayList<>(((NodeList<Expression>) invokeResult)));
                         }
-                        Set<NodeWithSimpleName<?>> usageNodes = new LinkedHashSet<>();
-                        usageNodes.addAll(visitStartNode.findAll(NameExpr.class));
-                        usageNodes.addAll(visitStartNode.findAll(FieldAccessExpr.class));
-                        // Verification phase: which attributes does this method use?
-                        for (NodeWithSimpleName<?> usageNode : usageNodes) {
-                            // For each attribute that matched with the name
-                            Set<VariableDeclarator> matchedAttributes = attributes.stream()
-                                    .filter(attr -> attr.getNameAsString().equals(usageNode.getNameAsString()))
-                                    .collect(Collectors.toCollection(LinkedHashSet::new));
-                            for (VariableDeclarator matchedAttribute : matchedAttributes) {
-                                try {
-                                    // FIXME This works, but it seems a bad solution... I would like a list of object that are both NodeWithSimpleName and Resolvable<ResolvedValueDeclaration>
-                                    // Ensure that the name can be resolve into a field, i.e., is it really referring to that attribute?
-                                    if (usageNode instanceof Resolvable) {
-                                        if (((Resolvable<ResolvedValueDeclaration>) usageNode).resolve().isField()) {
-                                            usageMethods.get(matchedAttribute).add(method);
+                        for (Node nodeToVisit : nodesToVisit) {
+                            Set<NodeWithSimpleName<?>> usageNodes = new LinkedHashSet<>();
+                            usageNodes.addAll(nodeToVisit.findAll(NameExpr.class));
+                            usageNodes.addAll(nodeToVisit.findAll(FieldAccessExpr.class));
+                            // Verification phase: which attributes does this method use?
+                            for (NodeWithSimpleName<?> usageNode : usageNodes) {
+                                // For each attribute that matched with the name
+                                Set<VariableDeclarator> matchedAttributes = attributes.stream()
+                                        .filter(attr -> attr.getNameAsString().equals(usageNode.getNameAsString()))
+                                        .collect(Collectors.toCollection(LinkedHashSet::new));
+                                for (VariableDeclarator matchedAttribute : matchedAttributes) {
+                                    try {
+                                        // FIXME This works, but it seems a bad solution... I would like a list of object that are both NodeWithSimpleName and Resolvable<ResolvedValueDeclaration>
+                                        // Ensure that the name can be resolve into a field, i.e., is it really referring to that attribute?
+                                        if (usageNode instanceof Resolvable) {
+                                            if (((Resolvable<ResolvedValueDeclaration>) usageNode).resolve().isField()) {
+                                                usageMethods.get(matchedAttribute).add(method);
+                                            }
                                         }
+                                    } catch (RuntimeException | StackOverflowError ignored) {
+                                        //TODO Improve with logging ERROR. In any case, any raised exception should ignore this usageNode
+                                        // resolve() raises a number of issues: UnsupportedOperationException, UnsolvedSymbolException, a pure RuntimeException, StackOverflowError
                                     }
-                                } catch (RuntimeException | StackOverflowError ignored) {
-                                    //TODO Improve with logging ERROR. In any case, any raised exception should ignore this usageNode
-                                    // resolve() raises a number of issues: UnsupportedOperationException, UnsolvedSymbolException, a pure RuntimeException, StackOverflowError
                                 }
                             }
                         }

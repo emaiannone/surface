@@ -15,7 +15,7 @@ public class CCEImpl extends CCE {
     @Override
     public DoubleMetricValue compute(ProjectInspectorResults projectResults) {
         int nonFinalCC = 0;
-        for (ClassInspectorResults classResults : projectResults) {
+        for (ClassInspectorResults classResults : projectResults.getClassResults()) {
             if (classResults.isCritical() && !classResults.isFinal()) {
                 nonFinalCC++;
             }

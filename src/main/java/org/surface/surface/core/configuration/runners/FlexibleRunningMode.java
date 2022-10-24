@@ -3,6 +3,7 @@ package org.surface.surface.core.configuration.runners;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.validator.routines.UrlValidator;
@@ -79,13 +80,13 @@ public class FlexibleRunningMode extends RunningMode {
                     LOGGER.info("* Results updated in {}", getFormatter().getOutFile());
                 } catch (IOException e) {
                     failedProjects.add(projectIdKey);
-                    LOGGER.error("* Found a problem during the export of the results for project \"" + projectIdKey + "\". Going to the next one. Details:");
-                    LOGGER.error("\t* {}", e.getMessage());
+                    LOGGER.error("* Found a problem during the export of the results for project \"{}\". Going to the next one. Details:", projectIdKey);
+                    LOGGER.error("\t* {}", ExceptionUtils.getStackTrace(e));
                 }
             } catch (Exception e) {
                 failedProjects.add(projectIdKey);
-                LOGGER.error("* Found a problem during the analysis of project \"" + projectIdKey + "\". Going to the next one. Details:");
-                LOGGER.error("\t* {}", e.getMessage());
+                LOGGER.error("* Found a problem during the analysis of project \"{}\". Going to the next one. Details:", projectIdKey);
+                LOGGER.error("\t* {}", ExceptionUtils.getStackTrace(e));
             }
         }
         if (failedProjects.size() > 0) {
