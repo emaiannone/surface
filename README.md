@@ -2,7 +2,7 @@
 
 Surface (Java SecURity FlAws metriCs Extractor) is a command-line tool written in Java that can compute security metrics over the history of Java projects using a fully-automated static code analysis.
 
-Currently, it supports **20 security metrics** from those defined by Alshammari et al. (https://doi.org/10.1109/QSIC.2011.31), here reported:
+Currently, it supports **21 security metrics** from those defined by Alshammari et al. (https://doi.org/10.1109/QSIC.2011.31), here reported:
 
 1. Classified Attributes Total (CAT)
 2. Classified Methods Total (CMT)
@@ -13,17 +13,18 @@ Currently, it supports **20 security metrics** from those defined by Alshammari 
 7. Classified Methods Weight (CMW)
 8. Classified Writing Methods Proportion (CWMP)
 9. Unaccessed Assigned Classified Attribute (UACA)
-10. Classified Mutator Attribute Interactions (CMAI)
-11. Classified Accessor Attribute Interactions (CAAI)
-12. Classified Attributes Interaction Weight (CAIW)
-13. Critical Classes Total (CCT)
-14. Critical Design Proportion (CDP) 
-15. Critical Serialized Classes Proportion (CSCP)
-16. Critical Classes Extensibility (CCE)
-17. Classified Methods Extensibility (CME)
-18. Average Critical Superclasses Proportion (A-CSP)
-19. Average Classified Methods Inheritance (A-CMI)
-20. Average Classified Attributes Inheritance (A-CAI)
+10. Uncalled Classified Accessor Method (UCAM)
+11. Classified Mutator Attribute Interactions (CMAI)
+12. Classified Accessor Attribute Interactions (CAAI)
+13. Classified Attributes Interaction Weight (CAIW)
+14. Critical Classes Total (CCT)
+15. Critical Design Proportion (CDP) 
+16. Critical Serialized Classes Proportion (CSCP)
+17. Critical Classes Extensibility (CCE)
+18. Classified Methods Extensibility (CME)
+19. Average Critical Superclasses Proportion (A-CSP)
+20. Average Classified Methods Inheritance (A-CMI)
+21. Average Classified Attributes Inheritance (A-CAI)
 
 # How to Build Surface
 

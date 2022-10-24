@@ -39,7 +39,7 @@ public class ProjectInspector extends Inspector {
     }
 
     public ProjectInspectorResults inspect() throws IOException {
-        ProjectInspectorResults projectInspectorResults = new ProjectInspectorResults(projectRoot);
+        ProjectInspectorResults projectResults = new ProjectInspectorResults(projectRoot);
         try {
             LOGGER.debug("* Preliminary Inspection started");
             // A SourceRoot is a subdirectory of ProjectRoot containing any root package structure (e.g., src/main/java, src/test/java, target/classes)
@@ -85,19 +85,19 @@ public class ProjectInspector extends Inspector {
                                     continue;
                                 }
                             }
-                            ClassInspector classInspector = new ClassInspector(classOrInterfaceDecl, compilationUnit.getStorage().get().getPath());
+                            ClassInspector classInspector = new ClassInspector(classOrInterfaceDecl, compilationUnit.getStorage().get().getPath(), projectResults);
                             ClassInspectorResults classResults = classInspector.inspect();
-                            projectInspectorResults.addClassResult(classResults);
+                            projectResults.addClassResult(classResults);
                         }
                     }
                 }
-                InheritanceInspector inheritanceInspector = new InheritanceInspector(projectInspectorResults.getClassResults());
+                InheritanceInspector inheritanceInspector = new InheritanceInspector(projectResults);
                 InheritanceInspectorResults inheritanceResults = inheritanceInspector.inspect();
-                projectInspectorResults.setInheritanceResult(inheritanceResults);
+                projectResults.setInheritanceResult(inheritanceResults);
             }
             LOGGER.debug("* Preliminary Inspection ended");
-            LOGGER.trace("Preliminary Inspection results:\n\t{}", projectInspectorResults.toString().replaceAll("\n", "\n\t"));
-            return projectInspectorResults;
+            LOGGER.trace("Preliminary Inspection results:\n\t{}", projectResults.toString().replaceAll("\n", "\n\t"));
+            return projectResults;
         } finally {
             // Release! Sadly, the library does not manage well its internal cache, so we have to do this manual clear
             JavaParserFacade.clearInstances();

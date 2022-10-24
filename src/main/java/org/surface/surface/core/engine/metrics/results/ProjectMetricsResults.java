@@ -119,7 +119,6 @@ public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetr
     }
 
     public String toPlain() {
-        System.out.println(getClassMetricsResults().size());
         return "Project: " + getProjectName() + "\n" +
                 "Directory: " + getProjectPath().toString() + "\n" +
                 "Project Metrics: " + getMetricsAsPlain() + "\n" +

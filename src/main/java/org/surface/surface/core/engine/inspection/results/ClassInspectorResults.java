@@ -4,9 +4,12 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.resolution.declarations.ResolvedMethodDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedReferenceTypeDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedTypeDeclaration;
 import com.github.javaparser.resolution.types.ResolvedReferenceType;
+import org.apache.commons.lang3.StringUtils;
 
 import java.nio.file.Path;
 import java.util.*;
@@ -16,18 +19,21 @@ import java.util.stream.Stream;
 public class ClassInspectorResults implements InspectorResults {
     private final ClassOrInterfaceDeclaration classOrInterfaceDeclaration;
     private final Path filepath;
+    private final ProjectInspectorResults projectResults;
+
     private final Map<VariableDeclarator, Set<MethodDeclaration>> attributesMutators;
     private final Map<VariableDeclarator, Set<MethodDeclaration>> attributesAccessors;
     private final Set<MethodDeclaration> keywordMatchedClassifiedMethods;
-    private boolean usingReflection;
 
     // TODO Create a ClassifiedAttribute class, having VariableDeclarator, the corresponding FieldDeclarations, and the mutators and accessors (to remove the three Maps)
     private Map<VariableDeclarator, FieldDeclaration> attributesFieldsCached;
     private List<ResolvedReferenceType> superClassesCached;
+    private boolean usingReflection;
 
-    public ClassInspectorResults(ClassOrInterfaceDeclaration classOrInterfaceDeclaration, Path filepath) {
+    public ClassInspectorResults(ClassOrInterfaceDeclaration classOrInterfaceDeclaration, Path filepath, ProjectInspectorResults projectResults) {
         this.classOrInterfaceDeclaration = classOrInterfaceDeclaration;
         this.filepath = filepath;
+        this.projectResults = projectResults;
         this.attributesMutators = new LinkedHashMap<>();
         this.attributesAccessors = new LinkedHashMap<>();
         this.keywordMatchedClassifiedMethods = new LinkedHashSet<>();
@@ -148,16 +154,22 @@ public class ClassInspectorResults implements InspectorResults {
         return getAllClassifiedMethods().size();
     }
 
+    // TODO any method calling resolve() (e.g., getSuperclass, getSuperclasses, getAttributeFields, etc.) could be moved into ClassInspector as they are actually inspections, and not just queries
     public ResolvedReferenceTypeDeclaration getSuperclass() {
-        return classOrInterfaceDeclaration.resolve()
-                .getAncestors(true)
-                .stream()
-                .map(rrt -> rrt.getTypeDeclaration().orElse(null))
-                .filter(Objects::nonNull)
-                .filter(ResolvedTypeDeclaration::isClass)
-                .findFirst()
-                .orElse(null);
-
+        try {
+            return classOrInterfaceDeclaration.resolve()
+                    .getAncestors(true)
+                    .stream()
+                    .map(rrt -> rrt.getTypeDeclaration().orElse(null))
+                    .filter(Objects::nonNull)
+                    .filter(ResolvedTypeDeclaration::isClass)
+                    .findFirst()
+                    .orElse(null);
+        } catch (RuntimeException | StackOverflowError ignored) {
+            //TODO Improve with logging ERROR. In any case, any raised exception should ignore this usageNode
+            // resolve() raises a number of issues: UnsupportedOperationException, UnsolvedSymbolException, a pure RuntimeException, StackOverflowError
+            return null;
+        }
     }
 
     public List<ResolvedReferenceType> getAllSuperclasses() {
@@ -200,6 +212,41 @@ public class ClassInspectorResults implements InspectorResults {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
+    public Set<MethodDeclaration> getUncalledClassifiedAccessors() {
+        if (getNumberAllClassifiedAccessors() == 0) {
+            return new LinkedHashSet<>();
+        }
+        Map<String, MethodDeclaration> accessorMap = new LinkedHashMap<>();
+        for (MethodDeclaration accessor : getAllClassifiedAccessors()) {
+            accessorMap.put(accessor.getSignature().toString(), accessor);
+        }
+        classLoop:
+        for (ClassInspectorResults classResult : projectResults.getClassResults()) {
+            List<MethodCallExpr> methodCalls = classResult.classOrInterfaceDeclaration.findAll(MethodCallExpr.class);
+            for (MethodCallExpr methodCall : methodCalls) {
+                try {
+                    ResolvedMethodDeclaration resolvedMethodDecl = methodCall.resolve();
+                    String calledClassQualifiedName = StringUtils.substringBeforeLast(resolvedMethodDecl.getQualifiedName(), ".");
+                    if (calledClassQualifiedName.equals(classResult.getClassFullyQualifiedName())) {
+                        MethodDeclaration resolvedMethodDeclNode = resolvedMethodDecl.toAst().orElse(null);
+                        if (resolvedMethodDeclNode != null) {
+                            String calledMethodSignature = resolvedMethodDeclNode.getSignature().toString();
+                            accessorMap.remove(calledMethodSignature);
+                            // Nothing more to do, we can end earlier
+                            if (accessorMap.isEmpty()) {
+                                break classLoop;
+                            }
+                        }
+                    }
+                } catch (RuntimeException | StackOverflowError ignored) {
+                //TODO Improve with logging ERROR. In any case, any raised exception should ignore this usageNode
+                // resolve() raises a number of issues: UnsupportedOperationException, UnsolvedSymbolException, a pure RuntimeException, StackOverflowError
+                }
+            }
+        }
+        return new LinkedHashSet<>(accessorMap.values());
+    }
+
     public Map<VariableDeclarator, FieldDeclaration> getNonPrivateInstanceClassifiedAttributes() {
         return getAttributeFields().entrySet()
                 .stream()
@@ -223,6 +270,10 @@ public class ClassInspectorResults implements InspectorResults {
 
     public int getNumberUnaccessedAssignedAttributes() {
         return getUnaccessedAssignedAttributes().size();
+    }
+
+    public int getNumberUncalledClassifiedAccessors() {
+        return getUncalledClassifiedAccessors().size();
     }
 
     public int getNumberNonPrivateInstanceClassifiedAttributes() {

@@ -13,6 +13,7 @@ import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.resolution.Resolvable;
 import com.github.javaparser.resolution.declarations.ResolvedValueDeclaration;
 import org.surface.surface.core.engine.inspection.results.ClassInspectorResults;
+import org.surface.surface.core.engine.inspection.results.ProjectInspectorResults;
 
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
@@ -22,7 +23,10 @@ import java.util.stream.Collectors;
 
 class ClassInspector extends Inspector {
     private final ClassOrInterfaceDeclaration classDeclaration;
+    // TODO filepath and projectResults and just forwarded to ClassInspectorResults: does this make sense? Could ProjectInspector pass them directly?
     private final Path filepath;
+    private final ProjectInspectorResults projectResults;
+
     private final List<Pattern> patterns;
 
     // TODO Move their logic into dedicate classes
@@ -44,14 +48,15 @@ class ClassInspector extends Inspector {
         ACCESSOR_NODES.put(ReturnStmt.class, "getExpression");
     }
 
-    public ClassInspector(ClassOrInterfaceDeclaration classDeclaration, Path filepath) {
+    public ClassInspector(ClassOrInterfaceDeclaration classDeclaration, Path filepath, ProjectInspectorResults projectResults) {
         this.classDeclaration = classDeclaration;
         this.filepath = filepath;
+        this.projectResults = projectResults;
         this.patterns = ClassifiedPatterns.getInstance().getPatterns();
     }
 
     public ClassInspectorResults inspect() {
-        ClassInspectorResults inspectionResults = new ClassInspectorResults(classDeclaration, filepath);
+        ClassInspectorResults inspectionResults = new ClassInspectorResults(classDeclaration, filepath, projectResults);
         Set<VariableDeclarator> classifiedAttributes = getClassifiedAttributes(new LinkedHashSet<>(classDeclaration.getFields()));
         if (classifiedAttributes.size() > 0) {
             Map<VariableDeclarator, Set<MethodDeclaration>> attributesMutators = getUsageMethods(classifiedAttributes, MUTATOR_NODES);
