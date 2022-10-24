@@ -24,16 +24,16 @@ public class ProjectInspectorResults implements InspectorResults {
         this.classResults.add(classResult);
     }
 
-    public void setInheritanceResult(InheritanceInspectorResults inheritanceResult) {
-        this.inheritanceResult = inheritanceResult;
-    }
-
     public Set<ClassInspectorResults> getClassResults() {
         return Collections.unmodifiableSet(classResults);
     }
 
     public InheritanceInspectorResults getInheritanceResult() {
         return inheritanceResult;
+    }
+
+    public void setInheritanceResult(InheritanceInspectorResults inheritanceResult) {
+        this.inheritanceResult = inheritanceResult;
     }
 
     public ClassInspectorResults getClassResult(String classQualifiedName) {

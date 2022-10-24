@@ -39,17 +39,6 @@ public class ClassMetricsResults implements MetricsResults, Iterable<MetricValue
         metricValues.add(classValue);
     }
 
-    private String getClassFullyQualifiedName() {
-        return classFullyQualifiedName;
-    }
-
-    private Path getFilePath(Path basePath) {
-        if (basePath != null) {
-            return basePath.relativize(filePath);
-        }
-        return filePath;
-    }
-
     public List<MetricValue<?>> getMetricValues() {
         return Collections.unmodifiableList(metricValues);
     }
@@ -88,6 +77,17 @@ public class ClassMetricsResults implements MetricsResults, Iterable<MetricValue
         builder.append(String.join(", ", metricStrings));
         builder.append(")");
         return builder.toString();
+    }
+
+    private String getClassFullyQualifiedName() {
+        return classFullyQualifiedName;
+    }
+
+    private Path getFilePath(Path basePath) {
+        if (basePath != null) {
+            return basePath.relativize(filePath);
+        }
+        return filePath;
     }
 
     private Map<String, Object> getMetricsAsMap() {

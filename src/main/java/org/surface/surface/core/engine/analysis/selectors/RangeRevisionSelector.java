@@ -24,6 +24,17 @@ public class RangeRevisionSelector extends RevisionSelector {
         this.toString = range[1];
     }
 
+    private static String[] getRevisionsFromRange(String revisionRange) {
+        String[] parts = revisionRange.split("\\.\\.");
+        if (StringUtils.countMatches(revisionRange, '.') != 2 || parts.length != 2) {
+            throw new IllegalArgumentException("The revision range must fulfill the format (\"<START-SHA>..<END-SHA>\").");
+        }
+        if (!isAlphaNumeric(parts[0]) || !isAlphaNumeric(parts[1])) {
+            throw new IllegalArgumentException("Both the revisions in the range must be alphanumeric strings.");
+        }
+        return parts;
+    }
+
     @Override
     public List<RevCommit> selectRevisions(Git git) throws IOException, GitAPIException {
         if (git == null || getRevisionString() == null) {
@@ -39,16 +50,5 @@ public class RangeRevisionSelector extends RevisionSelector {
         commitsIter.spliterator().forEachRemaining(commits::add);
         Collections.reverse(commits);
         return commits;
-    }
-
-    private static String[] getRevisionsFromRange(String revisionRange) {
-        String[] parts = revisionRange.split("\\.\\.");
-        if (StringUtils.countMatches(revisionRange, '.') != 2 || parts.length != 2) {
-            throw new IllegalArgumentException("The revision range must fulfill the format (\"<START-SHA>..<END-SHA>\").");
-        }
-        if (!isAlphaNumeric(parts[0]) || !isAlphaNumeric(parts[1])) {
-            throw new IllegalArgumentException("Both the revisions in the range must be alphanumeric strings.");
-        }
-        return parts;
     }
 }

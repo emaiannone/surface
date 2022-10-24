@@ -39,10 +39,6 @@ public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetr
         return projectRoot.toAbsolutePath();
     }
 
-    private Set<ClassMetricsResults> getClassMetricsResults() {
-        return Collections.unmodifiableSet(classMetricsResults);
-    }
-
     @Override
     public Iterator<ClassMetricsResults> iterator() {
         return getClassMetricsResults().iterator();
@@ -50,14 +46,6 @@ public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetr
 
     public List<MetricValue<?>> getMetricValues() {
         return Collections.unmodifiableList(metricValues);
-    }
-
-    private List<String> getClassMetricsCodes() {
-        return classMetricsResults.stream()
-                .flatMap(mr -> mr.getMetricValues().stream())
-                .map(MetricValue::getMetricCode)
-                .distinct()
-                .collect(Collectors.toList());
     }
 
     public Map<String, List<MetricValue<?>>> classMetricsGroupedByCode() {
@@ -70,14 +58,6 @@ public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetr
             map.put(classMetricsCode, collect);
         }
         return map;
-    }
-
-    private Map<String, Object> getMetricsAsMap() {
-        Map<String, Object> metricsAsMap = new LinkedHashMap<>();
-        for (MetricValue<?> projectValue : metricValues) {
-            metricsAsMap.put(projectValue.getMetricCode(), projectValue.getValue());
-        }
-        return metricsAsMap;
     }
 
     public String getMetricsAsPlain() {
@@ -143,5 +123,25 @@ public class ProjectMetricsResults implements MetricsResults, Iterable<ClassMetr
             }
         }
         return builder.toString();
+    }
+
+    private Set<ClassMetricsResults> getClassMetricsResults() {
+        return Collections.unmodifiableSet(classMetricsResults);
+    }
+
+    private List<String> getClassMetricsCodes() {
+        return classMetricsResults.stream()
+                .flatMap(mr -> mr.getMetricValues().stream())
+                .map(MetricValue::getMetricCode)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    private Map<String, Object> getMetricsAsMap() {
+        Map<String, Object> metricsAsMap = new LinkedHashMap<>();
+        for (MetricValue<?> projectValue : metricValues) {
+            metricsAsMap.put(projectValue.getMetricCode(), projectValue.getValue());
+        }
+        return metricsAsMap;
     }
 }

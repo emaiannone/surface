@@ -65,10 +65,6 @@ public class ClassInspectorResults implements InspectorResults {
         keywordMatchedClassifiedMethods.add(method);
     }
 
-    public void setUsingReflection(boolean usingReflection) {
-        this.usingReflection = usingReflection;
-    }
-
     public String getClassFullyQualifiedName() {
         return classOrInterfaceDeclaration.getFullyQualifiedName().orElse(getClassName());
     }
@@ -290,6 +286,10 @@ public class ClassInspectorResults implements InspectorResults {
 
     public boolean isUsingReflection() {
         return usingReflection;
+    }
+
+    public void setUsingReflection(boolean usingReflection) {
+        this.usingReflection = usingReflection;
     }
 
     public boolean isCritical() {

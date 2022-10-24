@@ -6,14 +6,10 @@ import org.apache.commons.cli.Options;
 import org.surface.surface.core.engine.analysis.selectors.*;
 
 public class CLIOptions extends Options {
-    private static CLIOptions INSTANCE;
-
     public static final String TARGET = "target";
     public static final String WORK_DIR = "workDir";
     public static final String OUT_FILE = "outFile";
-
     public static final String METRICS = "metrics";
-
     public static final String RANGE = RangeRevisionSelector.CODE.toLowerCase();
     public static final String FROM = FromRevisionSelector.CODE.toLowerCase();
     public static final String TO = ToRevisionSelector.CODE.toLowerCase();
@@ -21,12 +17,11 @@ public class CLIOptions extends Options {
     public static final String DENY = DenyRevisionSelector.CODE.toLowerCase();
     public static final String ALL = AllRevisionSelector.CODE.toLowerCase();
     public static final String AT = AtRevisionSelector.CODE.toLowerCase();
-
     public static final String FILES = "files";
     public static final String INCLUDE_TESTS = "includeTests";
     public static final String EXCLUDE_WORK_TREE = "excludeWorkTree";
-
     public static final String HELP = "help";
+    private static CLIOptions INSTANCE;
 
     private CLIOptions() {
         Option targetOpt = Option.builder(TARGET)

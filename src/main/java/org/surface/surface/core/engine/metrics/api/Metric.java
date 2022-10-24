@@ -10,23 +10,23 @@ public abstract class Metric<T extends InspectorResults, U extends MetricValue<?
 
     public abstract U compute(T classResults);
 
-    protected void setName(String name) {
-        this.name = name;
+    public String toString() {
+        return name + " (" + code + ")";
     }
 
     protected String getName() {
         return name;
     }
 
-    protected void setCode(String code) {
-        this.code = code;
+    protected void setName(String name) {
+        this.name = name;
     }
 
     protected String getCode() {
         return code;
     }
 
-    public String toString() {
-        return name + " (" + code + ")";
+    protected void setCode(String code) {
+        this.code = code;
     }
 }

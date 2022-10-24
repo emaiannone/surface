@@ -19,10 +19,10 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 class CLIArgumentsParser {
-    private static final Logger LOGGER = LogManager.getLogger();
     public static final String HEADER = "Surface: a lightweight tool for computing security metrics from Java source code.\n\nOptions:";
     public static final String SYNTAX = "java -jar surface.jar";
     public static final String FOOTER = "\nPlease report any issue at https://github.com/emaiannone/surface";
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static RunningMode parse(String[] args) throws ParseException {
         // Fetch the indicated CLI options

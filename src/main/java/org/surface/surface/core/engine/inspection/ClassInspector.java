@@ -22,13 +22,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 class ClassInspector extends Inspector {
-    private final ClassOrInterfaceDeclaration classDeclaration;
-    // TODO filepath and projectResults and just forwarded to ClassInspectorResults: does this make sense? Could ProjectInspector pass them directly?
-    private final Path filepath;
-    private final ProjectInspectorResults projectResults;
-
-    private final List<Pattern> patterns;
-
     // TODO Move their logic into dedicate classes
     private static final Map<Class<? extends Node>, String> MUTATOR_NODES;
     private static final Map<Class<? extends Node>, String> ACCESSOR_NODES;
@@ -48,6 +41,12 @@ class ClassInspector extends Inspector {
         ACCESSOR_NODES.put(ForStmt.class, "getCompare");
         ACCESSOR_NODES.put(ReturnStmt.class, "getExpression");
     }
+
+    private final ClassOrInterfaceDeclaration classDeclaration;
+    // TODO filepath and projectResults and just forwarded to ClassInspectorResults: does this make sense? Could ProjectInspector pass them directly?
+    private final Path filepath;
+    private final ProjectInspectorResults projectResults;
+    private final List<Pattern> patterns;
 
     public ClassInspector(ClassOrInterfaceDeclaration classDeclaration, Path filepath, ProjectInspectorResults projectResults) {
         this.classDeclaration = classDeclaration;

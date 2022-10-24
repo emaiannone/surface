@@ -18,6 +18,8 @@ public abstract class SetupEnvironmentAction {
         return workDirPath;
     }
 
+    public abstract Path setupEnvironment();
+
     Path getTmpDirPath() {
         return Paths.get(workDirPath.toString(), SURFACE_TMP);
     }
@@ -25,6 +27,4 @@ public abstract class SetupEnvironmentAction {
     Path getRepoDirPath() {
         return Paths.get(getTmpDirPath().toString(), projectName);
     }
-
-    public abstract Path setupEnvironment();
 }

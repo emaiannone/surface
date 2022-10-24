@@ -50,6 +50,10 @@ public abstract class RunningMode {
         return codeName;
     }
 
+    public void setCodeName(String codeName) {
+        this.codeName = codeName;
+    }
+
     public RunResults getRunResults() {
         return runResults;
     }
@@ -58,9 +62,7 @@ public abstract class RunningMode {
         runResults.addAnalysisResults(project, results);
     }
 
-    public void setCodeName(String codeName) {
-        this.codeName = codeName;
-    }
+    public abstract void run() throws Exception;
 
     void exportResults() throws IOException {
         LOGGER.debug("* Exporting results to {}", runResultsExporter.getOutFile());
@@ -72,6 +74,4 @@ public abstract class RunningMode {
             throw new IOException("Failed to export to " + runResultsExporter.getOutFile(), e);
         }
     }
-
-    public abstract void run() throws Exception;
 }
