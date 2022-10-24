@@ -73,6 +73,28 @@ public class InheritanceInspectorResults implements InspectorResults {
                     children.stream().mapToInt(InheritanceTreeNode::getNumberCriticalSuperclasses).sum()));
         }
 
+        public int getNumberClassifiedMethods() {
+            return classResults.getNumberClassifiedMethods() +
+                    children.stream().mapToInt(InheritanceTreeNode::getNumberClassifiedMethods).sum();
+        }
+
+        public int getNumberInheritableClassifiedMethods() {
+            return (getNumberChildren() == 0 ? 0 :
+                    (classResults.getNumberInheritableClassifiedMethods() +
+                    children.stream().mapToInt(InheritanceTreeNode::getNumberInheritableClassifiedMethods).sum()));
+        }
+
+        public int getNumberClassifiedAttributes() {
+            return classResults.getNumberClassifiedAttributes() +
+                    children.stream().mapToInt(InheritanceTreeNode::getNumberClassifiedAttributes).sum();
+        }
+
+        public int getNumberInheritableClassifiedAttributes() {
+            return (getNumberChildren() == 0 ? 0 :
+                    (classResults.getNumberInheritableClassifiedAttributes() +
+                            children.stream().mapToInt(InheritanceTreeNode::getNumberInheritableClassifiedAttributes).sum()));
+        }
+
         @Override
         public String toString() {
             List<String> collect = children.stream().map(InheritanceTreeNode::toString).collect(Collectors.toList());

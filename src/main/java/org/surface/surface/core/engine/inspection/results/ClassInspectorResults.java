@@ -21,8 +21,8 @@ public class ClassInspectorResults implements InspectorResults {
     private final Set<MethodDeclaration> keywordMatchedClassifiedMethods;
     private boolean usingReflection;
 
-    // TODO Create a ClassifiedAttribute class, having VariableDeclarator, the corresponding FieldDeclarations, and the mutators and accessors (to remove the two Maps and correspondingFieldDeclarations)
-    private Set<FieldDeclaration> correspondingFieldDeclsCached;
+    // TODO Create a ClassifiedAttribute class, having VariableDeclarator, the corresponding FieldDeclarations, and the mutators and accessors (to remove the three Maps)
+    private Map<VariableDeclarator, FieldDeclaration> attributesFieldsCached;
     private List<ResolvedReferenceType> superClassesCached;
 
     public ClassInspectorResults(ClassOrInterfaceDeclaration classOrInterfaceDeclaration, Path filepath) {
@@ -31,7 +31,7 @@ public class ClassInspectorResults implements InspectorResults {
         this.attributesMutators = new LinkedHashMap<>();
         this.attributesAccessors = new LinkedHashMap<>();
         this.keywordMatchedClassifiedMethods = new LinkedHashSet<>();
-        this.correspondingFieldDeclsCached = null;
+        this.attributesFieldsCached = null;
         this.superClassesCached = null;
     }
 
@@ -89,12 +89,27 @@ public class ClassInspectorResults implements InspectorResults {
         return Collections.unmodifiableSet(allClassifiedMethods);
     }
 
+    public Set<MethodDeclaration> getInheritableClassifiedMethods() {
+        return getAllClassifiedMethods()
+                .stream()
+                .filter(m -> m.isPublic() || m.isProtected())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
     public int getNumberClassMethods() {
         return classOrInterfaceDeclaration.getMethods().size();
     }
 
+    public int getNumberClassifiedMethods() {
+        return getAllClassifiedMethods().size();
+    }
+
+    public int getNumberInheritableClassifiedMethods() {
+        return getInheritableClassifiedMethods().size();
+    }
+
     public int getNumberClassifiedAttributes() {
-        return getAttributesMethods().keySet().size();
+        return getClassifiedAttributes().size();
     }
 
     public boolean isMutated(VariableDeclarator variableDeclarator) {
@@ -161,24 +176,54 @@ public class ClassInspectorResults implements InspectorResults {
         return this.superClassesCached;
     }
 
-    public Set<FieldDeclaration> getCorrespondingFieldDeclarations() {
+    public Map<VariableDeclarator, FieldDeclaration> getAttributeFields() {
         // If already computed, return it
-        if (this.correspondingFieldDeclsCached != null) {
-            return this.correspondingFieldDeclsCached;
+        if (attributesFieldsCached != null) {
+            return attributesFieldsCached;
         }
-        this.correspondingFieldDeclsCached = new LinkedHashSet<>();
-        for (VariableDeclarator classifiedAttribute : getClassifiedAttributes()) {
+        attributesFieldsCached = new LinkedHashMap<>();
+        for (VariableDeclarator attr : getClassifiedAttributes()) {
             try {
-                FieldDeclaration correspondingFieldDecl = classifiedAttribute.resolve().asField().toAst().orElse(null);
-                if (correspondingFieldDecl != null) {
-                    this.correspondingFieldDeclsCached.add(correspondingFieldDecl);
-                }
+                attr.resolve().asField().toAst().ifPresent(fd -> attributesFieldsCached.put(attr, fd));
             } catch (RuntimeException ignore) {
                 //TODO Improve with logging ERROR. In any case, skip this classifiedAttribute
                 // resolve() raises a number of issues: UnsupportedOperationException, UnsolvedSymbolException, a pure RuntimeException, StackOverflowError
             }
         }
-        return this.correspondingFieldDeclsCached;
+        return attributesFieldsCached;
+    }
+
+    public Map<VariableDeclarator, FieldDeclaration> getNonPrivateInstanceClassifiedAttributes() {
+        return getAttributeFields().entrySet()
+                .stream()
+                .filter(e -> !e.getValue().isPrivate() && !e.getValue().isStatic())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (x, y) -> y, LinkedHashMap::new));
+    }
+
+    public Map<VariableDeclarator, FieldDeclaration> getNonPrivateClassClassifiedAttributes() {
+        return getAttributeFields().entrySet()
+                .stream()
+                .filter(e -> !e.getValue().isPrivate() && e.getValue().isStatic())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (x, y) -> y, LinkedHashMap::new));
+    }
+
+    public Map<VariableDeclarator, FieldDeclaration> getInheritableClassifiedAttributes() {
+        return getAttributeFields().entrySet()
+                .stream()
+                .filter(e -> e.getValue().isPublic() || e.getValue().isProtected())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (x, y) -> y, LinkedHashMap::new));
+    }
+
+    public int getNumberNonPrivateInstanceClassifiedAttributes() {
+        return getNonPrivateInstanceClassifiedAttributes().size();
+    }
+
+    public int getNumberNonPrivateClassClassifiedAttributes() {
+        return getNonPrivateClassClassifiedAttributes().size();
+    }
+
+    public int getNumberInheritableClassifiedAttributes() {
+        return getInheritableClassifiedAttributes().size();
     }
 
     public boolean isUsingReflection() {

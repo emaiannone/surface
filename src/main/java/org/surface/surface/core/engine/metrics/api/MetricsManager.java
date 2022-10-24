@@ -27,6 +27,10 @@ import org.surface.surface.core.engine.metrics.classlevel.rpb.RPB;
 import org.surface.surface.core.engine.metrics.classlevel.rpb.RPBCached;
 import org.surface.surface.core.engine.metrics.classlevel.uaca.UACA;
 import org.surface.surface.core.engine.metrics.classlevel.uaca.UACACached;
+import org.surface.surface.core.engine.metrics.projectlevel.acai.ACAI;
+import org.surface.surface.core.engine.metrics.projectlevel.acai.ACAICached;
+import org.surface.surface.core.engine.metrics.projectlevel.acmi.ACMI;
+import org.surface.surface.core.engine.metrics.projectlevel.acmi.ACMICached;
 import org.surface.surface.core.engine.metrics.projectlevel.acsp.ACSP;
 import org.surface.surface.core.engine.metrics.projectlevel.acsp.ACSPCached;
 import org.surface.surface.core.engine.metrics.projectlevel.cce.CCE;
@@ -62,7 +66,9 @@ public class MetricsManager {
         PROJECT_METRICS.put(CME.CODE, "getCme");
         PROJECT_METRICS.put(CDP.CODE, "getCdp");
         PROJECT_METRICS.put(CSCP.CODE, "getCscp");
-        PROJECT_METRICS.put(ACSP.CODE, "getCsp");
+        PROJECT_METRICS.put(ACSP.CODE, "getAcsp");
+        PROJECT_METRICS.put(ACMI.CODE, "getAcmi");
+        PROJECT_METRICS.put(ACAI.CODE, "getAcai");
         CLASS_METRICS = new LinkedHashMap<>();
         CLASS_METRICS.put(CAT.CODE, "getCat");
         CLASS_METRICS.put(CMT.CODE, "getCmt");
@@ -141,7 +147,9 @@ public class MetricsManager {
         private final CSCP cscp;
         private final CCE cce;
         private final CME cme;
-        private final ACSP ACSP;
+        private final ACSP acsp;
+        private final ACMI acmi;
+        private final ACAI acai;
 
         ProjectMetricsStructure() {
             // NOTE Create here all existing metrics and compose them
@@ -150,7 +158,9 @@ public class MetricsManager {
             this.cscp = new CSCPCached(cct);
             this.cce = new CCECached(cct);
             this.cme = new CMECached();
-            this.ACSP = new ACSPCached();
+            this.acsp = new ACSPCached();
+            this.acmi = new ACMICached();
+            this.acai = new ACAICached();
         }
 
         CCT getCct() {
@@ -173,8 +183,16 @@ public class MetricsManager {
             return cme;
         }
 
-        ACSP getCsp() {
-            return ACSP;
+        ACSP getAcsp() {
+            return acsp;
+        }
+
+        ACMI getAcmi() {
+            return acmi;
+        }
+
+        ACAI getAcai() {
+            return acai;
         }
     }
 
