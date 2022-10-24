@@ -30,7 +30,8 @@ public class ClassMetricsResults implements MetricsResults, Iterable<MetricValue
         this.classifiedAttributesMutatorsNames = classResults.getClassifiedAttributesMutatorsNames();
         this.classifiedAttributesAccessorsNames = classResults.getClassifiedAttributesAccessorsNames();
         this.classifiedAttributesMethodsNames = classResults.getClassifiedAttributesMethodsNames();
-        this.keywordMatchedClassifiedMethodsNames = classResults.getKeywordMatchedClassifiedMethodsNames();;
+        this.keywordMatchedClassifiedMethodsNames = classResults.getKeywordMatchedClassifiedMethodsNames();
+        ;
         this.metricValues = new ArrayList<>();
     }
 

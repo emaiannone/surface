@@ -10,6 +10,7 @@ import java.util.Map;
 public class RevisionGroupInterpreter {
     public static final String SEP = ":";
     private static final Map<String, Class<? extends RevisionSelector>> SUPPORTED_SELECTORS;
+
     static {
         // NOTE Any new selection type must be added here to be recognized by the CLI parser
         SUPPORTED_SELECTORS = new HashMap<>();

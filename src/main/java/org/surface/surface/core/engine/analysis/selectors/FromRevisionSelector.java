@@ -24,7 +24,7 @@ public class FromRevisionSelector extends RevisionSelector {
             return null;
         }
         List<RevCommit> commits = new ArrayList<>();
-        ObjectId from = git.getRepository().resolve(getRevisionString()+"^");
+        ObjectId from = git.getRepository().resolve(getRevisionString() + "^");
         if (from == null) {
             throw new IllegalStateException("The revision does not point to an existing snapshot");
         }

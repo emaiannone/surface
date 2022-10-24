@@ -239,8 +239,8 @@ public class ClassInspectorResults implements InspectorResults {
                         }
                     }
                 } catch (RuntimeException | StackOverflowError ignored) {
-                //TODO Improve with logging ERROR. In any case, any raised exception should ignore this usageNode
-                // resolve() raises a number of issues: UnsupportedOperationException, UnsolvedSymbolException, a pure RuntimeException, StackOverflowError
+                    //TODO Improve with logging ERROR. In any case, any raised exception should ignore this usageNode
+                    // resolve() raises a number of issues: UnsupportedOperationException, UnsolvedSymbolException, a pure RuntimeException, StackOverflowError
                 }
             }
         }

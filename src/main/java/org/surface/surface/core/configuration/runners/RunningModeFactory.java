@@ -14,8 +14,8 @@ import java.nio.file.Paths;
 public class RunningModeFactory {
     // NOTE This method must be updated when new run modes are implemented
     public static RunningMode newRunningMode(String target, Path workDirPath, RunResultsExporter runResultsExporter,
-                                                MetricsManager metricsManager, String filesRegex,
-                                                RevisionSelector revisionSelector, boolean includeTests, boolean excludeWorkTree) {
+                                             MetricsManager metricsManager, String filesRegex,
+                                             RevisionSelector revisionSelector, boolean includeTests, boolean excludeWorkTree) {
         if (target == null) {
             throw new IllegalArgumentException("No target specified. There must be a target of the analyses.");
         }
@@ -29,8 +29,7 @@ public class RunningModeFactory {
         if (UrlValidator.getInstance().isValid(target)) {
             try {
                 return new RemoteGitRunningMode(new URI(target), workDirPath, runResultsExporter, metricsManager, revisionSelector, filesRegex, includeTests);
-            }
-            catch (URISyntaxException e) {
+            } catch (URISyntaxException e) {
                 throw new IllegalArgumentException("The target string is a malformed URL.");
             }
         }

@@ -70,7 +70,7 @@ public class InheritanceInspectorResults implements InspectorResults {
         public int getNumberCriticalSuperclasses() {
             return (getNumberChildren() == 0 ? 0 :
                     ((classResults.isCritical() ? 1 : 0) +
-                    children.stream().mapToInt(InheritanceTreeNode::getNumberCriticalSuperclasses).sum()));
+                            children.stream().mapToInt(InheritanceTreeNode::getNumberCriticalSuperclasses).sum()));
         }
 
         public int getNumberClassifiedMethods() {
@@ -81,7 +81,7 @@ public class InheritanceInspectorResults implements InspectorResults {
         public int getNumberInheritableClassifiedMethods() {
             return (getNumberChildren() == 0 ? 0 :
                     (classResults.getNumberInheritableClassifiedMethods() +
-                    children.stream().mapToInt(InheritanceTreeNode::getNumberInheritableClassifiedMethods).sum()));
+                            children.stream().mapToInt(InheritanceTreeNode::getNumberInheritableClassifiedMethods).sum()));
         }
 
         public int getNumberClassifiedAttributes() {

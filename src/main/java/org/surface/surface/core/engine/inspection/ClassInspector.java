@@ -30,8 +30,9 @@ class ClassInspector extends Inspector {
     private final List<Pattern> patterns;
 
     // TODO Move their logic into dedicate classes
-    private static final Map<Class <? extends Node>, String> MUTATOR_NODES;
-    private static final Map<Class <? extends Node>, String> ACCESSOR_NODES;
+    private static final Map<Class<? extends Node>, String> MUTATOR_NODES;
+    private static final Map<Class<? extends Node>, String> ACCESSOR_NODES;
+
     static {
         MUTATOR_NODES = new LinkedHashMap<>();
         MUTATOR_NODES.put(AssignExpr.class, "getTarget");
@@ -78,7 +79,7 @@ class ClassInspector extends Inspector {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
-    private Map<VariableDeclarator, Set<MethodDeclaration>> getUsageMethods(Set<VariableDeclarator> attributes, Map<Class <? extends Node>, String> nodeTypesToTraverse) {
+    private Map<VariableDeclarator, Set<MethodDeclaration>> getUsageMethods(Set<VariableDeclarator> attributes, Map<Class<? extends Node>, String> nodeTypesToTraverse) {
         // Initialization: all attributes start with an empty set of methods
         Map<VariableDeclarator, Set<MethodDeclaration>> usageMethods = new LinkedHashMap<>();
         for (VariableDeclarator classifiedAttr : attributes) {

@@ -15,6 +15,7 @@ import java.util.Map;
 
 public class OutFileInterpreter implements InputStringInterpreter<RunResultsExporter> {
     private static final Map<String, Class<? extends RunResultsExporter>> SUPPORTED_FILE_TYPES;
+
     static {
         // NOTE Any new file type must be added here to be recognized by the CLI parser
         SUPPORTED_FILE_TYPES = new HashMap<>();

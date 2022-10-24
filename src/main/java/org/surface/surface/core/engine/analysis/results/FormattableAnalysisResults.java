@@ -4,5 +4,6 @@ import java.util.Map;
 
 public interface FormattableAnalysisResults {
     Map<String, Object> asMap();
+
     String asPlain();
 }
