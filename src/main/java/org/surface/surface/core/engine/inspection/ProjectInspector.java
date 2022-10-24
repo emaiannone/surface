@@ -93,7 +93,7 @@ public class ProjectInspector extends Inspector {
                 }
                 InheritanceInspector inheritanceInspector = new InheritanceInspector(projectInspectorResults.getClassResults());
                 InheritanceInspectorResults inheritanceResults = inheritanceInspector.inspect();
-                projectInspectorResults.addInheritanceResult(inheritanceResults);
+                projectInspectorResults.setInheritanceResult(inheritanceResults);
             }
             LOGGER.debug("* Preliminary Inspection ended");
             LOGGER.trace("Preliminary Inspection results:\n\t{}", projectInspectorResults.toString().replaceAll("\n", "\n\t"));

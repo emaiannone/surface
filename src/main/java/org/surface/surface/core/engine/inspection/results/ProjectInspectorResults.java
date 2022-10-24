@@ -12,24 +12,28 @@ import java.util.stream.Collectors;
 public class ProjectInspectorResults implements InspectorResults {
     private final ProjectRoot projectRoot;
     private final Set<ClassInspectorResults> classResults;
-    private final Set<InheritanceInspectorResults> inheritanceResults;
+    private InheritanceInspectorResults inheritanceResult;
 
     public ProjectInspectorResults(ProjectRoot projectRoot) {
         this.projectRoot = projectRoot;
         this.classResults = new LinkedHashSet<>();
-        this.inheritanceResults = new LinkedHashSet<>();
+        this.inheritanceResult = null;
     }
 
     public void addClassResult(ClassInspectorResults classResult) {
         this.classResults.add(classResult);
     }
 
-    public void addInheritanceResult(InheritanceInspectorResults inheritanceResult) {
-        this.inheritanceResults.add(inheritanceResult);
+    public void setInheritanceResult(InheritanceInspectorResults inheritanceResult) {
+        this.inheritanceResult = inheritanceResult;
     }
 
     public Set<ClassInspectorResults> getClassResults() {
         return Collections.unmodifiableSet(classResults);
+    }
+
+    public InheritanceInspectorResults getInheritanceResult() {
+        return inheritanceResult;
     }
 
     public ClassInspectorResults getClassResult(String classQualifiedName) {

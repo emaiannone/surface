@@ -27,6 +27,8 @@ import org.surface.surface.core.engine.metrics.classlevel.rpb.RPB;
 import org.surface.surface.core.engine.metrics.classlevel.rpb.RPBCached;
 import org.surface.surface.core.engine.metrics.classlevel.uaca.UACA;
 import org.surface.surface.core.engine.metrics.classlevel.uaca.UACACached;
+import org.surface.surface.core.engine.metrics.projectlevel.acsp.ACSP;
+import org.surface.surface.core.engine.metrics.projectlevel.acsp.ACSPCached;
 import org.surface.surface.core.engine.metrics.projectlevel.cce.CCE;
 import org.surface.surface.core.engine.metrics.projectlevel.cce.CCECached;
 import org.surface.surface.core.engine.metrics.projectlevel.cct.CCT;
@@ -37,8 +39,6 @@ import org.surface.surface.core.engine.metrics.projectlevel.cme.CME;
 import org.surface.surface.core.engine.metrics.projectlevel.cme.CMECached;
 import org.surface.surface.core.engine.metrics.projectlevel.cscp.CSCP;
 import org.surface.surface.core.engine.metrics.projectlevel.cscp.CSCPCached;
-import org.surface.surface.core.engine.metrics.projectlevel.csp.CSP;
-import org.surface.surface.core.engine.metrics.projectlevel.csp.CSPCached;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -62,7 +62,7 @@ public class MetricsManager {
         PROJECT_METRICS.put(CME.CODE, "getCme");
         PROJECT_METRICS.put(CDP.CODE, "getCdp");
         PROJECT_METRICS.put(CSCP.CODE, "getCscp");
-        PROJECT_METRICS.put(CSP.CODE, "getCsp");
+        PROJECT_METRICS.put(ACSP.CODE, "getCsp");
         CLASS_METRICS = new LinkedHashMap<>();
         CLASS_METRICS.put(CAT.CODE, "getCat");
         CLASS_METRICS.put(CMT.CODE, "getCmt");
@@ -141,7 +141,7 @@ public class MetricsManager {
         private final CSCP cscp;
         private final CCE cce;
         private final CME cme;
-        private final CSP csp;
+        private final ACSP ACSP;
 
         ProjectMetricsStructure() {
             // NOTE Create here all existing metrics and compose them
@@ -150,7 +150,7 @@ public class MetricsManager {
             this.cscp = new CSCPCached(cct);
             this.cce = new CCECached(cct);
             this.cme = new CMECached();
-            this.csp = new CSPCached();
+            this.ACSP = new ACSPCached();
         }
 
         CCT getCct() {
@@ -173,8 +173,8 @@ public class MetricsManager {
             return cme;
         }
 
-        CSP getCsp() {
-            return csp;
+        ACSP getCsp() {
+            return ACSP;
         }
     }
 

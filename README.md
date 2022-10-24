@@ -21,7 +21,7 @@ Currently, it supports **18 security metrics** from those defined by Alshammari 
 15. Critical Serialized Classes Proportion (CSCP)
 16. Critical Classes Extensibility (CCE)
 17. Classified Methods Extensibility (CME)
-18. Critical Superclasses Proportion (CSP)
+18. Average Critical Superclasses Proportion (A-CSP)
 
 # How to Build Surface
 

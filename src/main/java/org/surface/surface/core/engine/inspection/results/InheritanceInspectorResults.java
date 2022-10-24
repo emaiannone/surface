@@ -38,6 +38,10 @@ public class InheritanceInspectorResults implements InspectorResults {
             this.children = new LinkedHashSet<>();
         }
 
+        public ClassInspectorResults getClassResults() {
+            return classResults;
+        }
+
         public void addChild(InheritanceTreeNode child) {
             children.add(child);
         }
@@ -50,8 +54,23 @@ public class InheritanceInspectorResults implements InspectorResults {
             return Collections.unmodifiableSet(children);
         }
 
+        public String getRootFullyQualifiedName() {
+            return classResults.getClassFullyQualifiedName();
+        }
+
         public int getNumberChildren() {
             return children.size();
+        }
+
+        public int getNumberCriticalClasses() {
+            return (classResults.isCritical() ? 1 : 0) +
+                    children.stream().mapToInt(InheritanceTreeNode::getNumberCriticalClasses).sum();
+        }
+
+        public int getNumberCriticalSuperclasses() {
+            return (getNumberChildren() == 0 ? 0 :
+                    ((classResults.isCritical() ? 1 : 0) +
+                    children.stream().mapToInt(InheritanceTreeNode::getNumberCriticalSuperclasses).sum()));
         }
 
         @Override
