@@ -193,6 +193,13 @@ public class ClassInspectorResults implements InspectorResults {
         return attributesFieldsCached;
     }
 
+    public Set<VariableDeclarator> getUnaccessedAssignedAttributes() {
+        return getClassifiedAttributes()
+                .stream()
+                .filter(ca -> isMutated(ca) && !isAccessed(ca))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
     public Map<VariableDeclarator, FieldDeclaration> getNonPrivateInstanceClassifiedAttributes() {
         return getAttributeFields().entrySet()
                 .stream()
@@ -212,6 +219,10 @@ public class ClassInspectorResults implements InspectorResults {
                 .stream()
                 .filter(e -> e.getValue().isPublic() || e.getValue().isProtected())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (x, y) -> y, LinkedHashMap::new));
+    }
+
+    public int getNumberUnaccessedAssignedAttributes() {
+        return getUnaccessedAssignedAttributes().size();
     }
 
     public int getNumberNonPrivateInstanceClassifiedAttributes() {
