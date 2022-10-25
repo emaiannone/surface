@@ -33,6 +33,8 @@ import org.surface.surface.core.engine.metrics.projectlevel.acai.ACAI;
 import org.surface.surface.core.engine.metrics.projectlevel.acai.ACAICached;
 import org.surface.surface.core.engine.metrics.projectlevel.acmi.ACMI;
 import org.surface.surface.core.engine.metrics.projectlevel.acmi.ACMICached;
+import org.surface.surface.core.engine.metrics.projectlevel.acsi.ACSI;
+import org.surface.surface.core.engine.metrics.projectlevel.acsi.ACSICached;
 import org.surface.surface.core.engine.metrics.projectlevel.acsp.ACSP;
 import org.surface.surface.core.engine.metrics.projectlevel.acsp.ACSPCached;
 import org.surface.surface.core.engine.metrics.projectlevel.ccc.CCC;
@@ -78,6 +80,7 @@ public class MetricsManager {
         PROJECT_METRICS.put(CDP.CODE, "getCdp");
         PROJECT_METRICS.put(CSCP.CODE, "getCscp");
         PROJECT_METRICS.put(ACSP.CODE, "getAcsp");
+        PROJECT_METRICS.put(ACSI.CODE, "getAcsi");
         PROJECT_METRICS.put(ACMI.CODE, "getAcmi");
         PROJECT_METRICS.put(ACAI.CODE, "getAcai");
         CLASS_METRICS = new LinkedHashMap<>();
@@ -164,6 +167,7 @@ public class MetricsManager {
         private final CDP cdp;
         private final CSCP cscp;
         private final ACSP acsp;
+        private final ACSI acsi;
         private final ACMI acmi;
         private final ACAI acai;
 
@@ -177,6 +181,7 @@ public class MetricsManager {
             this.cdp = new CDPCached();
             this.cscp = new CSCPCached();
             this.acsp = new ACSPCached();
+            this.acsi = new ACSICached();
             this.acmi = new ACMICached();
             this.acai = new ACAICached();
         }
@@ -215,6 +220,10 @@ public class MetricsManager {
 
         public ACSP getAcsp() {
             return acsp;
+        }
+
+        public ACSI getAcsi() {
+            return acsi;
         }
 
         public ACMI getAcmi() {

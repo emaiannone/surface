@@ -32,14 +32,12 @@ public class InheritanceInspectorResults implements InspectorResults {
     public static class InheritanceTreeNode {
         private final ClassInspectorResults classResults;
         private final Set<InheritanceTreeNode> children;
+        private Set<InheritanceTreeNode> descendantsCached;
 
         public InheritanceTreeNode(ClassInspectorResults classResults) {
             this.classResults = classResults;
             this.children = new LinkedHashSet<>();
-        }
-
-        public ClassInspectorResults getClassResults() {
-            return classResults;
+            this.descendantsCached = null;
         }
 
         public void addChild(InheritanceTreeNode child) {
@@ -54,12 +52,24 @@ public class InheritanceInspectorResults implements InspectorResults {
             return Collections.unmodifiableSet(children);
         }
 
+        public Set<InheritanceTreeNode> getAllDescendants() {
+            if (descendantsCached == null) {
+                descendantsCached = new LinkedHashSet<>();
+                children.forEach(child -> descendantsCached.addAll(child.getAllDescendants()));
+            }
+            return Collections.unmodifiableSet(descendantsCached);
+        }
+
         public String getRootFullyQualifiedName() {
             return classResults.getClassFullyQualifiedName();
         }
 
         public int getNumberChildren() {
             return children.size();
+        }
+
+        public int getNumberAllDescendants() {
+            return getAllDescendants().size();
         }
 
         public int getNumberCriticalClasses() {
@@ -93,6 +103,14 @@ public class InheritanceInspectorResults implements InspectorResults {
             return (getNumberChildren() == 0 ? 0 :
                     (classResults.getNumberInheritableClassifiedAttributes() +
                             children.stream().mapToInt(InheritanceTreeNode::getNumberInheritableClassifiedAttributes).sum()));
+        }
+
+        public int getNumberInheritorsFromCriticalClasses() {
+            if (getNumberChildren() == 0) {
+                return 0;
+            }
+            int childrenContribution = children.stream().mapToInt(InheritanceTreeNode::getNumberAllDescendants).sum();
+            return classResults.isCritical() ? getNumberAllDescendants() + childrenContribution : childrenContribution;
         }
 
         @Override
