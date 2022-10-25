@@ -64,7 +64,7 @@ class ClassInspector extends Inspector {
             attributesMutators.forEach(inspectionResults::addMutators);
             attributesAccessors.forEach(inspectionResults::addAccessors);
         }
-        inspectionResults.setUsingReflection(isUsingReflection());
+        inspectionResults.setImportingReflection(isImportingReflection());
         return inspectionResults;
     }
 
@@ -140,7 +140,7 @@ class ClassInspector extends Inspector {
                 .anyMatch(p -> p.matcher(node.getNameAsString()).matches());
     }
 
-    private boolean isUsingReflection() {
+    private boolean isImportingReflection() {
         boolean usingReflection = false;
         CompilationUnit compilationUnit = classDeclaration.findCompilationUnit().orElse(null);
         if (compilationUnit != null) {

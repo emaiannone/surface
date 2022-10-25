@@ -131,22 +131,6 @@ public class ProjectInspectorResults implements InspectorResults {
         return classResults.size();
     }
 
-    public int getNumberAllClassifiedAttributes() {
-        return (int) getAllClassifiedAttributes()
-                .values()
-                .stream()
-                .mapToLong(Collection::size)
-                .sum();
-    }
-
-    public int getNumberPossibleAccesses() {
-        return (getNumberClasses() - 1) * getNumberAllClassifiedAttributes();
-    }
-
-    public int getNumberPossibleInheritances() {
-        return (getNumberClasses() - 1) * getNumberCriticalClasses();
-    }
-
     public int getNumberAllClassifiedMethods() {
         return getAllClassifiedMethods().size();
     }
@@ -181,6 +165,69 @@ public class ProjectInspectorResults implements InspectorResults {
 
     public int getNumberClassesAccessingClassifiedAttributes() {
         return getClassesAccessingClassifiedAttributes().size();
+    }
+
+    public int getNumberAllClassifiedAttributes() {
+        return getAllClassifiedAttributes()
+                .values()
+                .stream()
+                .mapToInt(Collection::size)
+                .sum();
+    }
+
+    public int getNumberAllNonPrivateInstanceClassifiedAttributes() {
+        return classResults.stream()
+                .mapToInt(ClassInspectorResults::getNumberNonPrivateInstanceClassifiedAttributes)
+                .sum();
+    }
+
+    public int getNumberAllNonPrivateClassClassifiedAttributes() {
+        return classResults.stream()
+                .mapToInt(ClassInspectorResults::getNumberNonPrivateClassClassifiedAttributes)
+                .sum();
+    }
+
+    public int getNumberAllNonPrivateClassifiedMethods() {
+        return classResults.stream()
+                .mapToInt(ClassInspectorResults::getNumberNonPrivateClassifiedMethods)
+                .sum();
+    }
+
+    public boolean hasClassImportingReflection() {
+        return classResults.stream()
+                .anyMatch(ClassInspectorResults::isImportingReflection);
+    }
+
+    public int getNumberAllPossibleMutatorAttributeInteractions() {
+        return classResults.stream()
+                .mapToInt(ClassInspectorResults::getNumberPossibleMutatorAttributeInteractions)
+                .sum();
+    }
+
+    public int getNumberAllActualMutatorAttributeInteractions() {
+        return classResults.stream()
+                .mapToInt(ClassInspectorResults::getNumberActualMutatorAttributeInteractions)
+                .sum();
+    }
+
+    public int getNumberAllPossibleAccessorAttributeInteractions() {
+        return classResults.stream()
+                .mapToInt(ClassInspectorResults::getNumberPossibleAccessorAttributeInteractions)
+                .sum();
+    }
+
+    public int getNumberAllActualAccessorAttributeInteractions() {
+        return classResults.stream()
+                .mapToInt(ClassInspectorResults::getNumberActualAccessorAttributeInteractions)
+                .sum();
+    }
+
+    public int getNumberPossibleAccesses() {
+        return (getNumberClasses() - 1) * getNumberAllClassifiedAttributes();
+    }
+
+    public int getNumberPossibleInheritances() {
+        return (getNumberClasses() - 1) * getNumberCriticalClasses();
     }
 
     @Override

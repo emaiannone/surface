@@ -8,6 +8,6 @@ public class RPBImpl extends RPB {
     @Override
     public BooleanMetricValue compute(ClassInspectorResults classResult) {
         return new BooleanMetricValue(getName(), getCode(),
-                classResult.isUsingReflection());
+                classResult.isImportingReflection());
     }
 }

@@ -24,7 +24,7 @@ public class ClassInspectorResults implements InspectorResults {
     // TODO Create a ClassifiedAttribute class, having VariableDeclarator, the corresponding FieldDeclarations, and the mutators and accessors (to remove the three Maps)
     private Map<VariableDeclarator, FieldDeclaration> attributesFieldsCached;
     private List<ResolvedReferenceType> superClassesCached;
-    private boolean usingReflection;
+    private boolean importingReflection;
 
     public ClassInspectorResults(ClassOrInterfaceDeclaration classOrInterfaceDeclaration, Path filepath, ProjectInspectorResults projectResults) {
         this.classOrInterfaceDeclaration = classOrInterfaceDeclaration;
@@ -304,12 +304,12 @@ public class ClassInspectorResults implements InspectorResults {
         return getInheritableClassifiedAttributes().size();
     }
 
-    public boolean isUsingReflection() {
-        return usingReflection;
+    public boolean isImportingReflection() {
+        return importingReflection;
     }
 
-    public void setUsingReflection(boolean usingReflection) {
-        this.usingReflection = usingReflection;
+    public void setImportingReflection(boolean importingReflection) {
+        this.importingReflection = importingReflection;
     }
 
     public boolean isCritical() {
