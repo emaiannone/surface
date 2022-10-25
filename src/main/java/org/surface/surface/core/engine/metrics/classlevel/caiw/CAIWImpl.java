@@ -16,9 +16,9 @@ public class CAIWImpl extends CAIW {
     public DoubleMetricValue compute(ClassInspectorResults classResults) {
         double actualInteractions = 0;
         for (VariableDeclarator attr : classResults.getClassifiedAttributes()) {
-            actualInteractions += classResults.getNumberClassifiedUsageMethods(attr);
+            actualInteractions += classResults.getNumberClassifiedMethods(attr);
         }
-        double possibleInteractions = cat.compute(classResults).getValue() * classResults.getNumberAllClassifiedUsageMethods();
+        double possibleInteractions = cat.compute(classResults).getValue() * classResults.getNumberClassifiedMethods();
         double value = possibleInteractions != 0.0 ? actualInteractions / possibleInteractions : 0.0;
         return new DoubleMetricValue(getName(), getCode(), value);
     }

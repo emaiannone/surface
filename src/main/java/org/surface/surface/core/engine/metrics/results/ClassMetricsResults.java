@@ -13,25 +13,16 @@ public class ClassMetricsResults implements MetricsResults, Iterable<MetricValue
     private static final String FILE_PATH = "filePath";
     private static final String CLASS_METRICS = "classMetrics";
     private static final String CLASSIFIED_ATTRIBUTES_METHODS = "classifiedAttributesMethods";
-    private static final String KEYWORD_MATCHED_CLASSIFIED_METHODS = "keywordMatchedClassifiedMethods";
 
     private final String classFullyQualifiedName;
     private final Path filePath;
-    private final Map<String, Set<String>> classifiedAttributesMutatorsNames;
-    private final Map<String, Set<String>> classifiedAttributesAccessorsNames;
     private final Map<String, Set<String>> classifiedAttributesMethodsNames;
-    private final Set<String> keywordMatchedClassifiedMethodsNames;
     private final List<MetricValue<?>> metricValues;
 
     public ClassMetricsResults(ClassInspectorResults classResults) {
         this.classFullyQualifiedName = classResults.getClassFullyQualifiedName();
         this.filePath = classResults.getFilepath();
-
-        this.classifiedAttributesMutatorsNames = classResults.getClassifiedAttributesMutatorsNames();
-        this.classifiedAttributesAccessorsNames = classResults.getClassifiedAttributesAccessorsNames();
         this.classifiedAttributesMethodsNames = classResults.getClassifiedAttributesMethodsNames();
-        this.keywordMatchedClassifiedMethodsNames = classResults.getKeywordMatchedClassifiedMethodsNames();
-        ;
         this.metricValues = new ArrayList<>();
     }
 
@@ -54,7 +45,6 @@ public class ClassMetricsResults implements MetricsResults, Iterable<MetricValue
         map.put(FILE_PATH, getFilePath(basePath).toString());
         map.put(CLASS_METRICS, getMetricsAsMap());
         map.put(CLASSIFIED_ATTRIBUTES_METHODS, classifiedAttributesMethodsNames);
-        map.put(KEYWORD_MATCHED_CLASSIFIED_METHODS, keywordMatchedClassifiedMethodsNames);
         return map;
     }
 
@@ -62,8 +52,7 @@ public class ClassMetricsResults implements MetricsResults, Iterable<MetricValue
         return "Class: " + getClassFullyQualifiedName() + "\n" +
                 "\tFile: " + getFilePath(basePath).toString() + "\n" +
                 "\tClass Metrics: " + getMetricsAsPlain() + "\n" +
-                "\tClassified Attributes:\n\t\t" + getNamesAsPlain(classifiedAttributesMethodsNames).replace("\n", "\n\t\t") + "\n" +
-                "\tKeyword-matched Classified Methods: " + (keywordMatchedClassifiedMethodsNames.size() > 0 ? String.join(", ", keywordMatchedClassifiedMethodsNames).replace("\n", "\n\t") : "None");
+                "\tClassified Attributes:\n\t\t" + getNamesAsPlain(classifiedAttributesMethodsNames).replace("\n", "\n\t\t") + "\n";
     }
 
     @Override

@@ -16,7 +16,7 @@ public class COAImpl extends COA {
 
     @Override
     public DoubleMetricValue compute(ClassInspectorResults classResults) {
-        Set<MethodDeclaration> classifiedMethods = classResults.getAllClassifiedMethods();
+        Set<MethodDeclaration> classifiedMethods = classResults.getClassifiedMethods();
         long nonPrivate = classifiedMethods.stream().filter(ca -> !ca.isPrivate()).count();
         int cmValue = CMT.compute(classResults).getValue();
         double value = cmValue != 0.0 ? (double) nonPrivate / cmValue : 0.0;

@@ -18,7 +18,7 @@ public class CMAIImpl extends CMAI {
         for (VariableDeclarator attr : classResults.getClassifiedAttributes()) {
             actualInteractions += classResults.getNumberClassifiedMutators(attr);
         }
-        double possibleInteractions = cat.compute(classResults).getValue() * classResults.getNumberAllClassifiedMutators();
+        double possibleInteractions = cat.compute(classResults).getValue() * classResults.getNumberClassifiedMutators();
         double value = possibleInteractions != 0.0 ? actualInteractions / possibleInteractions : 0.0;
         return new DoubleMetricValue(getName(), getCode(), value);
     }

@@ -18,7 +18,7 @@ public class CAAIImpl extends CAAI {
         for (VariableDeclarator attr : classResults.getClassifiedAttributes()) {
             actualInteractions += classResults.getNumberClassifiedAccessors(attr);
         }
-        double possibleInteractions = cat.compute(classResults).getValue() * classResults.getNumberAllClassifiedAccessors();
+        double possibleInteractions = cat.compute(classResults).getValue() * classResults.getNumberClassifiedAccessors();
         double value = possibleInteractions != 0.0 ? actualInteractions / possibleInteractions : 0.0;
         return new DoubleMetricValue(getName(), getCode(), value);
     }

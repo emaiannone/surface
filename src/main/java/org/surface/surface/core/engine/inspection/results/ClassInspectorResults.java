@@ -23,7 +23,6 @@ public class ClassInspectorResults implements InspectorResults {
 
     private final Map<VariableDeclarator, Set<MethodDeclaration>> attributesMutators;
     private final Map<VariableDeclarator, Set<MethodDeclaration>> attributesAccessors;
-    private final Set<MethodDeclaration> keywordMatchedClassifiedMethods;
 
     // TODO Create a ClassifiedAttribute class, having VariableDeclarator, the corresponding FieldDeclarations, and the mutators and accessors (to remove the three Maps)
     private Map<VariableDeclarator, FieldDeclaration> attributesFieldsCached;
@@ -36,7 +35,6 @@ public class ClassInspectorResults implements InspectorResults {
         this.projectResults = projectResults;
         this.attributesMutators = new LinkedHashMap<>();
         this.attributesAccessors = new LinkedHashMap<>();
-        this.keywordMatchedClassifiedMethods = new LinkedHashSet<>();
         this.attributesFieldsCached = null;
         this.superClassesCached = null;
     }
@@ -53,22 +51,6 @@ public class ClassInspectorResults implements InspectorResults {
         addMethods(attributesMutators, attribute, newMutators);
     }
 
-    public void addKeywordMatchedClassifiedMethods(Set<MethodDeclaration> methods) {
-        keywordMatchedClassifiedMethods.addAll(methods);
-    }
-
-    public void addAccessor(VariableDeclarator attribute, MethodDeclaration newAccessor) {
-        addMethod(attributesAccessors, attribute, newAccessor);
-    }
-
-    public void addMutator(VariableDeclarator attribute, MethodDeclaration newMutator) {
-        addMethod(attributesMutators, attribute, newMutator);
-    }
-
-    public void addKeywordMatchedClassifiedMethod(MethodDeclaration method) {
-        keywordMatchedClassifiedMethods.add(method);
-    }
-
     public String getClassFullyQualifiedName() {
         return classOrInterfaceDeclaration.getFullyQualifiedName().orElse(getClassName());
     }
@@ -77,7 +59,7 @@ public class ClassInspectorResults implements InspectorResults {
         return filepath;
     }
 
-    public Set<MethodDeclaration> getClassMethods() {
+    public Set<MethodDeclaration> getMethods() {
         return Collections.unmodifiableSet(new LinkedHashSet<>(classOrInterfaceDeclaration.getMethods()));
     }
 
@@ -85,45 +67,43 @@ public class ClassInspectorResults implements InspectorResults {
         return Collections.unmodifiableSet(getAttributesMethods().keySet());
     }
 
-    public Set<MethodDeclaration> getClassifiedUsageMethods(VariableDeclarator variableDeclarator) {
-        return Collections.unmodifiableSet(getAttributesMethods().get(variableDeclarator));
-    }
-
-    public Set<MethodDeclaration> getAllClassifiedMethods() {
-        Set<MethodDeclaration> allClassifiedMethods = new LinkedHashSet<>(getAllClassifiedUsageMethods());
-        allClassifiedMethods.addAll(keywordMatchedClassifiedMethods);
-        return Collections.unmodifiableSet(allClassifiedMethods);
+    public Set<MethodDeclaration> getClassifiedMethods() {
+        return Collections.unmodifiableSet(mergeMethods(getAttributesMethods()));
     }
 
     public Set<MethodDeclaration> getInheritableClassifiedMethods() {
-        return getAllClassifiedMethods()
+        return getClassifiedMethods()
                 .stream()
                 .filter(m -> m.isPublic() || m.isProtected())
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
-    public int getNumberClassMethods() {
-        return classOrInterfaceDeclaration.getMethods().size();
+    public int getNumberMethods() {
+        return getMethods().size();
     }
 
     public int getNumberClassifiedMethods() {
-        return getAllClassifiedMethods().size();
+        return getClassifiedMethods().size();
+    }
+
+    public int getNumberClassifiedMutators() {
+        return getClassifiedMutators().size();
+    }
+
+    public int getNumberClassifiedAccessors() {
+        return getClassifiedAccessors().size();
     }
 
     public int getNumberInheritableClassifiedMethods() {
         return getInheritableClassifiedMethods().size();
     }
 
+    public int getNumberClassifiedMethods(VariableDeclarator variableDeclarator) {
+        return getAttributesMethods().get(variableDeclarator).size();
+    }
+
     public int getNumberClassifiedAttributes() {
         return getClassifiedAttributes().size();
-    }
-
-    public boolean isMutated(VariableDeclarator variableDeclarator) {
-        return attributesMutators.containsKey(variableDeclarator);
-    }
-
-    public boolean isAccessed(VariableDeclarator variableDeclarator) {
-        return attributesAccessors.containsKey(variableDeclarator);
     }
 
     public int getNumberClassifiedMutators(VariableDeclarator variableDeclarator) {
@@ -134,24 +114,12 @@ public class ClassInspectorResults implements InspectorResults {
         return attributesAccessors.get(variableDeclarator).size();
     }
 
-    public int getNumberClassifiedUsageMethods(VariableDeclarator variableDeclarator) {
-        return getAttributesMethods().get(variableDeclarator).size();
+    public boolean isMutated(VariableDeclarator variableDeclarator) {
+        return attributesMutators.containsKey(variableDeclarator);
     }
 
-    public int getNumberAllClassifiedMutators() {
-        return getAllClassifiedMutators().size();
-    }
-
-    public int getNumberAllClassifiedAccessors() {
-        return getAllClassifiedAccessors().size();
-    }
-
-    public int getNumberAllClassifiedUsageMethods() {
-        return getAllClassifiedUsageMethods().size();
-    }
-
-    public int getNumberAllClassifiedMethods() {
-        return getAllClassifiedMethods().size();
+    public boolean isAccessed(VariableDeclarator variableDeclarator) {
+        return attributesAccessors.containsKey(variableDeclarator);
     }
 
     // TODO any method calling resolve() (e.g., getSuperclass, getSuperclasses, getAttributeFields, getCalledMethods, getUncalledClassifiedAccessors, etc.)
@@ -229,11 +197,11 @@ public class ClassInspectorResults implements InspectorResults {
     }
 
     public Set<MethodDeclaration> getUncalledClassifiedAccessors() {
-        if (getNumberAllClassifiedAccessors() == 0) {
+        if (getNumberClassifiedAccessors() == 0) {
             return new LinkedHashSet<>();
         }
         Map<String, MethodDeclaration> accessorMap = new LinkedHashMap<>();
-        for (MethodDeclaration accessor : getAllClassifiedAccessors()) {
+        for (MethodDeclaration accessor : getClassifiedAccessors()) {
             accessorMap.put(accessor.getSignature().toString(), accessor);
         }
         classLoop:
@@ -313,7 +281,7 @@ public class ClassInspectorResults implements InspectorResults {
     }
 
     public boolean isCritical() {
-        return getNumberClassifiedAttributes() + getNumberAllClassifiedMethods() > 0;
+        return getNumberClassifiedAttributes() + getNumberClassifiedMethods() > 0;
     }
 
     public boolean isFinal() {
@@ -335,37 +303,7 @@ public class ClassInspectorResults implements InspectorResults {
         List<String> classifiedAttributesStrings = new ArrayList<>();
         getClassifiedAttributesMethodsNames()
                 .forEach((key, value) -> classifiedAttributesStrings.add("\n\t" + key + " -> " + value));
-        List<String> keywordMethodsString = new ArrayList<>(getKeywordMatchedClassifiedMethodsNames());
-        return "Classified Attributes of " + getClassFullyQualifiedName() + String.join(", ", classifiedAttributesStrings) +
-                "\n\tKeyword-matched Classified Methods: " + String.join(", ", keywordMethodsString);
-    }
-
-    public Set<String> getClassifiedAttributesNames() {
-        return getClassifiedAttributes()
-                .stream()
-                .map(VariableDeclarator::getNameAsString)
-                .collect(Collectors.toCollection(LinkedHashSet::new));
-    }
-
-    public Set<String> getAllClassifiedMethodsNames() {
-        return getAllClassifiedMethods()
-                .stream()
-                .map(m -> m.getSignature().toString())
-                .collect(Collectors.toCollection(LinkedHashSet::new));
-    }
-
-    public Set<String> getClassifiedUsageMethodsNames() {
-        return getAllClassifiedUsageMethods()
-                .stream()
-                .map(m -> m.getSignature().toString())
-                .collect(Collectors.toCollection(LinkedHashSet::new));
-    }
-
-    public Set<String> getKeywordMatchedClassifiedMethodsNames() {
-        return keywordMatchedClassifiedMethods
-                .stream()
-                .map(m -> m.getSignature().toString())
-                .collect(Collectors.toCollection(LinkedHashSet::new));
+        return "Classified Attributes of " + getClassFullyQualifiedName() + String.join(", ", classifiedAttributesStrings);
     }
 
     public Map<String, Set<String>> getClassifiedAttributesMutatorsNames() {
@@ -378,17 +316,6 @@ public class ClassInspectorResults implements InspectorResults {
 
     public Map<String, Set<String>> getClassifiedAttributesMethodsNames() {
         return getNames(getAttributesMethods());
-    }
-
-    private void addMethod(Map<VariableDeclarator, Set<MethodDeclaration>> structure, VariableDeclarator attribute, MethodDeclaration newMethod) {
-        Set<MethodDeclaration> methods;
-        if (structure.containsKey(attribute)) {
-            methods = structure.computeIfAbsent(attribute, k -> new LinkedHashSet<>());
-        } else {
-            methods = new LinkedHashSet<>();
-            structure.put(attribute, methods);
-        }
-        methods.add(newMethod);
     }
 
     private void addMethods(Map<VariableDeclarator, Set<MethodDeclaration>> structure, VariableDeclarator attribute, Set<MethodDeclaration> newMethods) {
@@ -424,18 +351,6 @@ public class ClassInspectorResults implements InspectorResults {
         return Collections.unmodifiableMap(attributesMethods);
     }
 
-    private Map<VariableDeclarator, Set<MethodDeclaration>> getAttributesMutators() {
-        return Collections.unmodifiableMap(attributesMutators);
-    }
-
-    private Map<VariableDeclarator, Set<MethodDeclaration>> getAttributesAccessors() {
-        return Collections.unmodifiableMap(attributesAccessors);
-    }
-
-    private Set<MethodDeclaration> getKeywordMatchedClassifiedMethods() {
-        return Collections.unmodifiableSet(keywordMatchedClassifiedMethods);
-    }
-
     private Set<MethodDeclaration> mergeMethods(Map<VariableDeclarator, Set<MethodDeclaration>> map) {
         return map.values()
                 .stream()
@@ -443,15 +358,11 @@ public class ClassInspectorResults implements InspectorResults {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
-    private Set<MethodDeclaration> getAllClassifiedUsageMethods() {
-        return Collections.unmodifiableSet(mergeMethods(getAttributesMethods()));
-    }
-
-    private Set<MethodDeclaration> getAllClassifiedMutators() {
+    private Set<MethodDeclaration> getClassifiedMutators() {
         return Collections.unmodifiableSet(mergeMethods(attributesMutators));
     }
 
-    private Set<MethodDeclaration> getAllClassifiedAccessors() {
+    private Set<MethodDeclaration> getClassifiedAccessors() {
         return Collections.unmodifiableSet(mergeMethods(attributesAccessors));
     }
 

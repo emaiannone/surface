@@ -53,7 +53,7 @@ public class ProjectInspectorResults implements InspectorResults {
 
     public Set<MethodDeclaration> getAllClassifiedMethods() {
         Set<MethodDeclaration> collect = classResults.stream()
-                .map(ClassInspectorResults::getAllClassifiedMethods)
+                .map(ClassInspectorResults::getClassifiedMethods)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
         return Collections.unmodifiableSet(collect);
@@ -90,7 +90,7 @@ public class ProjectInspectorResults implements InspectorResults {
         Set<MethodDeclaration> allClassifiedMethods = getAllClassifiedMethods();
         for (ClassInspectorResults classResult : classResults) {
             Set<MethodDeclaration> otherClassifiedMethods = new LinkedHashSet<>(allClassifiedMethods);
-            otherClassifiedMethods.removeAll(classResult.getAllClassifiedMethods());
+            otherClassifiedMethods.removeAll(classResult.getClassifiedMethods());
             Set<MethodDeclaration> calledMethods = classResult.getCalledMethods();
             Set<MethodDeclaration> intersection = new LinkedHashSet<>(otherClassifiedMethods);
             intersection.retainAll(calledMethods);

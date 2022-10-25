@@ -63,9 +63,6 @@ class ClassInspector extends Inspector {
             Map<VariableDeclarator, Set<MethodDeclaration>> attributesAccessors = getUsageMethods(classifiedAttributes, ACCESSOR_NODES);
             attributesMutators.forEach(inspectionResults::addMutators);
             attributesAccessors.forEach(inspectionResults::addAccessors);
-            // Keyword-matched classified methods
-            Set<MethodDeclaration> keywordMatchedClassifiedMethods = getKeywordMatchedClassifiedMethods(new LinkedHashSet<>(classDeclaration.getMethods()));
-            inspectionResults.addKeywordMatchedClassifiedMethods(keywordMatchedClassifiedMethods);
         }
         inspectionResults.setUsingReflection(isUsingReflection());
         return inspectionResults;
@@ -136,13 +133,6 @@ class ClassInspector extends Inspector {
             }
         }
         return usageMethods;
-    }
-
-    private Set<MethodDeclaration> getKeywordMatchedClassifiedMethods(Set<MethodDeclaration> methodDeclarations) {
-        // Check whether the method name or any or the parameters matches one of the patterns
-        return methodDeclarations.stream()
-                .filter(m -> isClassified(m) || m.getParameters().stream().anyMatch(this::isClassified))
-                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     private boolean isClassified(NodeWithSimpleName<?> node) {
