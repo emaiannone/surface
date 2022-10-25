@@ -70,16 +70,16 @@ public class MetricsManager {
         // NOTE Any new metric must be added here to be recognized by the CLI parser
         PROJECT_METRICS = new LinkedHashMap<>();
         PROJECT_METRICS.put(CCT.CODE, "getCct");
+        PROJECT_METRICS.put(CCC.CODE, "getCcc");
+        PROJECT_METRICS.put(CPCC.CODE, "getCpcc");
         PROJECT_METRICS.put(CCE.CODE, "getCce");
         PROJECT_METRICS.put(CME.CODE, "getCme");
+        PROJECT_METRICS.put(UCAC.CODE, "getUcac");
         PROJECT_METRICS.put(CDP.CODE, "getCdp");
         PROJECT_METRICS.put(CSCP.CODE, "getCscp");
         PROJECT_METRICS.put(ACSP.CODE, "getAcsp");
         PROJECT_METRICS.put(ACMI.CODE, "getAcmi");
         PROJECT_METRICS.put(ACAI.CODE, "getAcai");
-        PROJECT_METRICS.put(UCAC.CODE, "getUcac");
-        PROJECT_METRICS.put(CCC.CODE, "getCcc");
-        PROJECT_METRICS.put(CPCC.CODE, "getCpcc");
         CLASS_METRICS = new LinkedHashMap<>();
         CLASS_METRICS.put(CAT.CODE, "getCat");
         CLASS_METRICS.put(CMT.CODE, "getCmt");
@@ -153,161 +153,161 @@ public class MetricsManager {
         return classMetrics;
     }
 
+    // NOTE Create here all existing metrics and compose them
     private static class ProjectMetricsStructure {
         private final CCT cct;
-        private final CDP cdp;
-        private final CSCP cscp;
+        private final CCC ccc;
+        private final CPCC cpcc;
         private final CCE cce;
         private final CME cme;
+        private final UCAC ucac;
+        private final CDP cdp;
+        private final CSCP cscp;
         private final ACSP acsp;
         private final ACMI acmi;
         private final ACAI acai;
-        private final UCAC ucac;
-        private final CCC ccc;
-        private final CPCC cpcc;
 
         ProjectMetricsStructure() {
-            // NOTE Create here all existing metrics and compose them
             this.cct = new CCTCached();
-            this.cdp = new CDPCached();
-            this.cscp = new CSCPCached();
+            this.ccc = new CCCCached();
+            this.cpcc = new CPCCCached();
             this.cce = new CCECached();
             this.cme = new CMECached();
+            this.ucac = new UCACCached();
+            this.cdp = new CDPCached();
+            this.cscp = new CSCPCached();
             this.acsp = new ACSPCached();
             this.acmi = new ACMICached();
             this.acai = new ACAICached();
-            this.ucac = new UCACCached();
-            this.ccc = new CCCCached();
-            this.cpcc = new CPCCCached();
         }
 
-        CCT getCct() {
+        public CCT getCct() {
             return cct;
         }
 
-        CDP getCdp() {
-            return cdp;
-        }
-
-        CSCP getCscp() {
-            return cscp;
-        }
-
-        CCE getCce() {
-            return cce;
-        }
-
-        CME getCme() {
-            return cme;
-        }
-
-        ACSP getAcsp() {
-            return acsp;
-        }
-
-        ACMI getAcmi() {
-            return acmi;
-        }
-
-        ACAI getAcai() {
-            return acai;
-        }
-
-        UCAC getUcac() {
-            return ucac;
-        }
-
-        CCC getCcc() {
+        public CCC getCcc() {
             return ccc;
         }
 
-        CPCC getCpcc() {
+        public CPCC getCpcc() {
             return cpcc;
+        }
+
+        public CCE getCce() {
+            return cce;
+        }
+
+        public CME getCme() {
+            return cme;
+        }
+
+        public UCAC getUcac() {
+            return ucac;
+        }
+
+        public CDP getCdp() {
+            return cdp;
+        }
+
+        public CSCP getCscp() {
+            return cscp;
+        }
+
+        public ACSP getAcsp() {
+            return acsp;
+        }
+
+        public ACMI getAcmi() {
+            return acmi;
+        }
+
+        public ACAI getAcai() {
+            return acai;
         }
     }
 
+    // NOTE Create here all existing metrics and compose them
     private static class ClassMetricsStructure {
         private final CAT cat;
         private final CMT cmt;
-        private final RPB rpb;
         private final CIDA cida;
         private final CCDA ccda;
         private final COA coa;
+        private final RPB rpb;
+        private final CMAI cmai;
+        private final CAAI caai;
+        private final CAIW caiw;
         private final CMW cmw;
         private final CWMP cwmp;
         private final UACA uaca;
         private final UCAM ucam;
-        private final CMAI cmai;
-        private final CAAI caai;
-        private final CAIW caiw;
 
         ClassMetricsStructure() {
-            // NOTE Create here all existing metrics and compose them
             this.cat = new CATCached();
             this.cmt = new CMTCached();
-            this.rpb = new RPBCached();
             this.cida = new CIDACached();
             this.ccda = new CCDACached();
             this.coa = new COACached();
+            this.rpb = new RPBCached();
+            this.cmai = new CMAICached();
+            this.caai = new CAAICached();
+            this.caiw = new CAIWCached();
             this.cmw = new CMWCached();
             this.cwmp = new CWMPCached();
             this.uaca = new UACACached();
             this.ucam = new UCAMCached();
-            this.cmai = new CMAICached();
-            this.caai = new CAAICached();
-            this.caiw = new CAIWCached();
         }
 
-        CAT getCat() {
+        public CAT getCat() {
             return cat;
         }
 
-        CMT getCmt() {
+        public CMT getCmt() {
             return cmt;
         }
 
-        RPB getRpb() {
-            return rpb;
-        }
-
-        CIDA getCida() {
+        public CIDA getCida() {
             return cida;
         }
 
-        CCDA getCcda() {
+        public CCDA getCcda() {
             return ccda;
         }
 
-        COA getCoa() {
+        public COA getCoa() {
             return coa;
         }
 
-        CMW getCmw() {
-            return cmw;
+        public RPB getRpb() {
+            return rpb;
         }
 
-        CWMP getCwmp() {
-            return cwmp;
-        }
-
-        UACA getUaca() {
-            return uaca;
-        }
-
-        UCAM getUcam() {
-            return ucam;
-        }
-
-        CMAI getCmai() {
+        public CMAI getCmai() {
             return cmai;
         }
 
-        CAAI getCaai() {
+        public CAAI getCaai() {
             return caai;
         }
 
-        CAIW getCaiw() {
+        public CAIW getCaiw() {
             return caiw;
+        }
+
+        public CMW getCmw() {
+            return cmw;
+        }
+
+        public CWMP getCwmp() {
+            return cwmp;
+        }
+
+        public UACA getUaca() {
+            return uaca;
+        }
+
+        public UCAM getUcam() {
+            return ucam;
         }
     }
 
