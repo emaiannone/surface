@@ -7,9 +7,9 @@ public class CMWImpl extends CMW {
 
     @Override
     public DoubleMetricValue compute(ClassInspectorResults classResults) {
-        int cmValue = classResults.getNumberClassifiedMethods();
-        int methods = classResults.getNumberMethods();
-        double value = methods != 0.0 ? (double) cmValue / methods : 0.0;
+        int numClassifiedMethods = classResults.getNumberClassifiedMethods();
+        int numMethods = classResults.getNumberMethods();
+        double value = numMethods != 0 ? (double) numClassifiedMethods / numMethods : 0.0;
         return new DoubleMetricValue(getName(), getCode(), value);
     }
 }

@@ -8,8 +8,8 @@ public class CCDAImpl extends CCDA {
     @Override
     public DoubleMetricValue compute(ClassInspectorResults classResults) {
         int nonPrivateStatic = classResults.getNumberNonPrivateClassClassifiedAttributes();
-        int catValue = classResults.getNumberClassifiedAttributes();
-        double value = catValue != 0.0 ? (double) nonPrivateStatic / catValue : 0.0;
+        int numClassifiedAttributes = classResults.getNumberClassifiedAttributes();
+        double value = numClassifiedAttributes != 0 ? (double) nonPrivateStatic / numClassifiedAttributes : 0.0;
         return new DoubleMetricValue(getName(), getCode(), value);
     }
 }

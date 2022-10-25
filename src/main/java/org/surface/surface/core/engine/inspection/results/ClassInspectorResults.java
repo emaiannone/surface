@@ -68,6 +68,13 @@ public class ClassInspectorResults implements InspectorResults {
         return Collections.unmodifiableSet(mergeMethods(getAttributesMethods()));
     }
 
+    public Set<MethodDeclaration> getNonPrivateClassifiedMethods() {
+        return getClassifiedMethods()
+                .stream()
+                .filter(m -> !m.isPrivate())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
     public Set<MethodDeclaration> getInheritableClassifiedMethods() {
         return getClassifiedMethods()
                 .stream()
@@ -91,6 +98,10 @@ public class ClassInspectorResults implements InspectorResults {
         return getClassifiedAccessors().size();
     }
 
+    public int getNumberNonPrivateClassifiedMethods() {
+        return getNonPrivateClassifiedMethods().size();
+    }
+
     public int getNumberInheritableClassifiedMethods() {
         return getInheritableClassifiedMethods().size();
     }
@@ -109,6 +120,30 @@ public class ClassInspectorResults implements InspectorResults {
 
     public int getNumberClassifiedAccessors(VariableDeclarator variableDeclarator) {
         return attributesAccessors.get(variableDeclarator).size();
+    }
+
+    public int getNumberPossibleAttributeInteractions() {
+        return getNumberClassifiedAttributes() * getNumberClassifiedMethods();
+    }
+
+    public int getNumberPossibleMutatorAttributeInteractions() {
+        return getNumberClassifiedAttributes() * getNumberClassifiedMutators();
+    }
+
+    public int getNumberPossibleAccessorAttributeInteractions() {
+        return getNumberClassifiedAttributes() * getNumberClassifiedAccessors();
+    }
+
+    public int getNumberActualAttributeInteractions() {
+        return (int) getClassifiedAttributes().stream().mapToDouble(this::getNumberClassifiedMethods).sum();
+    }
+
+    public int getNumberActualMutatorAttributeInteractions() {
+        return (int) getClassifiedAttributes().stream().mapToDouble(this::getNumberClassifiedMutators).sum();
+    }
+
+    public int getNumberActualAccessorAttributeInteractions() {
+        return (int) getClassifiedAttributes().stream().mapToDouble(this::getNumberClassifiedAccessors).sum();
     }
 
     public boolean isMutated(VariableDeclarator variableDeclarator) {
