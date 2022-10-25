@@ -3,7 +3,7 @@
 Surface (Java SecURity FlAws metriCs Extractor) is a command-line tool written in Java that can compute security metrics
 over the history of Java projects using a fully-automated static code analysis.
 
-Currently, it supports **22 security metrics** from those defined by Alshammari et
+Currently, it supports **23 security metrics** from those defined by Alshammari et
 al. (https://doi.org/10.1109/QSIC.2011.31), here reported:
 
 1. Classified Attributes Total (CAT)
@@ -20,14 +20,15 @@ al. (https://doi.org/10.1109/QSIC.2011.31), here reported:
 12. Classified Mutator Attribute Interactions (CMAI)
 13. Classified Accessor Attribute Interactions (CAAI)
 14. Classified Attributes Interaction Weight (CAIW)
-15. Critical Classes Total (CCT)
-16. Critical Design Proportion (CDP)
-17. Critical Serialized Classes Proportion (CSCP)
-18. Critical Classes Extensibility (CCE)
-19. Classified Methods Extensibility (CME)
-20. Average Critical Superclasses Proportion (A-CSP)
-21. Average Classified Methods Inheritance (A-CMI)
-22. Average Classified Attributes Inheritance (A-CAI)
+15. Critical Classes Coupling (CCC)
+16. Critical Classes Total (CCT)
+17. Critical Design Proportion (CDP)
+18. Critical Serialized Classes Proportion (CSCP)
+19. Critical Classes Extensibility (CCE)
+20. Classified Methods Extensibility (CME)
+21. Average Critical Superclasses Proportion (A-CSP)
+22. Average Classified Methods Inheritance (A-CMI)
+23. Average Classified Attributes Inheritance (A-CAI)
 
 # How to Build Surface
 

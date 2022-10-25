@@ -154,7 +154,7 @@ public class ClassInspectorResults implements InspectorResults {
         return getAllClassifiedMethods().size();
     }
 
-    // TODO any method calling resolve() (e.g., getSuperclass, getSuperclasses, getAttributeFields, getUncalledClassifiedAccessors, etc.)
+    // TODO any method calling resolve() (e.g., getSuperclass, getSuperclasses, getAttributeFields, getCalledMethods, getUncalledClassifiedAccessors, etc.)
     //  could be moved into ClassInspector as they are actually inspections, and not just queries.
     //  In doing so, we avoid re-computing them multiple times
     public ResolvedReferenceTypeDeclaration getSuperclass() {
@@ -205,6 +205,20 @@ public class ClassInspectorResults implements InspectorResults {
             }
         }
         return attributesFieldsCached;
+    }
+
+    public Set<MethodDeclaration> getCalledMethods() {
+        Set<MethodDeclaration> methodDeclarations = new LinkedHashSet<>();
+        List<MethodCallExpr> calledMethods = classOrInterfaceDeclaration.findAll(MethodCallExpr.class);
+        for (MethodCallExpr calledMethod : calledMethods) {
+            try {
+                calledMethod.resolve().toAst().ifPresent(methodDeclarations::add);
+            } catch (RuntimeException ignore) {
+                //TODO Improve with logging ERROR. In any case, skip this classifiedAttribute
+                // resolve() raises a number of issues: UnsupportedOperationException, UnsolvedSymbolException, a pure RuntimeException, StackOverflowError
+            }
+        }
+        return methodDeclarations;
     }
 
     public Set<VariableDeclarator> getUnaccessedAssignedAttributes() {

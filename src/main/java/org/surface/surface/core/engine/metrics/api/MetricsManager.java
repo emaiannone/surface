@@ -35,6 +35,8 @@ import org.surface.surface.core.engine.metrics.projectlevel.acmi.ACMI;
 import org.surface.surface.core.engine.metrics.projectlevel.acmi.ACMICached;
 import org.surface.surface.core.engine.metrics.projectlevel.acsp.ACSP;
 import org.surface.surface.core.engine.metrics.projectlevel.acsp.ACSPCached;
+import org.surface.surface.core.engine.metrics.projectlevel.ccc.CCC;
+import org.surface.surface.core.engine.metrics.projectlevel.ccc.CCCCached;
 import org.surface.surface.core.engine.metrics.projectlevel.cce.CCE;
 import org.surface.surface.core.engine.metrics.projectlevel.cce.CCECached;
 import org.surface.surface.core.engine.metrics.projectlevel.cct.CCT;
@@ -74,6 +76,7 @@ public class MetricsManager {
         PROJECT_METRICS.put(ACMI.CODE, "getAcmi");
         PROJECT_METRICS.put(ACAI.CODE, "getAcai");
         PROJECT_METRICS.put(UCAC.CODE, "getUcac");
+        PROJECT_METRICS.put(CCC.CODE, "getCcc");
         CLASS_METRICS = new LinkedHashMap<>();
         CLASS_METRICS.put(CAT.CODE, "getCat");
         CLASS_METRICS.put(CMT.CODE, "getCmt");
@@ -157,6 +160,7 @@ public class MetricsManager {
         private final ACMI acmi;
         private final ACAI acai;
         private final UCAC ucac;
+        private final CCC ccc;
 
         ProjectMetricsStructure() {
             // NOTE Create here all existing metrics and compose them
@@ -169,6 +173,7 @@ public class MetricsManager {
             this.acmi = new ACMICached();
             this.acai = new ACAICached();
             this.ucac = new UCACCached();
+            this.ccc = new CCCCached();
         }
 
         CCT getCct() {
@@ -205,6 +210,10 @@ public class MetricsManager {
 
         UCAC getUcac() {
             return ucac;
+        }
+
+        CCC getCcc() {
+            return ccc;
         }
     }
 
