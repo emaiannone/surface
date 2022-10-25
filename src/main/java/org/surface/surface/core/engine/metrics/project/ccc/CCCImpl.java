@@ -7,9 +7,7 @@ public class CCCImpl extends CCC {
 
     @Override
     public DoubleMetricValue compute(ProjectInspectorResults projectResult) {
-        int classesAccessing = projectResult.getNumberClassesAccessingClassifiedAttributes();
-        int possibleAccesses = (projectResult.getNumberClasses() - 1) * projectResult.getNumberAllClassifiedAttributes();
-        double value = possibleAccesses != 0.0 ? (double) classesAccessing / possibleAccesses : 0.0;
-        return new DoubleMetricValue(getName(), getCode(), value);
+        return new DoubleMetricValue(getName(), getCode(),
+                computeRatio(projectResult.getNumberClassesAccessingClassifiedAttributes(), projectResult.getNumberPossibleAccesses()));
     }
 }

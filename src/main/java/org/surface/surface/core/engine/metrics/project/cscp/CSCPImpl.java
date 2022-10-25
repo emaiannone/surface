@@ -7,9 +7,7 @@ public class CSCPImpl extends CSCP {
 
     @Override
     public DoubleMetricValue compute(ProjectInspectorResults projectResult) {
-        int cctValue = projectResult.getNumberCriticalClasses();
-        int serializedClassifiedClasses = projectResult.getNumberSerializableCriticalClasses();
-        double value = cctValue != 0.0 ? (double) serializedClassifiedClasses / cctValue : 0.0;
-        return new DoubleMetricValue(getName(), getCode(), value);
+        return new DoubleMetricValue(getName(), getCode(),
+                computeRatio(projectResult.getNumberSerializableCriticalClasses(), projectResult.getNumberCriticalClasses()));
     }
 }

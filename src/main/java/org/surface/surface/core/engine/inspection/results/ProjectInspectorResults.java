@@ -59,6 +59,13 @@ public class ProjectInspectorResults implements InspectorResults {
         return Collections.unmodifiableSet(collect);
     }
 
+    public Set<MethodDeclaration> getAllNonFinalClassifiedMethods() {
+        Set<MethodDeclaration> collect = getAllClassifiedMethods().stream()
+                .filter(cm -> !cm.isFinal())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        return Collections.unmodifiableSet(collect);
+    }
+
     public Set<ClassOrInterfaceDeclaration> getCriticalClasses() {
         Set<ClassOrInterfaceDeclaration> criticalClasses = getCriticalClassesInspectorResults()
                 .stream()
@@ -88,6 +95,13 @@ public class ProjectInspectorResults implements InspectorResults {
     public Set<ClassOrInterfaceDeclaration> getNestedCriticalClasses() {
         return getCriticalClassesInspectorResults().stream()
                 .filter(ClassInspectorResults::isNested)
+                .map(ClassInspectorResults::getClassOrInterfaceDeclaration)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    public Set<ClassOrInterfaceDeclaration> getNonFinalClassifiedClasses() {
+        return getCriticalClassesInspectorResults().stream()
+                .filter(cir -> !cir.isFinal())
                 .map(ClassInspectorResults::getClassOrInterfaceDeclaration)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
@@ -125,8 +139,20 @@ public class ProjectInspectorResults implements InspectorResults {
                 .sum();
     }
 
+    public int getNumberPossibleAccesses() {
+        return (getNumberClasses() - 1) * getNumberAllClassifiedAttributes();
+    }
+
+    public int getNumberPossibleInheritances() {
+        return (getNumberClasses() - 1) * getNumberCriticalClasses();
+    }
+
     public int getNumberAllClassifiedMethods() {
         return getAllClassifiedMethods().size();
+    }
+
+    public int getNumberAllNonFinalClassifiedMethods() {
+        return getAllNonFinalClassifiedMethods().size();
     }
 
     public int getNumberSerializableCriticalClasses() {
@@ -143,6 +169,10 @@ public class ProjectInspectorResults implements InspectorResults {
 
     public int getNumberNestedCriticalClasses() {
         return getNestedCriticalClasses().size();
+    }
+
+    public int getNumberNonFinalClassifiedClasses() {
+        return getNonFinalClassifiedClasses().size();
     }
 
     public int getNumberCriticalClassesWithNested() {

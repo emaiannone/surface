@@ -29,6 +29,41 @@ public class InheritanceInspectorResults implements InspectorResults {
         return Collections.unmodifiableSet(inheritanceTreeRoots);
     }
 
+    public int getNumberAllInheritableClassifiedMethods() {
+        return inheritanceTreeRoots.stream()
+                .mapToInt(InheritanceTreeNode::getNumberInheritableClassifiedMethods).sum();
+    }
+
+    public int getNumberAllClassifiedMethods() {
+        return inheritanceTreeRoots.stream()
+                .mapToInt(InheritanceTreeNode::getNumberClassifiedMethods).sum();
+    }
+
+    public int getNumberAllCriticalSuperclasses() {
+        return inheritanceTreeRoots.stream()
+                .mapToInt(InheritanceTreeNode::getNumberCriticalSuperclasses).sum();
+    }
+
+    public int getNumberAllCriticalClasses() {
+        return inheritanceTreeRoots.stream()
+                .mapToInt(InheritanceTreeNode::getNumberCriticalClasses).sum();
+    }
+
+    public int getNumberAllInheritorsFromCriticalClasses() {
+        return inheritanceTreeRoots.stream()
+                .mapToInt(InheritanceTreeNode::getNumberInheritorsFromCriticalClasses).sum();
+    }
+
+    public int getNumberAllInheritableClassifiedAttributes() {
+        return inheritanceTreeRoots.stream()
+                .mapToInt(InheritanceTreeNode::getNumberInheritableClassifiedAttributes).sum();
+    }
+
+    public int getNumberAllClassifiedAttributes() {
+        return inheritanceTreeRoots.stream()
+                .mapToInt(InheritanceTreeNode::getNumberClassifiedAttributes).sum();
+    }
+
     public static class InheritanceTreeNode {
         private final ClassInspectorResults classResults;
         private final Set<InheritanceTreeNode> children;
