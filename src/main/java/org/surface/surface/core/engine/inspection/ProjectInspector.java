@@ -19,6 +19,7 @@ import org.surface.surface.core.engine.inspection.results.ProjectInspectorResult
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,7 +66,9 @@ public class ProjectInspector extends Inspector {
                         LOGGER.debug("Failed to parse file {}", filePath);
                         continue;
                     }
-                    for (TypeDeclaration<?> typeDeclaration : compilationUnit.getTypes()) {
+                    // Involve nested classes as well
+                    List<TypeDeclaration<?>> allTypes = getAllTypes(compilationUnit.getTypes());
+                    for (TypeDeclaration<?> typeDeclaration : allTypes) {
                         if (typeDeclaration.isClassOrInterfaceDeclaration()) {
                             ClassOrInterfaceDeclaration classOrInterfaceDecl = typeDeclaration.asClassOrInterfaceDeclaration();
                             // Consider classes only
@@ -102,5 +105,13 @@ public class ProjectInspector extends Inspector {
             // Release! Sadly, the library does not manage well its internal cache, so we have to do this manual clear
             JavaParserFacade.clearInstances();
         }
+    }
+
+    private List<TypeDeclaration<?>> getAllTypes(List<TypeDeclaration<?>> types) {
+        return types.stream()
+                .map(td -> td.findAll(TypeDeclaration.class))
+                .flatMap(Collection::stream)
+                .map(td -> (TypeDeclaration<?>) td)
+                .collect(Collectors.toList());
     }
 }

@@ -85,6 +85,20 @@ public class ProjectInspectorResults implements InspectorResults {
         return Collections.unmodifiableSet(criticalClasses);
     }
 
+    public Set<ClassOrInterfaceDeclaration> getNestedCriticalClasses() {
+        return getCriticalClassesInspectorResults().stream()
+                .filter(ClassInspectorResults::isNested)
+                .map(ClassInspectorResults::getClassOrInterfaceDeclaration)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    public Set<ClassOrInterfaceDeclaration> getCriticalClassesWithNested() {
+        return getCriticalClassesInspectorResults().stream()
+                .filter(ClassInspectorResults::hasNestedClass)
+                .map(ClassInspectorResults::getClassOrInterfaceDeclaration)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
     public Map<ClassOrInterfaceDeclaration, MethodDeclaration> getClassesAccessingClassifiedAttributes() {
         Map<ClassOrInterfaceDeclaration, MethodDeclaration> classesAccessingClassifiedAttributes = new LinkedHashMap<>();
         Set<MethodDeclaration> allClassifiedMethods = getAllClassifiedMethods();
@@ -125,6 +139,14 @@ public class ProjectInspectorResults implements InspectorResults {
 
     public int getNumberCriticalClassesUncalledAccessor() {
         return getCriticalClassesUncalledAccessor().size();
+    }
+
+    public int getNumberNestedCriticalClasses() {
+        return getNestedCriticalClasses().size();
+    }
+
+    public int getNumberCriticalClassesWithNested() {
+        return getCriticalClassesWithNested().size();
     }
 
     public int getNumberClassesAccessingClassifiedAttributes() {

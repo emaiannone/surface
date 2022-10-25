@@ -1,9 +1,6 @@
 package org.surface.surface.core.engine.inspection.results;
 
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.FieldDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.resolution.declarations.ResolvedMethodDeclaration;
 import com.github.javaparser.resolution.declarations.ResolvedReferenceTypeDeclaration;
@@ -298,6 +295,14 @@ public class ClassInspectorResults implements InspectorResults {
         return false;
     }
 
+    public boolean isNested() {
+        return classOrInterfaceDeclaration.isNestedType();
+    }
+
+    public boolean hasNestedClass() {
+        return getNestedTypes().size() > 0;
+    }
+
     @Override
     public String toString() {
         List<String> classifiedAttributesStrings = new ArrayList<>();
@@ -316,6 +321,15 @@ public class ClassInspectorResults implements InspectorResults {
 
     public Map<String, Set<String>> getClassifiedAttributesMethodsNames() {
         return getNames(getAttributesMethods());
+    }
+
+    private List<TypeDeclaration<?>> getNestedTypes() {
+        return classOrInterfaceDeclaration.asTypeDeclaration()
+                .findAll(TypeDeclaration.class)
+                .stream()
+                .map(td -> (TypeDeclaration<?>) td)
+                .filter(TypeDeclaration::isNestedType)
+                .collect(Collectors.toList());
     }
 
     private void addMethods(Map<VariableDeclarator, Set<MethodDeclaration>> structure, VariableDeclarator attribute, Set<MethodDeclaration> newMethods) {
