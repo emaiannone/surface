@@ -13,9 +13,9 @@ public class RPBCached extends RPB {
     }
 
     @Override
-    public BooleanMetricValue compute(ClassInspectorResults classResults) {
+    public BooleanMetricValue compute(ClassInspectorResults classResult) {
         if (cachedResult == null) {
-            cachedResult = rpb.compute(classResults);
+            cachedResult = rpb.compute(classResult);
         }
         return cachedResult;
     }

@@ -6,9 +6,9 @@ import org.surface.surface.core.engine.metrics.results.values.DoubleMetricValue;
 public class CCCImpl extends CCC {
 
     @Override
-    public DoubleMetricValue compute(ProjectInspectorResults projectResults) {
-        int classesAccessing = projectResults.getNumberClassesAccessingClassifiedAttributes();
-        int possibleAccesses = (projectResults.getNumberClasses() - 1) * projectResults.getNumberAllClassifiedAttributes();
+    public DoubleMetricValue compute(ProjectInspectorResults projectResult) {
+        int classesAccessing = projectResult.getNumberClassesAccessingClassifiedAttributes();
+        int possibleAccesses = (projectResult.getNumberClasses() - 1) * projectResult.getNumberAllClassifiedAttributes();
         double value = possibleAccesses != 0.0 ? (double) classesAccessing / possibleAccesses : 0.0;
         return new DoubleMetricValue(getName(), getCode(), value);
     }

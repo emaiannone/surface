@@ -8,8 +8,8 @@ import org.surface.surface.core.engine.metrics.results.values.DoubleMetricValue;
 public class CSPImpl extends CSP {
 
     @Override
-    public DoubleMetricValue compute(ProjectInspectorResults projectResults) {
-        InheritanceInspectorResults inheritanceResult = projectResults.getInheritanceResult();
+    public DoubleMetricValue compute(ProjectInspectorResults projectResult) {
+        InheritanceInspectorResults inheritanceResult = projectResult.getInheritanceResult();
         int totNumCriticalSuperclasses = 0;
         int totNumCriticalClasses = 0;
         for (InheritanceTreeNode root : inheritanceResult.getInheritanceTreeRoots()) {

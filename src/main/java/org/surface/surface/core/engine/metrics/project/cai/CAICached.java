@@ -13,9 +13,9 @@ public class CAICached extends CAI {
     }
 
     @Override
-    public DoubleMetricValue compute(ProjectInspectorResults projectResults) {
+    public DoubleMetricValue compute(ProjectInspectorResults projectResult) {
         if (cachedResult == null) {
-            cachedResult = cai.compute(projectResults);
+            cachedResult = cai.compute(projectResult);
         }
         return cachedResult;
     }

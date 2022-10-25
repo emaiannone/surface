@@ -6,10 +6,8 @@ import org.surface.surface.core.engine.metrics.results.values.DoubleMetricValue;
 public class COAImpl extends COA {
 
     @Override
-    public DoubleMetricValue compute(ClassInspectorResults classResults) {
-        int nonPrivate = classResults.getNumberNonPrivateClassifiedMethods();
-        int numClassifiedMethods = classResults.getNumberClassifiedMethods();
-        double value = numClassifiedMethods != 0 ? (double) nonPrivate / numClassifiedMethods : 0.0;
-        return new DoubleMetricValue(getName(), getCode(), value);
+    public DoubleMetricValue compute(ClassInspectorResults classResult) {
+        return new DoubleMetricValue(getName(), getCode(),
+                computeRatio(classResult.getNumberNonPrivateClassifiedMethods(), classResult.getNumberClassifiedMethods()));
     }
 }

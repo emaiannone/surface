@@ -8,10 +8,14 @@ public abstract class Metric<T extends InspectorResults, U extends MetricValue<?
     private String name;
     private String code;
 
-    public abstract U compute(T classResults);
+    public abstract U compute(T inspectorResult);
 
     public String toString() {
         return name + " (" + code + ")";
+    }
+
+    protected double computeRatio(int num, int denom) {
+        return denom != 0 ? (double) num / denom : 0.0;
     }
 
     protected String getName() {

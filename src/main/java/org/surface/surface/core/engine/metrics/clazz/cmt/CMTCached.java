@@ -13,9 +13,9 @@ public class CMTCached extends CMT {
     }
 
     @Override
-    public IntMetricValue compute(ClassInspectorResults classResults) {
+    public IntMetricValue compute(ClassInspectorResults classResult) {
         if (cachedResult == null) {
-            cachedResult = cmt.compute(classResults);
+            cachedResult = cmt.compute(classResult);
         }
         return cachedResult;
     }

@@ -6,8 +6,8 @@ import org.surface.surface.core.engine.metrics.results.values.IntMetricValue;
 public class CCTImpl extends CCT {
 
     @Override
-    public IntMetricValue compute(ProjectInspectorResults projectResults) {
-        int value = projectResults.getNumberCriticalClasses();
+    public IntMetricValue compute(ProjectInspectorResults projectResult) {
+        int value = projectResult.getNumberCriticalClasses();
         return new IntMetricValue(getName(), getCode(), value);
     }
 }

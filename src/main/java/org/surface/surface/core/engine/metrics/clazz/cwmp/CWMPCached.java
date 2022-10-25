@@ -13,9 +13,9 @@ public class CWMPCached extends CWMP {
     }
 
     @Override
-    public DoubleMetricValue compute(ClassInspectorResults classResults) {
+    public DoubleMetricValue compute(ClassInspectorResults classResult) {
         if (cachedResult == null) {
-            cachedResult = cwmp.compute(classResults);
+            cachedResult = cwmp.compute(classResult);
         }
         return cachedResult;
     }

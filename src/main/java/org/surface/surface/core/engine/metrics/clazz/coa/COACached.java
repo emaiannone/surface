@@ -13,9 +13,9 @@ public class COACached extends COA {
     }
 
     @Override
-    public DoubleMetricValue compute(ClassInspectorResults classResults) {
+    public DoubleMetricValue compute(ClassInspectorResults classResult) {
         if (cachedResult == null) {
-            cachedResult = coa.compute(classResults);
+            cachedResult = coa.compute(classResult);
         }
         return cachedResult;
     }

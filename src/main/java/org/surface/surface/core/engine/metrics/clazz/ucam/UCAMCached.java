@@ -13,9 +13,9 @@ public class UCAMCached extends UCAM {
     }
 
     @Override
-    public DoubleMetricValue compute(ClassInspectorResults classResults) {
+    public DoubleMetricValue compute(ClassInspectorResults classResult) {
         if (cachedResult == null) {
-            cachedResult = ucam.compute(classResults);
+            cachedResult = ucam.compute(classResult);
         }
         return cachedResult;
     }

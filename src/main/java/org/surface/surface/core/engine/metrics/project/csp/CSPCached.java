@@ -13,9 +13,9 @@ public class CSPCached extends CSP {
     }
 
     @Override
-    public DoubleMetricValue compute(ProjectInspectorResults projectResults) {
+    public DoubleMetricValue compute(ProjectInspectorResults projectResult) {
         if (cachedResult == null) {
-            cachedResult = csp.compute(projectResults);
+            cachedResult = csp.compute(projectResult);
         }
         return cachedResult;
     }

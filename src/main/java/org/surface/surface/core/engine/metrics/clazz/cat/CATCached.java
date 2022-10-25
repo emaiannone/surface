@@ -13,9 +13,9 @@ public class CATCached extends CAT {
     }
 
     @Override
-    public IntMetricValue compute(ClassInspectorResults classResults) {
+    public IntMetricValue compute(ClassInspectorResults classResult) {
         if (cachedResult == null) {
-            cachedResult = cat.compute(classResults);
+            cachedResult = cat.compute(classResult);
         }
         return cachedResult;
     }

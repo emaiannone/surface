@@ -6,8 +6,8 @@ import org.surface.surface.core.engine.metrics.results.values.IntMetricValue;
 public class CMTImpl extends CMT {
 
     @Override
-    public IntMetricValue compute(ClassInspectorResults classResults) {
-        int numClassifiedMethods = classResults.getNumberClassifiedMethods();
-        return new IntMetricValue(getName(), getCode(), numClassifiedMethods);
+    public IntMetricValue compute(ClassInspectorResults classResult) {
+        return new IntMetricValue(getName(), getCode(),
+                classResult.getNumberClassifiedMethods());
     }
 }

@@ -13,9 +13,9 @@ public class CMAICached extends CMAI {
     }
 
     @Override
-    public DoubleMetricValue compute(ClassInspectorResults classResults) {
+    public DoubleMetricValue compute(ClassInspectorResults classResult) {
         if (cachedResult == null) {
-            cachedResult = cmai.compute(classResults);
+            cachedResult = cmai.compute(classResult);
         }
         return cachedResult;
     }

@@ -13,9 +13,9 @@ public class CAAICached extends CAAI {
     }
 
     @Override
-    public DoubleMetricValue compute(ClassInspectorResults classResults) {
+    public DoubleMetricValue compute(ClassInspectorResults classResult) {
         if (cachedResult == null) {
-            cachedResult = caai.compute(classResults);
+            cachedResult = caai.compute(classResult);
         }
         return cachedResult;
     }

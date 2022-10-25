@@ -13,9 +13,9 @@ public class UCACCached extends UCAC {
     }
 
     @Override
-    public DoubleMetricValue compute(ProjectInspectorResults projectResults) {
+    public DoubleMetricValue compute(ProjectInspectorResults projectResult) {
         if (cachedResult == null) {
-            cachedResult = ucac.compute(projectResults);
+            cachedResult = ucac.compute(projectResult);
         }
         return cachedResult;
     }

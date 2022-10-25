@@ -13,9 +13,9 @@ public class CSCPCached extends CSCP {
     }
 
     @Override
-    public DoubleMetricValue compute(ProjectInspectorResults projectResults) {
+    public DoubleMetricValue compute(ProjectInspectorResults projectResult) {
         if (cachedResult == null) {
-            cachedResult = cscp.compute(projectResults);
+            cachedResult = cscp.compute(projectResult);
         }
         return cachedResult;
     }

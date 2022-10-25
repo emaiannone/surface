@@ -13,9 +13,9 @@ public class CMICached extends CMI {
     }
 
     @Override
-    public DoubleMetricValue compute(ProjectInspectorResults projectResults) {
+    public DoubleMetricValue compute(ProjectInspectorResults projectResult) {
         if (cachedResult == null) {
-            cachedResult = cmi.compute(projectResults);
+            cachedResult = cmi.compute(projectResult);
         }
         return cachedResult;
     }

@@ -13,9 +13,9 @@ public class UACACached extends UACA {
     }
 
     @Override
-    public DoubleMetricValue compute(ClassInspectorResults classResults) {
+    public DoubleMetricValue compute(ClassInspectorResults classResult) {
         if (cachedResult == null) {
-            cachedResult = uaca.compute(classResults);
+            cachedResult = uaca.compute(classResult);
         }
         return cachedResult;
     }

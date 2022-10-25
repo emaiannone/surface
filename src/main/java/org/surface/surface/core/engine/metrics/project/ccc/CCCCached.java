@@ -13,9 +13,9 @@ public class CCCCached extends CCC {
     }
 
     @Override
-    public DoubleMetricValue compute(ProjectInspectorResults projectResults) {
+    public DoubleMetricValue compute(ProjectInspectorResults projectResult) {
         if (cachedResult == null) {
-            cachedResult = ccc.compute(projectResults);
+            cachedResult = ccc.compute(projectResult);
         }
         return cachedResult;
     }

@@ -13,9 +13,9 @@ public class CPCCCached extends CPCC {
     }
 
     @Override
-    public DoubleMetricValue compute(ProjectInspectorResults projectResults) {
+    public DoubleMetricValue compute(ProjectInspectorResults projectResult) {
         if (cachedResult == null) {
-            cachedResult = cpcc.compute(projectResults);
+            cachedResult = cpcc.compute(projectResult);
         }
         return cachedResult;
     }

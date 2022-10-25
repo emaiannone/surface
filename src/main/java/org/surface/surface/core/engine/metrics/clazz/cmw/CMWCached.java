@@ -13,9 +13,9 @@ public class CMWCached extends CMW {
     }
 
     @Override
-    public DoubleMetricValue compute(ClassInspectorResults classResults) {
+    public DoubleMetricValue compute(ClassInspectorResults classResult) {
         if (cachedResult == null) {
-            cachedResult = cmw.compute(classResults);
+            cachedResult = cmw.compute(classResult);
         }
         return cachedResult;
     }

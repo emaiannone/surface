@@ -6,8 +6,8 @@ import org.surface.surface.core.engine.metrics.results.values.IntMetricValue;
 public class CATImpl extends CAT {
 
     @Override
-    public IntMetricValue compute(ClassInspectorResults classResults) {
-        int value = classResults.getNumberClassifiedAttributes();
-        return new IntMetricValue(getName(), getCode(), value);
+    public IntMetricValue compute(ClassInspectorResults classResult) {
+        return new IntMetricValue(getName(), getCode(),
+                classResult.getNumberClassifiedAttributes());
     }
 }

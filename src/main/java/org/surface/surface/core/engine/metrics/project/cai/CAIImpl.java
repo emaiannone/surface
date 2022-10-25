@@ -9,8 +9,8 @@ import static org.surface.surface.core.engine.inspection.results.InheritanceInsp
 public class CAIImpl extends CAI {
 
     @Override
-    public DoubleMetricValue compute(ProjectInspectorResults projectResults) {
-        InheritanceInspectorResults inheritanceResult = projectResults.getInheritanceResult();
+    public DoubleMetricValue compute(ProjectInspectorResults projectResult) {
+        InheritanceInspectorResults inheritanceResult = projectResult.getInheritanceResult();
         int totNumClassifiedInheritableAttributes = 0;
         int totNumClassifiedAttributes = 0;
         for (InheritanceTreeNode root : inheritanceResult.getInheritanceTreeRoots()) {

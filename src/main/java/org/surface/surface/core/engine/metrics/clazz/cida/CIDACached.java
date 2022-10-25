@@ -13,9 +13,9 @@ public class CIDACached extends CIDA {
     }
 
     @Override
-    public DoubleMetricValue compute(ClassInspectorResults classResults) {
+    public DoubleMetricValue compute(ClassInspectorResults classResult) {
         if (cachedResult == null) {
-            cachedResult = cida.compute(classResults);
+            cachedResult = cida.compute(classResult);
         }
         return cachedResult;
     }

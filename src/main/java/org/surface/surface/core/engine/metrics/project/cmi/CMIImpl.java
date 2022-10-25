@@ -8,8 +8,8 @@ import org.surface.surface.core.engine.metrics.results.values.DoubleMetricValue;
 public class CMIImpl extends CMI {
 
     @Override
-    public DoubleMetricValue compute(ProjectInspectorResults projectResults) {
-        InheritanceInspectorResults inheritanceResult = projectResults.getInheritanceResult();
+    public DoubleMetricValue compute(ProjectInspectorResults projectResult) {
+        InheritanceInspectorResults inheritanceResult = projectResult.getInheritanceResult();
         int totNumClassifiedInheritableMethods = 0;
         int totNumClassifiedMethods = 0;
         for (InheritanceTreeNode root : inheritanceResult.getInheritanceTreeRoots()) {

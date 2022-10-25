@@ -13,9 +13,9 @@ public class CMECached extends CME {
     }
 
     @Override
-    public DoubleMetricValue compute(ProjectInspectorResults projectResults) {
+    public DoubleMetricValue compute(ProjectInspectorResults projectResult) {
         if (cachedResult == null) {
-            cachedResult = cme.compute(projectResults);
+            cachedResult = cme.compute(projectResult);
         }
         return cachedResult;
     }

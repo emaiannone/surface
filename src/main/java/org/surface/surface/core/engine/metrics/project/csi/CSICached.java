@@ -13,9 +13,9 @@ public class CSICached extends CSI {
     }
 
     @Override
-    public DoubleMetricValue compute(ProjectInspectorResults projectResults) {
+    public DoubleMetricValue compute(ProjectInspectorResults projectResult) {
         if (cachedResult == null) {
-            cachedResult = csi.compute(projectResults);
+            cachedResult = csi.compute(projectResult);
         }
         return cachedResult;
     }

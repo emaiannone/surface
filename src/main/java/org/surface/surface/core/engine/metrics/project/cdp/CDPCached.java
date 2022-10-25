@@ -13,9 +13,9 @@ public class CDPCached extends CDP {
     }
 
     @Override
-    public DoubleMetricValue compute(ProjectInspectorResults projectResults) {
+    public DoubleMetricValue compute(ProjectInspectorResults projectResult) {
         if (cachedResult == null) {
-            cachedResult = cdp.compute(projectResults);
+            cachedResult = cdp.compute(projectResult);
         }
         return cachedResult;
     }

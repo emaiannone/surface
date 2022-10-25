@@ -13,9 +13,9 @@ public class CCDACached extends CCDA {
     }
 
     @Override
-    public DoubleMetricValue compute(ClassInspectorResults classResults) {
+    public DoubleMetricValue compute(ClassInspectorResults classResult) {
         if (cachedResult == null) {
-            cachedResult = ccda.compute(classResults);
+            cachedResult = ccda.compute(classResult);
         }
         return cachedResult;
     }

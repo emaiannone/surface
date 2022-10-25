@@ -13,9 +13,9 @@ public class CAIWCached extends CAIW {
     }
 
     @Override
-    public DoubleMetricValue compute(ClassInspectorResults classResults) {
+    public DoubleMetricValue compute(ClassInspectorResults classResult) {
         if (cachedResult == null) {
-            cachedResult = caiw.compute(classResults);
+            cachedResult = caiw.compute(classResult);
         }
         return cachedResult;
     }

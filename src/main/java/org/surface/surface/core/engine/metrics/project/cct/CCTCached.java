@@ -13,9 +13,9 @@ public class CCTCached extends CCT {
     }
 
     @Override
-    public IntMetricValue compute(ProjectInspectorResults projectResults) {
+    public IntMetricValue compute(ProjectInspectorResults projectResult) {
         if (cachedResult == null) {
-            cachedResult = cct.compute(projectResults);
+            cachedResult = cct.compute(projectResult);
         }
         return cachedResult;
     }
