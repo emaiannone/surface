@@ -1,21 +1,21 @@
-package org.surface.surface.core.engine.metrics.project.acai;
+package org.surface.surface.core.engine.metrics.project.cmi;
 
 import org.surface.surface.core.engine.inspection.results.ProjectInspectorResults;
 import org.surface.surface.core.engine.metrics.results.values.DoubleMetricValue;
 
-public class ACAICached extends ACAI {
-    private final ACAIImpl acai;
+public class CMICached extends CMI {
+    private final CMIImpl cmi;
     private DoubleMetricValue cachedResult;
 
-    public ACAICached() {
-        this.acai = new ACAIImpl();
+    public CMICached() {
+        this.cmi = new CMIImpl();
         this.cachedResult = null;
     }
 
     @Override
     public DoubleMetricValue compute(ProjectInspectorResults projectResults) {
         if (cachedResult == null) {
-            cachedResult = acai.compute(projectResults);
+            cachedResult = cmi.compute(projectResults);
         }
         return cachedResult;
     }

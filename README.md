@@ -27,10 +27,10 @@ al. (https://doi.org/10.1109/QSIC.2011.31), here listed:
 19. [x] Unused Critical Accessor Class (UCAC)
 20. [x] Critical Design Proportion (CDP)
 21. [x] Critical Serialized Classes Proportion (CSCP)
-22. [x] Average Critical Superclasses Proportion (A-CSP)
-23. [x] Average Critical Superclass Inheritance (A-CSI)
-24. [x] Average Classified Methods Inheritance (A-CMI)
-25. [x] Average Classified Attributes Inheritance (A-CAI)
+22. [x] Critical Superclasses Proportion (CSP)
+23. [x] Critical Superclass Inheritance (CSI)
+24. [x] Classified Methods Inheritance (CMI)
+25. [x] Classified Attributes Inheritance (CAI)
 
 # How to Build Surface
 

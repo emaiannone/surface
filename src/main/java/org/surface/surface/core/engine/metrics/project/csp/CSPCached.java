@@ -1,21 +1,21 @@
-package org.surface.surface.core.engine.metrics.project.acsi;
+package org.surface.surface.core.engine.metrics.project.csp;
 
 import org.surface.surface.core.engine.inspection.results.ProjectInspectorResults;
 import org.surface.surface.core.engine.metrics.results.values.DoubleMetricValue;
 
-public class ACSICached extends ACSI {
-    private final ACSIImpl acsi;
+public class CSPCached extends CSP {
+    private final CSPImpl csp;
     private DoubleMetricValue cachedResult;
 
-    public ACSICached() {
-        this.acsi = new ACSIImpl();
+    public CSPCached() {
+        this.csp = new CSPImpl();
         this.cachedResult = null;
     }
 
     @Override
     public DoubleMetricValue compute(ProjectInspectorResults projectResults) {
         if (cachedResult == null) {
-            cachedResult = acsi.compute(projectResults);
+            cachedResult = csp.compute(projectResults);
         }
         return cachedResult;
     }

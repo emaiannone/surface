@@ -29,14 +29,8 @@ import org.surface.surface.core.engine.metrics.clazz.uaca.UACA;
 import org.surface.surface.core.engine.metrics.clazz.uaca.UACACached;
 import org.surface.surface.core.engine.metrics.clazz.ucam.UCAM;
 import org.surface.surface.core.engine.metrics.clazz.ucam.UCAMCached;
-import org.surface.surface.core.engine.metrics.project.acai.ACAI;
-import org.surface.surface.core.engine.metrics.project.acai.ACAICached;
-import org.surface.surface.core.engine.metrics.project.acmi.ACMI;
-import org.surface.surface.core.engine.metrics.project.acmi.ACMICached;
-import org.surface.surface.core.engine.metrics.project.acsi.ACSI;
-import org.surface.surface.core.engine.metrics.project.acsi.ACSICached;
-import org.surface.surface.core.engine.metrics.project.acsp.ACSP;
-import org.surface.surface.core.engine.metrics.project.acsp.ACSPCached;
+import org.surface.surface.core.engine.metrics.project.cai.CAI;
+import org.surface.surface.core.engine.metrics.project.cai.CAICached;
 import org.surface.surface.core.engine.metrics.project.ccc.CCC;
 import org.surface.surface.core.engine.metrics.project.ccc.CCCCached;
 import org.surface.surface.core.engine.metrics.project.cce.CCE;
@@ -47,10 +41,16 @@ import org.surface.surface.core.engine.metrics.project.cdp.CDP;
 import org.surface.surface.core.engine.metrics.project.cdp.CDPCached;
 import org.surface.surface.core.engine.metrics.project.cme.CME;
 import org.surface.surface.core.engine.metrics.project.cme.CMECached;
+import org.surface.surface.core.engine.metrics.project.cmi.CMI;
+import org.surface.surface.core.engine.metrics.project.cmi.CMICached;
 import org.surface.surface.core.engine.metrics.project.cpcc.CPCC;
 import org.surface.surface.core.engine.metrics.project.cpcc.CPCCCached;
 import org.surface.surface.core.engine.metrics.project.cscp.CSCP;
 import org.surface.surface.core.engine.metrics.project.cscp.CSCPCached;
+import org.surface.surface.core.engine.metrics.project.csi.CSI;
+import org.surface.surface.core.engine.metrics.project.csi.CSICached;
+import org.surface.surface.core.engine.metrics.project.csp.CSP;
+import org.surface.surface.core.engine.metrics.project.csp.CSPCached;
 import org.surface.surface.core.engine.metrics.project.ucac.UCAC;
 import org.surface.surface.core.engine.metrics.project.ucac.UCACCached;
 
@@ -79,10 +79,10 @@ public class MetricsManager {
         PROJECT_METRICS.put(UCAC.CODE, "getUcac");
         PROJECT_METRICS.put(CDP.CODE, "getCdp");
         PROJECT_METRICS.put(CSCP.CODE, "getCscp");
-        PROJECT_METRICS.put(ACSP.CODE, "getAcsp");
-        PROJECT_METRICS.put(ACSI.CODE, "getAcsi");
-        PROJECT_METRICS.put(ACMI.CODE, "getAcmi");
-        PROJECT_METRICS.put(ACAI.CODE, "getAcai");
+        PROJECT_METRICS.put(CSP.CODE, "getCsp");
+        PROJECT_METRICS.put(CSI.CODE, "getCsi");
+        PROJECT_METRICS.put(CMI.CODE, "getCmi");
+        PROJECT_METRICS.put(CAI.CODE, "getCai");
         CLASS_METRICS = new LinkedHashMap<>();
         CLASS_METRICS.put(CAT.CODE, "getCat");
         CLASS_METRICS.put(CMT.CODE, "getCmt");
@@ -166,10 +166,10 @@ public class MetricsManager {
         private final UCAC ucac;
         private final CDP cdp;
         private final CSCP cscp;
-        private final ACSP acsp;
-        private final ACSI acsi;
-        private final ACMI acmi;
-        private final ACAI acai;
+        private final CSP csp;
+        private final CSI csi;
+        private final CMI cmi;
+        private final CAI cai;
 
         ProjectMetricsStructure() {
             this.cct = new CCTCached();
@@ -180,10 +180,10 @@ public class MetricsManager {
             this.ucac = new UCACCached();
             this.cdp = new CDPCached();
             this.cscp = new CSCPCached();
-            this.acsp = new ACSPCached();
-            this.acsi = new ACSICached();
-            this.acmi = new ACMICached();
-            this.acai = new ACAICached();
+            this.csp = new CSPCached();
+            this.csi = new CSICached();
+            this.cmi = new CMICached();
+            this.cai = new CAICached();
         }
 
         public CCT getCct() {
@@ -218,20 +218,20 @@ public class MetricsManager {
             return cscp;
         }
 
-        public ACSP getAcsp() {
-            return acsp;
+        public CSP getCsp() {
+            return csp;
         }
 
-        public ACSI getAcsi() {
-            return acsi;
+        public CSI getCsi() {
+            return csi;
         }
 
-        public ACMI getAcmi() {
-            return acmi;
+        public CMI getCmi() {
+            return cmi;
         }
 
-        public ACAI getAcai() {
-            return acai;
+        public CAI getCai() {
+            return cai;
         }
     }
 
