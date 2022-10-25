@@ -7,16 +7,12 @@ import org.surface.surface.core.engine.metrics.clazz.caai.CAAI;
 import org.surface.surface.core.engine.metrics.clazz.caai.CAAICached;
 import org.surface.surface.core.engine.metrics.clazz.caiw.CAIW;
 import org.surface.surface.core.engine.metrics.clazz.caiw.CAIWCached;
-import org.surface.surface.core.engine.metrics.clazz.cat.CAT;
-import org.surface.surface.core.engine.metrics.clazz.cat.CATCached;
 import org.surface.surface.core.engine.metrics.clazz.ccda.CCDA;
 import org.surface.surface.core.engine.metrics.clazz.ccda.CCDACached;
 import org.surface.surface.core.engine.metrics.clazz.cida.CIDA;
 import org.surface.surface.core.engine.metrics.clazz.cida.CIDACached;
 import org.surface.surface.core.engine.metrics.clazz.cmai.CMAI;
 import org.surface.surface.core.engine.metrics.clazz.cmai.CMAICached;
-import org.surface.surface.core.engine.metrics.clazz.cmt.CMT;
-import org.surface.surface.core.engine.metrics.clazz.cmt.CMTCached;
 import org.surface.surface.core.engine.metrics.clazz.cmw.CMW;
 import org.surface.surface.core.engine.metrics.clazz.cmw.CMWCached;
 import org.surface.surface.core.engine.metrics.clazz.coa.COA;
@@ -71,6 +67,8 @@ public class MetricsManager {
     static {
         // NOTE Any new metric must be added here to be recognized by the CLI parser
         PROJECT_METRICS = new LinkedHashMap<>();
+        PROJECT_METRICS.put(org.surface.surface.core.engine.metrics.project.cat.CAT.CODE, "getCat");
+        PROJECT_METRICS.put(org.surface.surface.core.engine.metrics.project.cmt.CMT.CODE, "getCmt");
         PROJECT_METRICS.put(CCT.CODE, "getCct");
         PROJECT_METRICS.put(CCC.CODE, "getCcc");
         PROJECT_METRICS.put(CPCC.CODE, "getCpcc");
@@ -84,8 +82,8 @@ public class MetricsManager {
         PROJECT_METRICS.put(CMI.CODE, "getCmi");
         PROJECT_METRICS.put(CAI.CODE, "getCai");
         CLASS_METRICS = new LinkedHashMap<>();
-        CLASS_METRICS.put(CAT.CODE, "getCat");
-        CLASS_METRICS.put(CMT.CODE, "getCmt");
+        CLASS_METRICS.put(org.surface.surface.core.engine.metrics.clazz.cat.CAT.CODE, "getCat");
+        CLASS_METRICS.put(org.surface.surface.core.engine.metrics.clazz.cmt.CMT.CODE, "getCmt");
         CLASS_METRICS.put(CIDA.CODE, "getCida");
         CLASS_METRICS.put(CCDA.CODE, "getCcda");
         CLASS_METRICS.put(COA.CODE, "getCoa");
@@ -158,6 +156,8 @@ public class MetricsManager {
 
     // NOTE Create here all existing metrics and compose them
     private static class ProjectMetricsStructure {
+        private final org.surface.surface.core.engine.metrics.project.cat.CAT cat;
+        private final org.surface.surface.core.engine.metrics.project.cmt.CMT cmt;
         private final CCT cct;
         private final CCC ccc;
         private final CPCC cpcc;
@@ -172,6 +172,8 @@ public class MetricsManager {
         private final CAI cai;
 
         ProjectMetricsStructure() {
+            this.cat = new org.surface.surface.core.engine.metrics.project.cat.CATCached();
+            this.cmt = new org.surface.surface.core.engine.metrics.project.cmt.CMTCached();
             this.cct = new CCTCached();
             this.ccc = new CCCCached();
             this.cpcc = new CPCCCached();
@@ -184,6 +186,14 @@ public class MetricsManager {
             this.csi = new CSICached();
             this.cmi = new CMICached();
             this.cai = new CAICached();
+        }
+
+        public org.surface.surface.core.engine.metrics.project.cat.CAT getCat() {
+            return cat;
+        }
+
+        public org.surface.surface.core.engine.metrics.project.cmt.CMT getCmt() {
+            return cmt;
         }
 
         public CCT getCct() {
@@ -237,8 +247,8 @@ public class MetricsManager {
 
     // NOTE Create here all existing metrics and compose them
     private static class ClassMetricsStructure {
-        private final CAT cat;
-        private final CMT cmt;
+        private final org.surface.surface.core.engine.metrics.clazz.cat.CAT cat;
+        private final org.surface.surface.core.engine.metrics.clazz.cmt.CMT cmt;
         private final CIDA cida;
         private final CCDA ccda;
         private final COA coa;
@@ -252,8 +262,8 @@ public class MetricsManager {
         private final UCAM ucam;
 
         ClassMetricsStructure() {
-            this.cat = new CATCached();
-            this.cmt = new CMTCached();
+            this.cat = new org.surface.surface.core.engine.metrics.clazz.cat.CATCached();
+            this.cmt = new org.surface.surface.core.engine.metrics.clazz.cmt.CMTCached();
             this.cida = new CIDACached();
             this.ccda = new CCDACached();
             this.coa = new COACached();
@@ -267,11 +277,11 @@ public class MetricsManager {
             this.ucam = new UCAMCached();
         }
 
-        public CAT getCat() {
+        public org.surface.surface.core.engine.metrics.clazz.cat.CAT getCat() {
             return cat;
         }
 
-        public CMT getCmt() {
+        public org.surface.surface.core.engine.metrics.clazz.cmt.CMT getCmt() {
             return cmt;
         }
 
