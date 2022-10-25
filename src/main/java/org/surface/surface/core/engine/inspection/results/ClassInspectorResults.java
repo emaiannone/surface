@@ -281,7 +281,7 @@ public class ClassInspectorResults implements InspectorResults {
     }
 
     public boolean isCritical() {
-        return getNumberClassifiedAttributes() + getNumberClassifiedMethods() > 0;
+        return getNumberClassifiedAttributes() > 0;
     }
 
     public boolean isFinal() {
