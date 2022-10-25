@@ -1,15 +1,14 @@
 package org.surface.surface.core.engine.metrics.classlevel.cida;
 
 import org.surface.surface.core.engine.inspection.results.ClassInspectorResults;
-import org.surface.surface.core.engine.metrics.classlevel.cat.CAT;
 import org.surface.surface.core.engine.metrics.results.values.DoubleMetricValue;
 
 public class CIDACached extends CIDA {
     private final CIDAImpl cida;
     private DoubleMetricValue cachedResult;
 
-    public CIDACached(CAT cat) {
-        this.cida = new CIDAImpl(cat);
+    public CIDACached() {
+        this.cida = new CIDAImpl();
         this.cachedResult = null;
     }
 

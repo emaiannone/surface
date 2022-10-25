@@ -165,9 +165,9 @@ public class MetricsManager {
         ProjectMetricsStructure() {
             // NOTE Create here all existing metrics and compose them
             this.cct = new CCTCached();
-            this.cdp = new CDPCached(cct);
-            this.cscp = new CSCPCached(cct);
-            this.cce = new CCECached(cct);
+            this.cdp = new CDPCached();
+            this.cscp = new CSCPCached();
+            this.cce = new CCECached();
             this.cme = new CMECached();
             this.acsp = new ACSPCached();
             this.acmi = new ACMICached();
@@ -237,16 +237,16 @@ public class MetricsManager {
             this.cat = new CATCached();
             this.cmt = new CMTCached();
             this.rpb = new RPBCached();
-            this.cida = new CIDACached(cat);
-            this.ccda = new CCDACached(cat);
-            this.coa = new COACached(cmt);
-            this.cmw = new CMWCached(cmt);
+            this.cida = new CIDACached();
+            this.ccda = new CCDACached();
+            this.coa = new COACached();
+            this.cmw = new CMWCached();
             this.cwmp = new CWMPCached();
             this.uaca = new UACACached();
             this.ucam = new UCAMCached();
-            this.cmai = new CMAICached(cat);
-            this.caai = new CAAICached(cat);
-            this.caiw = new CAIWCached(cat);
+            this.cmai = new CMAICached();
+            this.caai = new CAAICached();
+            this.caiw = new CAIWCached();
         }
 
         CAT getCat() {

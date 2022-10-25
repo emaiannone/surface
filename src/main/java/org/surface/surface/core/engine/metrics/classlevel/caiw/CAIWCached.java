@@ -1,15 +1,14 @@
 package org.surface.surface.core.engine.metrics.classlevel.caiw;
 
 import org.surface.surface.core.engine.inspection.results.ClassInspectorResults;
-import org.surface.surface.core.engine.metrics.classlevel.cat.CAT;
 import org.surface.surface.core.engine.metrics.results.values.DoubleMetricValue;
 
 public class CAIWCached extends CAIW {
     private final CAIWImpl caiw;
     private DoubleMetricValue cachedResult;
 
-    public CAIWCached(CAT cat) {
-        this.caiw = new CAIWImpl(cat);
+    public CAIWCached() {
+        this.caiw = new CAIWImpl();
         this.cachedResult = null;
     }
 
