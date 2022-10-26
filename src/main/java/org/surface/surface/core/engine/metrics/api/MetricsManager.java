@@ -51,6 +51,20 @@ import org.surface.surface.core.engine.metrics.project.csi.CSI;
 import org.surface.surface.core.engine.metrics.project.csi.CSICached;
 import org.surface.surface.core.engine.metrics.project.csp.CSP;
 import org.surface.surface.core.engine.metrics.project.csp.CSPCached;
+import org.surface.surface.core.engine.metrics.project.pem.PEM;
+import org.surface.surface.core.engine.metrics.project.pem.PEMCached;
+import org.surface.surface.core.engine.metrics.project.pfsd.PFSD;
+import org.surface.surface.core.engine.metrics.project.pfsd.PFSDCached;
+import org.surface.surface.core.engine.metrics.project.pi.PI;
+import org.surface.surface.core.engine.metrics.project.pi.PICached;
+import org.surface.surface.core.engine.metrics.project.plcm.PLCM;
+import org.surface.surface.core.engine.metrics.project.plcm.PLCMCached;
+import org.surface.surface.core.engine.metrics.project.plp.PLP;
+import org.surface.surface.core.engine.metrics.project.plp.PLPCached;
+import org.surface.surface.core.engine.metrics.project.pras.PRAS;
+import org.surface.surface.core.engine.metrics.project.pras.PRASCached;
+import org.surface.surface.core.engine.metrics.project.pswl.PSWL;
+import org.surface.surface.core.engine.metrics.project.pswl.PSWLCached;
 import org.surface.surface.core.engine.metrics.project.rca.RCA;
 import org.surface.surface.core.engine.metrics.project.rca.RCACached;
 import org.surface.surface.core.engine.metrics.project.rcc.RCC;
@@ -59,6 +73,8 @@ import org.surface.surface.core.engine.metrics.project.rcm.RCM;
 import org.surface.surface.core.engine.metrics.project.rcm.RCMCached;
 import org.surface.surface.core.engine.metrics.project.sam.SAM;
 import org.surface.surface.core.engine.metrics.project.sam.SAMCached;
+import org.surface.surface.core.engine.metrics.project.tsi.TSI;
+import org.surface.surface.core.engine.metrics.project.tsi.TSICached;
 import org.surface.surface.core.engine.metrics.project.ucac.UCAC;
 import org.surface.surface.core.engine.metrics.project.ucac.UCACCached;
 import org.surface.surface.core.engine.metrics.project.wca.WCA;
@@ -116,7 +132,14 @@ public class MetricsManager {
         PROJECT_METRICS.put(WCM.CODE, "getWcm");
         PROJECT_METRICS.put(RCC.CODE, "getRcc");
         PROJECT_METRICS.put(WCC.CODE, "getWcc");
-        PROJECT_METRICS.put(SAM.CODE, "getSam");
+        PROJECT_METRICS.put(PLP.CODE, "getSam");
+        PROJECT_METRICS.put(PRAS.CODE, "getPras");
+        PROJECT_METRICS.put(PSWL.CODE, "getPswl");
+        PROJECT_METRICS.put(PFSD.CODE, "getPfsd");
+        PROJECT_METRICS.put(PLCM.CODE, "getPlcm");
+        PROJECT_METRICS.put(PI.CODE, "getPi");
+        PROJECT_METRICS.put(PEM.CODE, "getPem");
+        PROJECT_METRICS.put(TSI.CODE, "getTsi");
         CLASS_METRICS = new LinkedHashMap<>();
         CLASS_METRICS.put(CAT.CODE, "getCat");
         CLASS_METRICS.put(CMT.CODE, "getCmt");
@@ -224,6 +247,14 @@ public class MetricsManager {
         private final RCC rcc;
         private final WCC wcc;
         private final SAM sam;
+        private final PLP plp;
+        private final PRAS pras;
+        private final PSWL pswl;
+        private final PFSD pfsd;
+        private final PLCM plcm;
+        private final PI pi;
+        private final PEM pem;
+        private final TSI tsi;
 
         ProjectMetricsStructure() {
             this.cat = new org.surface.surface.core.engine.metrics.project.cat.CATCached();
@@ -258,6 +289,14 @@ public class MetricsManager {
             this.rcc = new RCCCached(rpb, cpcc, cce, cdp, csp);
             this.wcc = new WCCCached(ccc, ucac, cscp, csi);
             this.sam = new SAMCached(cat, cmt, cct);
+            this.plp = new PLPCached(wca, wcm, wcc);
+            this.pras = new PRASCached(rca, rcm, rcc);
+            this.pswl = new PSWLCached(wca, wcm);
+            this.pfsd = new PFSDCached(rca, rcm);
+            this.plcm = new PLCMCached(rcc, wcc);
+            this.pi = new PICached(wcc);
+            this.pem = new PEMCached(sam);
+            this.tsi = new TSICached(plp, pras, pswl, pfsd, plcm, pi, pem);
         }
 
         public org.surface.surface.core.engine.metrics.project.cat.CAT getCat() {
@@ -386,6 +425,38 @@ public class MetricsManager {
 
         public SAM getSam() {
             return sam;
+        }
+
+        public PLP getPlp() {
+            return plp;
+        }
+
+        public PRAS getPras() {
+            return pras;
+        }
+
+        public PSWL getPswl() {
+            return pswl;
+        }
+
+        public PFSD getPfsd() {
+            return pfsd;
+        }
+
+        public PLCM getPlcm() {
+            return plcm;
+        }
+
+        public PI getPi() {
+            return pi;
+        }
+
+        public PEM getPem() {
+            return pem;
+        }
+
+        public TSI getTsi() {
+            return tsi;
         }
     }
 

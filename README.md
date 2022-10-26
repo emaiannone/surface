@@ -41,14 +41,14 @@ al. (https://doi.org/10.1109/QSIC.2011.31), also at different granularity levels
   - [x] WCC - Writability of Critical Classes
   - [x] SAM - Security Absolute Measurements
 - Security Design Principle Metrics
-  - [ ] PLP - Grant Least Privilege
-  - [ ] PRAS - Reduce Attack Surface
-  - [ ] PSWL - Secure the Weakest Link
-  - [ ] PFSD - Fail-Safe Defaults
-  - [ ] PLCM - Least Common Mechanism
-  - [ ] PI - Isolation
-  - [ ] PEM - Economy of Mechanism
-- [ ] TSI - Total Security Index
+  - [x] PLP - Grant Least Privilege
+  - [x] PRAS - Reduce Attack Surface
+  - [x] PSWL - Secure the Weakest Link
+  - [x] PFSD - Fail-Safe Defaults
+  - [x] PLCM - Least Common Mechanism
+  - [x] PI - Isolation
+  - [x] PEM - Economy of Mechanism
+- [x] TSI - Total Security Index
 
 # How to Build Surface
 
