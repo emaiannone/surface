@@ -35,10 +35,10 @@ al. (https://doi.org/10.1109/QSIC.2011.31), also at different granularity levels
 - Readability and Writability Metrics
   - [x] RCA - Readability of Classified Attributes
   - [x] WCA - Writability of Classified Attributes
-  - [x] RCM - Readability of Classified Methods
-  - [x] WCM - Writability of Classified Methods
-  - [x] RCC - Readability of Critical Classes
-  - [x] WCC - Writability of Critical Classes
+  - [x] RCM - Readability via Classified Methods
+  - [x] WCM - Writability via Classified Methods
+  - [x] RCC - Readability via Critical Classes
+  - [x] WCC - Writability via Critical Classes
   - [x] SAM - Security Absolute Measurements
 - Security Design Principle Metrics
   - [x] PLP - Grant Least Privilege
@@ -127,7 +127,7 @@ Each parameter follows the same syntax as those defined by the command-line argu
 different structure than the command-line arguments:
 
 - `revisionFilter` is an object encompassing `-all`, `-allow`, `-deny`, `-at`, `-from`, `-to`, `-range` options.
-- `location` is the equivalent of `target`, except that you cannot point to another YAML file.
+- `location` is the equivalent of `-target` option, except that you cannot point to another YAML file.
 
 ## Examples
 
