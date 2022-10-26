@@ -170,6 +170,21 @@ public class FlexibleRunningMode extends RunningMode {
                 LOGGER.info("* Project \"{}\": No regular expression to filter files supplied. Using the default option.", projectId);
             }
 
+            // Validate branch
+            String branch;
+            if (project.branch != null) {
+                if (project.branch.equals("")) {
+                    branch = defaultRevisionSelector.getTargetBranch();
+                    LOGGER.info("Project \"{}\": The branch supplied was empty. Using the default:{}", projectId, filesRegex);
+                } else {
+                    branch = project.branch;
+                    LOGGER.info("* Project \"{}\": Going to look into branch \"{}\" in git repositories", projectId, branch);
+                }
+            } else {
+                branch = defaultRevisionSelector.getTargetBranch();
+                LOGGER.info("* Project \"{}\": No branch supplied. Using the default option.", projectId);
+            }
+
             // Interpret the Revision Filter
             RevisionSelector revisionSelector;
             if (project.revisionFilter == null) {
@@ -182,7 +197,7 @@ public class FlexibleRunningMode extends RunningMode {
                     LOGGER.info("* Project \"{}\": No valid revision selector supplied. Using the default: {}", projectId, revisionSelector);
                 } else {
                     try {
-                        revisionSelector = new RevisionGroupInterpreter().interpret(selectedRevision.getKey() + RevisionGroupInterpreter.SEP + selectedRevision.getValue());
+                        revisionSelector = new RevisionGroupInterpreter().interpret(selectedRevision.getKey() + RevisionGroupInterpreter.SEP + selectedRevision.getValue(), branch);
                         LOGGER.info("* Project \"{}\": Going to analyze \"{} {}\" revisions", projectId, selectedRevision.getKey(), selectedRevision.getValue());
                     } catch (IllegalArgumentException e) {
                         revisionSelector = defaultRevisionSelector;
@@ -258,6 +273,7 @@ public class FlexibleRunningMode extends RunningMode {
         public String files;
         public Boolean includeTests;
         public Boolean excludeWorkTree;
+        public String branch;
         public RevisionConfiguration revisionFilter;
 
         public ProjectConfiguration() {

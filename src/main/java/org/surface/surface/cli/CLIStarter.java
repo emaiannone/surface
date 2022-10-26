@@ -1,5 +1,6 @@
 package org.surface.surface.cli;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.surface.surface.core.Utils;
@@ -22,13 +23,24 @@ class CLIStarter {
                 String tabs = new String(new char[i + 1]).replace("\0", "  ");
                 LOGGER.error("{}* {}", tabs, messages.get(i));
             }
-            LOGGER.debug(e);
+            LOGGER.debug("\t* {}", ExceptionUtils.getStackTrace(e));
             System.exit(1);
         }
         if (runner == null) {
-            System.exit(0);
+            System.exit(1);
         }
-        Surface surface = new Surface(runner);
-        surface.run();
+        try {
+            Surface surface = new Surface(runner);
+            surface.run();
+        } catch (Exception e) {
+            List<String> messages = Utils.getExceptionMessageChain(e);
+            LOGGER.error("* Failed to parse some command line arguments");
+            for (int i = 0, messagesSize = messages.size(); i < messagesSize; i++) {
+                String tabs = new String(new char[i + 1]).replace("\0", "  ");
+                LOGGER.error("{}* {}", tabs, messages.get(i));
+            }
+            LOGGER.debug("\t* {}", ExceptionUtils.getStackTrace(e));
+            System.exit(1);
+        }
     }
 }

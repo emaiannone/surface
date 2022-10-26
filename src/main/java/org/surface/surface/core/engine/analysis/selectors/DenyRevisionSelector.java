@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.revwalk.RevCommit;
 
 import java.io.BufferedReader;
@@ -15,13 +16,14 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DenyRevisionSelector extends RevisionSelector {
     public static final String CODE = "DENY";
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DenyRevisionSelector(String revisionString) {
-        super(revisionString);
+    public DenyRevisionSelector(String revisionString, String branchString) {
+        super(revisionString, branchString);
     }
 
     @Override
@@ -29,7 +31,11 @@ public class DenyRevisionSelector extends RevisionSelector {
         if (git == null || getRevisionString() == null) {
             return null;
         }
-        List<RevCommit> denylist = new ArrayList<>();
+        Ref targetBranch = getTargetBranch(git);
+        if (targetBranch == null) {
+            throw new RuntimeException("Could not find the target branch");
+        }
+        List<RevCommit> commitsToDiscard = new ArrayList<>();
         File file = Paths.get(getRevisionString()).toFile();
         if (!file.isFile()) {
             throw new IllegalStateException("The file that should contain the list of commits NOT to analyze does not exist");
@@ -42,19 +48,20 @@ public class DenyRevisionSelector extends RevisionSelector {
                     LOGGER.debug("Line \"{}\" is not a valid commit. Ignoring it.", line);
                     continue;
                 }
-                denylist.add(git.getRepository().parseCommit(commitId));
+                commitsToDiscard.add(git.getRepository().parseCommit(commitId));
             }
+        }
+        Iterable<RevCommit> commitsIter;
+        if (getRevisionString() == null) {
+            commitsIter = git.log().all().call();
+        } else {
+            commitsIter = git.log().add(targetBranch.getObjectId()).call();
         }
         List<RevCommit> allCommits = new ArrayList<>();
-        Iterable<RevCommit> commitsIter = git.log().all().call();
         commitsIter.spliterator().forEachRemaining(allCommits::add);
         Collections.reverse(allCommits);
-        List<RevCommit> commits = new ArrayList<>();
-        for (RevCommit revCommit : allCommits) {
-            if (!denylist.contains(revCommit)) {
-                commits.add(revCommit);
-            }
-        }
-        return commits;
+        return allCommits.stream()
+                .filter(c -> !commitsToDiscard.contains(c))
+                .collect(Collectors.toList());
     }
 }

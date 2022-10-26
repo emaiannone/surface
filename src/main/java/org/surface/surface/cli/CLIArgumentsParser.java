@@ -91,25 +91,37 @@ class CLIArgumentsParser {
             LOGGER.info("* Going to analyze all .java files found (default).");
         }
 
+        // Validate branch
+        String branch = null;
+        if (commandLine.hasOption(CLIOptions.BRANCH)) {
+            branch = commandLine.getOptionValue(CLIOptions.BRANCH);
+            if (branch == null || branch.equals("")) {
+                throw new IllegalArgumentException("The supplied branch name must not be empty.");
+            }
+            LOGGER.info("* Going to look into branch \"{}\" in git repositories", branch);
+        } else {
+            LOGGER.info("* Going to look into all branches available in git repositories (default).");
+        }
+
         // Interpret the Revision group
         RevisionSelector revisionSelector;
         String revisionValue;
         String revisionModeSelected = options.getOptionGroup(options.getOption(CLIOptions.RANGE)).getSelected();
         if (revisionModeSelected == null) {
-            LOGGER.info("* Going to analyze the HEAD revision (default).");
+            LOGGER.info("* Going to analyze the HEAD revision in git repositories (default).");
             revisionValue = null;
         } else {
             revisionValue = commandLine.getOptionValue(revisionModeSelected);
         }
         try {
-            revisionSelector = new RevisionGroupInterpreter().interpret(revisionModeSelected + RevisionGroupInterpreter.SEP + revisionValue);
+            revisionSelector = new RevisionGroupInterpreter().interpret(revisionModeSelected + RevisionGroupInterpreter.SEP + revisionValue, branch);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("The supplied revision option must fulfill the requirements of each type (see options documentation).", e);
         }
         if (revisionSelector.getRevisionString() != null) {
-            LOGGER.info("* Going to analyze \"{} {}\" revisions", revisionModeSelected, revisionValue);
+            LOGGER.info("* Going to use \"{}{}\" to select revisions in git repositories", revisionModeSelected, revisionValue == null ? "" : " " + revisionValue);
         } else {
-            LOGGER.info("* Going to analyze all revisions");
+            LOGGER.info("* Going to analyze all revisions in git repositories");
         }
 
         // Check the inclusion of test files

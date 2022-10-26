@@ -10,6 +10,7 @@ public class CLIOptions extends Options {
     public static final String WORK_DIR = "workDir";
     public static final String OUT_FILE = "outFile";
     public static final String METRICS = "metrics";
+    public static final String BRANCH = "branch";
     public static final String RANGE = RangeRevisionSelector.CODE.toLowerCase();
     public static final String FROM = FromRevisionSelector.CODE.toLowerCase();
     public static final String TO = ToRevisionSelector.CODE.toLowerCase();
@@ -46,17 +47,22 @@ public class CLIOptions extends Options {
                 .desc("List of metrics to return or not with SURFACE. The list must be expressed as a comma-separate list of metrics codes, e.g., \"CAT,CMT,CIDA\" (no spaces between elements). The special argument \"ALL\" enables the execution of all metrics, shadowing all other codes in the list. If a code is preceded by a minus symbol (-), then the associated metric is excluded from the final report. If the format is invalid an error is raised. Any unrecognized code will be ignored. If there are not valid metrics to compute an error is raised.")
                 .build();
 
+        Option filesOpt = Option.builder(FILES)
+                .hasArg(true)
+                .desc("Regular expression to select the .java files on which SURFACE will operate. If not specified, all the parsable .java files in the target project will be considered. In FLEXIBLE mode this option represents default regular expression used when not specified differently in the YAML file. Note that the regular expression matches the entire string, as it is surrounded by \".*\", and ")
+                .build();
+
         Option range = Option.builder(RANGE)
                 .hasArg(true)
-                .desc("Revisions (commits) range to analyze. Format: \"<START-SHA>..<END-SHA>\", where <START-SHA> must be reachable from <END-SHA> (i.e., is in its ancestor path in the main branch), following a similar syntax to git log. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + FROM + ", -" + TO + ", -" + ALLOW + ", -" + DENY + ", -" + ALL + ", -" + AT + " options. If none is specified, the analyses will be run on the repository's HEAD.")
+                .desc("Revisions (commits) range to analyze. Format: \"<START-SHA>..<END-SHA>\", where <START-SHA> must be reachable from <END-SHA> (i.e., is in its ancestor path), following a similar syntax to git log. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + FROM + ", -" + TO + ", -" + ALLOW + ", -" + DENY + ", -" + ALL + ", -" + AT + " options. If none is specified, the analyses will be run on the repository's HEAD.")
                 .build();
         Option from = Option.builder(FROM)
                 .hasArg(true)
-                .desc("Revision (commit) from which select the commits to analyze (inclusive). Format: \"<SHA>\", where <SHA> is part of the main branch. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + ", -" + TO + ", -" + ALLOW + ", -" + DENY + ", -" + ALL + ", -" + AT + " options. If none is specified, the analyses will be run on the repository's HEAD.")
+                .desc("Revision (commit) from which select the commits to analyze (inclusive). Format: \"<SHA>\", where <SHA> is the hash of the first revision to analyze. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + ", -" + TO + ", -" + ALLOW + ", -" + DENY + ", -" + ALL + ", -" + AT + " options. If none is specified, the analyses will be run on the repository's HEAD.")
                 .build();
         Option to = Option.builder(TO)
                 .hasArg(true)
-                .desc("Revision (commit) up to which select the commits to analyze (inclusive). Format: \"<SHA>\", where <SHA> is part of the main branch. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + ", -" + FROM + ", -" + ALLOW + ", -" + DENY + ", -" + ALL + ", -" + AT + " options. If none is specified, the analyses will be run on the repository's HEAD.")
+                .desc("Revision (commit) up to which select the commits to analyze (inclusive). Format: \"<SHA>\", where <SHA> is the hash of the last revision to analyze. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + ", -" + FROM + ", -" + ALLOW + ", -" + DENY + ", -" + ALL + ", -" + AT + " options. If none is specified, the analyses will be run on the repository's HEAD.")
                 .build();
         Option allow = Option.builder(ALLOW)
                 .hasArg(true)
@@ -68,11 +74,11 @@ public class CLIOptions extends Options {
                 .build();
         Option all = Option.builder(ALL)
                 .hasArg(false)
-                .desc("Flag enabling the analysis of the entire project's history. Format: \"<START-SHA>..<END-SHA>\", where <START-SHA> must be reachable from <END-SHA> (i.e., is in its ancestor path in the main branch). Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + ", -" + FROM + ", -" + TO + ", -" + ALLOW + ", -" + DENY + ", -" + AT + " options. If none is specified, the analyses will be run on the repository's HEAD.")
+                .desc("Flag enabling the analysis of the entire project's history. Format: \"<START-SHA>..<END-SHA>\", where <START-SHA> must be reachable from <END-SHA> (i.e., is in its ancestor path). Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + ", -" + FROM + ", -" + TO + ", -" + ALLOW + ", -" + DENY + ", -" + AT + " options. If none is specified, the analyses will be run on the repository's HEAD.")
                 .build();
         Option at = Option.builder(AT)
                 .hasArg(true)
-                .desc("Revision (commit) to analyze. Format: \"<SHA>\", where <SHA> is part of the main branch. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + ", -" + FROM + ", -" + TO + ", -" + ALLOW + ", -" + DENY + ", -" + ALL + " options. If none is specified, the analyses will be run on the repository's HEAD.")
+                .desc("Revision (commit) to analyze. Format: \"<SHA>\", where <SHA> is the hash of the target revision. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + ", -" + FROM + ", -" + TO + ", -" + ALLOW + ", -" + DENY + ", -" + ALL + " options. If none is specified, the analyses will be run on the repository's HEAD.")
                 .build();
         OptionGroup revisionGroup = new OptionGroup()
                 .addOption(range)
@@ -84,9 +90,9 @@ public class CLIOptions extends Options {
                 .addOption(at);
         revisionGroup.setRequired(false);
 
-        Option filesOpt = Option.builder(FILES)
+        Option branchOpt = Option.builder(BRANCH)
                 .hasArg(true)
-                .desc("Regular expression to select the .java files on which SURFACE will operate. If not specified, all the parsable .java files in the target project will be considered. In FLEXIBLE mode this option represents default regular expression used when not specified differently in the YAML file. Note that the regular expression matches the entire string, as it is surrounded by \".*\", and ")
+                .desc("Name of the branch to analyze. Format: short reference name (\"<NAME>\") or complete reference name (\"refs/.../<NAME>\"). If not specified, all branches are taken into account when selecting the revisions to analyze and the HEAD is set to the default branch.")
                 .build();
 
         Option includeTestsOpt = Option.builder(INCLUDE_TESTS)
@@ -108,6 +114,7 @@ public class CLIOptions extends Options {
         addOption(workDirOpt);
         addOption(metricsOpt);
         addOption(outFileOpt);
+        addOption(branchOpt);
         addOptionGroup(revisionGroup);
         addOption(filesOpt);
         addOption(includeTestsOpt);

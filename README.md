@@ -85,15 +85,19 @@ Surface accepts the following options:
 - `-outFile <arg>` indicates the file where to export the JSON or TEXT results. Must have `.json` or `.txt` extension.
 - (Optional) `-files <arg>` selects the subset of files to analyze based on the regular expression `<arg>` applied to
   the names.
+- (Optional) `-branch <arg>` selects the branch to analyze. Can either be a short name or the complete reference
+  name (refs/.../<NAME>). When not specified, all branches are taken into account when selecting the revisions to
+  analyze and the HEAD is set to the default branch.
 - (Optional) One among `-all`, `-allow`, `-at`, `-deny`, `-from`, `-range`, `-to` to select the revisions (commits) to
-  analyze. If not specified, only the HEAD revision will be analyzed. Not interpreted when the target project has no
+  analyze. If not specified, only the HEAD revision (i.e., the latest one) of the target branch is analyzed. Not
+  interpreted when the target project has no
   history (not a `git` project):
-    - `-all` analyzes all revisions.
-    - `-allow <arg>` analyzes only the revisions appearing in file `<arg>` (one revision per line).
-    - `-deny <arg>` analyzes all revisions but the ones appearing in file `<arg>` (one revision per line).
-    - `-at <arg>` analyzes only the revision `<arg>`.
-    - `-from <arg>` analyzes all revisions starting from `<arg>` until HEAD.
-    - `-to <arg>` analyzes all revisions from the beginning to `<arg>`.
+  - `-all` analyzes all revisions.
+  - `-allow <arg>` analyzes only the revisions appearing in file `<arg>` (one revision per line).
+  - `-deny <arg>` analyzes all revisions but the ones appearing in file `<arg>` (one revision per line).
+  - `-at <arg>` analyzes only the revision `<arg>`.
+  - `-from <arg>` analyzes all revisions starting from `<arg>` until HEAD of the target branch.
+  - `-to <arg>` analyzes all revisions from the beginning to `<arg>`.
     - `-range <arg>` analyzes the revision range `<arg>`, that must follow the syntax `<from-sha>..<to-sha>`.
 - (Optional) `-excludeWorkTree` disables the analysis of uncommitted local changes for `git` projects.
 - (Optional) `-includeTests` allows the analysis of test classes (i.e., those having @Test-like annotations).
@@ -114,6 +118,7 @@ projects:
     location: <PATH-TO-LOCAL-PROJECTS>
     [metrics: <LIST-COMMA-SEPARATE-CODES>]
     [files: <REG-EXP>]
+    [branch: [refs/...]<NAME>]
     [revisionFilter:
       type: all|allow|deny|at|from|to|range
       [value: <SHA>|<SHA>..<SHA>]

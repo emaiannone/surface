@@ -23,7 +23,7 @@ public class RevisionGroupInterpreter {
         SUPPORTED_SELECTORS.put(AtRevisionSelector.CODE.toLowerCase(), AtRevisionSelector.class);
     }
 
-    public RevisionSelector interpret(String inputString) {
+    public RevisionSelector interpret(String inputString, String branch) {
         if (!inputString.contains(SEP)) {
             throw new IllegalArgumentException("The revision string must have a separating character (" + SEP + ").");
         }
@@ -34,10 +34,10 @@ public class RevisionGroupInterpreter {
         try {
             Class<? extends RevisionSelector> aClass = SUPPORTED_SELECTORS.get(revisionMode);
             if (aClass == null) {
-                return new HeadRevisionSelector(null);
+                return new HeadRevisionSelector(null, branch);
             }
-            Constructor<? extends RevisionSelector> constructor = aClass.getConstructor(String.class);
-            revisionSelector = constructor.newInstance(revisionString);
+            Constructor<? extends RevisionSelector> constructor = aClass.getConstructor(String.class, String.class);
+            revisionSelector = constructor.newInstance(revisionString, branch);
         } catch (InvocationTargetException | IllegalAccessException | InstantiationException |
                  NoSuchMethodException e) {
             throw new IllegalArgumentException("The revision string supplied is invalid.");

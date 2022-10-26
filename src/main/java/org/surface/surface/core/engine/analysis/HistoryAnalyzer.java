@@ -68,7 +68,7 @@ public class HistoryAnalyzer extends Analyzer {
             try {
                 commits = revisionSelector.selectRevisions(git);
             } catch (Exception e) {
-                throw new RuntimeException("Failed to fetch the required revisions from git repository " + projectDirPath, e);
+                throw new RuntimeException("Failed to fetch the requested revisions from git repository " + projectDirPath, e);
             }
             int numCommits = commits.size();
             LOGGER.info("* Analyzing {} commits in git repository {}", numCommits, projectDirPath);
