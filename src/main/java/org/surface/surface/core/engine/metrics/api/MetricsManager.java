@@ -80,10 +80,15 @@ public class MetricsManager {
         PROJECT_METRICS.put(org.surface.surface.core.engine.metrics.project.rpb.RPB.CODE, "getRpb");
         PROJECT_METRICS.put(org.surface.surface.core.engine.metrics.project.cmai.CMAI.CODE, "getCmai");
         PROJECT_METRICS.put(org.surface.surface.core.engine.metrics.project.caai.CAAI.CODE, "getCaai");
+        PROJECT_METRICS.put(org.surface.surface.core.engine.metrics.project.caiw.CAIW.CODE, "getCaiw");
+        PROJECT_METRICS.put(org.surface.surface.core.engine.metrics.project.cmw.CMW.CODE, "getCmw");
+        PROJECT_METRICS.put(org.surface.surface.core.engine.metrics.project.cwmp.CWMP.CODE, "getCwmp");
         PROJECT_METRICS.put(CCC.CODE, "getCcc");
         PROJECT_METRICS.put(CPCC.CODE, "getCpcc");
         PROJECT_METRICS.put(CCE.CODE, "getCce");
         PROJECT_METRICS.put(CME.CODE, "getCme");
+        PROJECT_METRICS.put(org.surface.surface.core.engine.metrics.project.uaca.UACA.CODE, "getUaca");
+        PROJECT_METRICS.put(org.surface.surface.core.engine.metrics.project.ucam.UCAM.CODE, "getUcam");
         PROJECT_METRICS.put(UCAC.CODE, "getUcac");
         PROJECT_METRICS.put(CDP.CODE, "getCdp");
         PROJECT_METRICS.put(CSCP.CODE, "getCscp");
@@ -175,10 +180,15 @@ public class MetricsManager {
         private final org.surface.surface.core.engine.metrics.project.rpb.RPB rpb;
         private final org.surface.surface.core.engine.metrics.project.cmai.CMAI cmai;
         private final org.surface.surface.core.engine.metrics.project.caai.CAAI caai;
+        private final org.surface.surface.core.engine.metrics.project.caiw.CAIW caiw;
+        private final org.surface.surface.core.engine.metrics.project.cmw.CMW cmw;
+        private final org.surface.surface.core.engine.metrics.project.cwmp.CWMP cwmp;
         private final CCC ccc;
         private final CPCC cpcc;
         private final CCE cce;
         private final CME cme;
+        private final org.surface.surface.core.engine.metrics.project.uaca.UACA uaca;
+        private final org.surface.surface.core.engine.metrics.project.ucam.UCAM ucam;
         private final UCAC ucac;
         private final CDP cdp;
         private final CSCP cscp;
@@ -197,10 +207,15 @@ public class MetricsManager {
             this.rpb = new org.surface.surface.core.engine.metrics.project.rpb.RPBCached();
             this.cmai = new org.surface.surface.core.engine.metrics.project.cmai.CMAICached();
             this.caai = new org.surface.surface.core.engine.metrics.project.caai.CAAICached();
+            this.caiw = new org.surface.surface.core.engine.metrics.project.caiw.CAIWCached();
+            this.cmw = new org.surface.surface.core.engine.metrics.project.cmw.CMWCached();
+            this.cwmp = new org.surface.surface.core.engine.metrics.project.cwmp.CWMPCached();
             this.ccc = new CCCCached();
             this.cpcc = new CPCCCached();
             this.cce = new CCECached();
             this.cme = new CMECached();
+            this.uaca = new org.surface.surface.core.engine.metrics.project.uaca.UACACached();
+            this.ucam = new org.surface.surface.core.engine.metrics.project.ucam.UCAMCached();
             this.ucac = new UCACCached();
             this.cdp = new CDPCached();
             this.cscp = new CSCPCached();
@@ -244,6 +259,26 @@ public class MetricsManager {
 
         public org.surface.surface.core.engine.metrics.project.caai.CAAI getCaai() {
             return caai;
+        }
+
+        public org.surface.surface.core.engine.metrics.project.caiw.CAIW getCaiw() {
+            return caiw;
+        }
+
+        public org.surface.surface.core.engine.metrics.project.cmw.CMW getCmw() {
+            return cmw;
+        }
+
+        public org.surface.surface.core.engine.metrics.project.cwmp.CWMP getCwmp() {
+            return cwmp;
+        }
+
+        public org.surface.surface.core.engine.metrics.project.uaca.UACA getUaca() {
+            return uaca;
+        }
+
+        public org.surface.surface.core.engine.metrics.project.ucam.UCAM getUcam() {
+            return ucam;
         }
 
         public CCC getCcc() {

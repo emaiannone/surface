@@ -175,6 +175,18 @@ public class ProjectInspectorResults implements InspectorResults {
                 .sum();
     }
 
+    public int getNumberAllMethods() {
+        return classResults.stream()
+                .mapToInt(ClassInspectorResults::getNumberMethods)
+                .sum();
+    }
+
+    public int getNumberAllClassifiedMutators() {
+        return classResults.stream()
+                .mapToInt(ClassInspectorResults::getNumberClassifiedMutators)
+                .sum();
+    }
+
     public int getNumberAllNonPrivateInstanceClassifiedAttributes() {
         return classResults.stream()
                 .mapToInt(ClassInspectorResults::getNumberNonPrivateInstanceClassifiedAttributes)
@@ -219,6 +231,30 @@ public class ProjectInspectorResults implements InspectorResults {
     public int getNumberAllActualAccessorAttributeInteractions() {
         return classResults.stream()
                 .mapToInt(ClassInspectorResults::getNumberActualAccessorAttributeInteractions)
+                .sum();
+    }
+
+    public int getNumberAllPossibleAttributeInteractions() {
+        return classResults.stream()
+                .mapToInt(ClassInspectorResults::getNumberPossibleAttributeInteractions)
+                .sum();
+    }
+
+    public int getNumberAllActualAttributeInteractions() {
+        return classResults.stream()
+                .mapToInt(ClassInspectorResults::getNumberActualAttributeInteractions)
+                .sum();
+    }
+
+    public int getNumberAllUnaccessedAssignedAttributes() {
+        return classResults.stream()
+                .mapToInt(ClassInspectorResults::getNumberUnaccessedAssignedAttributes)
+                .sum();
+    }
+
+    public int getNumberAllUncalledClassifiedAccessors() {
+        return classResults.stream()
+                .mapToInt(ClassInspectorResults::getNumberUncalledClassifiedAccessors)
                 .sum();
     }
 
