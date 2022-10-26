@@ -3,34 +3,52 @@
 Surface (Java SecURity FlAws metriCs Extractor) is a command-line tool written in Java that can compute security metrics
 over the history of Java projects using a fully-automated static code analysis.
 
-It supports all **25 data-flow security metrics** defined by Alshammari et
+Surface supports all **security metrics** in the hierarchical model defined by Alshammari et
 al. (https://doi.org/10.1109/QSIC.2011.31), also at different granularity levels, whenever possible:
 
-1. [x] CAT - Classified Attributes Total (Class, Project)
-2. [x] CMT - Classified Methods Total (Class, Project)
-3. [x] CCT - Critical Classes Total (Project)
-4. [x] CIDA - Classified Instance Data Accessibility (Class, Project)
-5. [x] CCDA - Classified Class Data Accessibility (Class, Project)
-6. [x] COA - Classified Operation Accessibility (Class, Project)
-7. [x] RPB - Reflection Package Boolean (Class, Project)
-8. [x] CMAI - Classified Mutator Attribute Interactions (Class, Project)
-9. [x] CAAI - Classified Accessor Attribute Interactions (Class, Project)
-10. [x] CAIW - Classified Attributes Interaction Weight (Class, Project)
-11. [x] CMW - Classified Methods Weight (Class, Project)
-12. [x] CWMP - Classified Writing Methods Proportion (Class, Project)
-13. [x] CCC - Critical Classes Coupling (Project)
-14. [x] CPCC - Composite-Part Critical Classes (Project)
-15. [x] CCE - Critical Classes Extensibility (Project)
-16. [x] CME - Classified Methods Extensibility (Project)
-17. [x] UACA - Unaccessed Assigned Classified Attribute (Class, Project)
-18. [x] UCAM - Uncalled Classified Accessor Method (Class, Project)
-19. [x] UCAC - Unused Critical Accessor Class (Project)
-20. [x] CDP - Critical Design Proportion (Project)
-21. [x] CSCP - Critical Serialized Classes Proportion (Project)
-22. [x] CSP - Critical Superclasses Proportion (Project)
-23. [x] CSI - Critical Superclass Inheritance (Project)
-24. [x] CMI - Classified Methods Inheritance (Project)
-25. [x] CAI - Classified Attributes Inheritance (Project)
+- Data-flow Metrics
+  - [x] CAT - Classified Attributes Total (Class, Project)
+  - [x] CMT - Classified Methods Total (Class, Project)
+  - [x] CCT - Critical Classes Total (Project)
+  - [x] CIDA - Classified Instance Data Accessibility (Class, Project)
+  - [x] CCDA - Classified Class Data Accessibility (Class, Project)
+  - [x] COA - Classified Operation Accessibility (Class, Project)
+  - [x] RPB - Reflection Package Boolean (Class, Project)
+  - [x] CMAI - Classified Mutator Attribute Interactions (Class, Project)
+  - [x] CAAI - Classified Accessor Attribute Interactions (Class, Project)
+  - [x] CAIW - Classified Attributes Interaction Weight (Class, Project)
+  - [x] CMW - Classified Methods Weight (Class, Project)
+  - [x] CWMP - Classified Writing Methods Proportion (Class, Project)
+  - [x] CCC - Critical Classes Coupling (Project)
+  - [x] CPCC - Composite-Part Critical Classes (Project)
+  - [x] CCE - Critical Classes Extensibility (Project)
+  - [x] CME - Classified Methods Extensibility (Project)
+  - [x] UACA - Unaccessed Assigned Classified Attribute (Class, Project)
+  - [x] UCAM - Uncalled Classified Accessor Method (Class, Project)
+  - [x] UCAC - Unused Critical Accessor Class (Project)
+  - [x] CDP - Critical Design Proportion (Project)
+  - [x] CSCP - Critical Serialized Classes Proportion (Project)
+  - [x] CSP - Critical Superclasses Proportion (Project)
+  - [x] CSI - Critical Superclass Inheritance (Project)
+  - [x] CMI - Classified Methods Inheritance (Project)
+  - [x] CAI - Classified Attributes Inheritance (Project)
+- Readability and Writability Metrics
+  - [x] RCA - Readability of Classified Attributes
+  - [x] WCA - Writability of Classified Attributes
+  - [x] RCM - Readability of Classified Methods
+  - [x] WCM - Writability of Classified Methods
+  - [x] RCC - Readability of Critical Classes
+  - [x] WCC - Writability of Critical Classes
+  - [x] SAM - Security Absolute Measurements
+- Security Design Principle Metrics
+  - [ ] PLP - Grant Least Privilege
+  - [ ] PRAS - Reduce Attack Surface
+  - [ ] PSWL - Secure the Weakest Link
+  - [ ] PFSD - Fail-Safe Defaults
+  - [ ] PLCM - Least Common Mechanism
+  - [ ] PI - Isolation
+  - [ ] PEM - Economy of Mechanism
+- [ ] TSI - Total Security Index
 
 # How to Build Surface
 

@@ -51,8 +51,22 @@ import org.surface.surface.core.engine.metrics.project.csi.CSI;
 import org.surface.surface.core.engine.metrics.project.csi.CSICached;
 import org.surface.surface.core.engine.metrics.project.csp.CSP;
 import org.surface.surface.core.engine.metrics.project.csp.CSPCached;
+import org.surface.surface.core.engine.metrics.project.rca.RCA;
+import org.surface.surface.core.engine.metrics.project.rca.RCACached;
+import org.surface.surface.core.engine.metrics.project.rcc.RCC;
+import org.surface.surface.core.engine.metrics.project.rcc.RCCCached;
+import org.surface.surface.core.engine.metrics.project.rcm.RCM;
+import org.surface.surface.core.engine.metrics.project.rcm.RCMCached;
+import org.surface.surface.core.engine.metrics.project.sam.SAM;
+import org.surface.surface.core.engine.metrics.project.sam.SAMCached;
 import org.surface.surface.core.engine.metrics.project.ucac.UCAC;
 import org.surface.surface.core.engine.metrics.project.ucac.UCACCached;
+import org.surface.surface.core.engine.metrics.project.wca.WCA;
+import org.surface.surface.core.engine.metrics.project.wca.WCACached;
+import org.surface.surface.core.engine.metrics.project.wcc.WCC;
+import org.surface.surface.core.engine.metrics.project.wcc.WCCCached;
+import org.surface.surface.core.engine.metrics.project.wcm.WCM;
+import org.surface.surface.core.engine.metrics.project.wcm.WCMCached;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -96,6 +110,13 @@ public class MetricsManager {
         PROJECT_METRICS.put(CSI.CODE, "getCsi");
         PROJECT_METRICS.put(CMI.CODE, "getCmi");
         PROJECT_METRICS.put(CAI.CODE, "getCai");
+        PROJECT_METRICS.put(RCA.CODE, "getRca");
+        PROJECT_METRICS.put(WCA.CODE, "getWca");
+        PROJECT_METRICS.put(RCM.CODE, "getRcm");
+        PROJECT_METRICS.put(WCM.CODE, "getWcm");
+        PROJECT_METRICS.put(RCC.CODE, "getRcc");
+        PROJECT_METRICS.put(WCC.CODE, "getWcc");
+        PROJECT_METRICS.put(SAM.CODE, "getSam");
         CLASS_METRICS = new LinkedHashMap<>();
         CLASS_METRICS.put(CAT.CODE, "getCat");
         CLASS_METRICS.put(CMT.CODE, "getCmt");
@@ -196,6 +217,13 @@ public class MetricsManager {
         private final CSI csi;
         private final CMI cmi;
         private final CAI cai;
+        private final RCA rca;
+        private final WCA wca;
+        private final RCM rcm;
+        private final WCM wcm;
+        private final RCC rcc;
+        private final WCC wcc;
+        private final SAM sam;
 
         ProjectMetricsStructure() {
             this.cat = new org.surface.surface.core.engine.metrics.project.cat.CATCached();
@@ -223,6 +251,13 @@ public class MetricsManager {
             this.csi = new CSICached();
             this.cmi = new CMICached();
             this.cai = new CAICached();
+            this.rca = new RCACached(cida, ccda, cai);
+            this.wca = new WCACached(cmai, caai, uaca);
+            this.rcm = new RCMCached(coa, cme, cmi);
+            this.wcm = new WCMCached(caiw, cmw, cwmp, ucam);
+            this.rcc = new RCCCached(rpb, cpcc, cce, cdp, csp);
+            this.wcc = new WCCCached(ccc, ucac, cscp, csi);
+            this.sam = new SAMCached(cat, cmt, cct);
         }
 
         public org.surface.surface.core.engine.metrics.project.cat.CAT getCat() {
@@ -323,6 +358,34 @@ public class MetricsManager {
 
         public CAI getCai() {
             return cai;
+        }
+
+        public RCA getRca() {
+            return rca;
+        }
+
+        public WCA getWca() {
+            return wca;
+        }
+
+        public RCM getRcm() {
+            return rcm;
+        }
+
+        public WCM getWcm() {
+            return wcm;
+        }
+
+        public RCC getRcc() {
+            return rcc;
+        }
+
+        public WCC getWcc() {
+            return wcc;
+        }
+
+        public SAM getSam() {
+            return sam;
         }
     }
 
