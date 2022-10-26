@@ -7,18 +7,18 @@ import org.surface.surface.core.engine.metrics.project.cmt.CMT;
 import org.surface.surface.core.engine.metrics.results.values.DoubleMetricValue;
 
 public class SAMCached extends SAM {
-    private final SAMImpl wcc;
+    private final SAMImpl sam;
     private DoubleMetricValue cachedResult;
 
     public SAMCached(CAT cat, CMT cmt, CCT cct) {
-        this.wcc = new SAMImpl(cat, cmt, cct);
+        this.sam = new SAMImpl(cat, cmt, cct);
         this.cachedResult = null;
     }
 
     @Override
     public DoubleMetricValue compute(ProjectInspectorResults projectResult) {
         if (cachedResult == null) {
-            cachedResult = wcc.compute(projectResult);
+            cachedResult = sam.compute(projectResult);
         }
         return cachedResult;
     }
