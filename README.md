@@ -1,9 +1,9 @@
 # Surface
 
-Surface (Java SecURity FlAws metriCs Extractor) is a command-line tool written in Java that can compute security metrics
+Surface (SecURity FlAws metriCs Extractor) is a command-line tool written in Java that computes security metrics
 over the history of Java projects using a fully-automated static code analysis.
 
-Surface supports all **security metrics** in the hierarchical model defined by Alshammari et
+Surface supports **all security metrics** in the hierarchical model defined by Alshammari et
 al. (https://doi.org/10.1109/QSIC.2011.31), also at different granularity levels, whenever possible:
 
 - Data-flow Metrics

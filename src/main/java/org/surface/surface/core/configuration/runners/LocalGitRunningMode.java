@@ -2,8 +2,8 @@ package org.surface.surface.core.configuration.runners;
 
 import org.surface.surface.core.engine.analysis.selectors.RevisionSelector;
 import org.surface.surface.core.engine.analysis.setup.CopySetupEnvironmentAction;
-import org.surface.surface.core.engine.exporters.RunResultsExporter;
 import org.surface.surface.core.engine.metrics.api.MetricsManager;
+import org.surface.surface.core.exporters.RunResultsExporter;
 
 import java.nio.file.Path;
 

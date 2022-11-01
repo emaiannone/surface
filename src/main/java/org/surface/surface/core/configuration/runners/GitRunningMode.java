@@ -5,8 +5,8 @@ import org.apache.logging.log4j.Logger;
 import org.surface.surface.core.engine.analysis.HistoryAnalyzer;
 import org.surface.surface.core.engine.analysis.results.HistoryAnalysisResults;
 import org.surface.surface.core.engine.analysis.selectors.RevisionSelector;
-import org.surface.surface.core.engine.exporters.RunResultsExporter;
 import org.surface.surface.core.engine.metrics.api.MetricsManager;
+import org.surface.surface.core.exporters.RunResultsExporter;
 
 import java.nio.file.Path;
 

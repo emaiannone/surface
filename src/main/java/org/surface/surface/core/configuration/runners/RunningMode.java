@@ -4,8 +4,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.surface.surface.core.configuration.runners.results.RunResults;
 import org.surface.surface.core.engine.analysis.results.FormattableAnalysisResults;
-import org.surface.surface.core.engine.exporters.RunResultsExporter;
 import org.surface.surface.core.engine.metrics.api.MetricsManager;
+import org.surface.surface.core.exporters.RunResultsExporter;
 
 import java.io.IOException;
 

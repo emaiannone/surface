@@ -10,8 +10,8 @@ import org.surface.surface.core.configuration.interpreters.RevisionGroupInterpre
 import org.surface.surface.core.configuration.runners.RunningMode;
 import org.surface.surface.core.configuration.runners.RunningModeFactory;
 import org.surface.surface.core.engine.analysis.selectors.RevisionSelector;
-import org.surface.surface.core.engine.exporters.RunResultsExporter;
 import org.surface.surface.core.engine.metrics.api.MetricsManager;
+import org.surface.surface.core.exporters.RunResultsExporter;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

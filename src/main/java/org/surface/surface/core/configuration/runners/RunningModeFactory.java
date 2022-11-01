@@ -3,8 +3,8 @@ package org.surface.surface.core.configuration.runners;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.surface.surface.core.Utils;
 import org.surface.surface.core.engine.analysis.selectors.RevisionSelector;
-import org.surface.surface.core.engine.exporters.RunResultsExporter;
 import org.surface.surface.core.engine.metrics.api.MetricsManager;
+import org.surface.surface.core.exporters.RunResultsExporter;
 
 import java.net.URI;
 import java.net.URISyntaxException;

@@ -20,8 +20,8 @@ import org.surface.surface.core.engine.analysis.selectors.*;
 import org.surface.surface.core.engine.analysis.setup.CloneSetupEnvironmentAction;
 import org.surface.surface.core.engine.analysis.setup.CopySetupEnvironmentAction;
 import org.surface.surface.core.engine.analysis.setup.SetupEnvironmentAction;
-import org.surface.surface.core.engine.exporters.RunResultsExporter;
 import org.surface.surface.core.engine.metrics.api.MetricsManager;
+import org.surface.surface.core.exporters.RunResultsExporter;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package org.surface.surface.core.engine.exporters;
+package org.surface.surface.core.exporters;
 
 import org.surface.surface.core.configuration.runners.results.RunResults;
 import org.surface.surface.core.engine.analysis.results.FormattableAnalysisResults;
