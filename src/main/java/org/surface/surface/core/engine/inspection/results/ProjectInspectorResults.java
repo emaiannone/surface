@@ -51,19 +51,21 @@ public class ProjectInspectorResults implements InspectorResults {
         return allClassifiedAttributes;
     }
 
-    public Set<MethodDeclaration> getAllClassifiedMethods() {
-        Set<MethodDeclaration> collect = classResults.stream()
+    public List<MethodDeclaration> getAllClassifiedMethods() {
+        // Caveat: different methods with same ASTs are considered identical!
+        // TODO: this requires a new class wrapping MethodDeclaration so that the equality is done using the class as well
+        List<MethodDeclaration> collect = classResults.stream()
                 .map(ClassInspectorResults::getClassifiedMethods)
                 .flatMap(Collection::stream)
-                .collect(Collectors.toCollection(LinkedHashSet::new));
-        return Collections.unmodifiableSet(collect);
+                .collect(Collectors.toList());
+        return Collections.unmodifiableList(collect);
     }
 
-    public Set<MethodDeclaration> getAllNonFinalClassifiedMethods() {
-        Set<MethodDeclaration> collect = getAllClassifiedMethods().stream()
+    public List<MethodDeclaration> getAllNonFinalClassifiedMethods() {
+        List<MethodDeclaration> collect = getAllClassifiedMethods().stream()
                 .filter(cm -> !cm.isFinal())
-                .collect(Collectors.toCollection(LinkedHashSet::new));
-        return Collections.unmodifiableSet(collect);
+                .collect(Collectors.toList());
+        return Collections.unmodifiableList(collect);
     }
 
     public Set<ClassOrInterfaceDeclaration> getCriticalClasses() {
@@ -115,13 +117,15 @@ public class ProjectInspectorResults implements InspectorResults {
 
     public Map<ClassOrInterfaceDeclaration, MethodDeclaration> getClassesAccessingClassifiedAttributes() {
         Map<ClassOrInterfaceDeclaration, MethodDeclaration> classesAccessingClassifiedAttributes = new LinkedHashMap<>();
-        Set<MethodDeclaration> allClassifiedMethods = getAllClassifiedMethods();
+        List<MethodDeclaration> allClassifiedMethods = getAllClassifiedMethods();
         for (ClassInspectorResults classResult : classResults) {
-            Set<MethodDeclaration> otherClassifiedMethods = new LinkedHashSet<>(allClassifiedMethods);
-            otherClassifiedMethods.removeAll(classResult.getClassifiedMethods());
-            Set<MethodDeclaration> calledMethods = classResult.getCalledMethods();
+            List<MethodDeclaration> otherClassifiedMethods = new ArrayList<>(allClassifiedMethods);
+            otherClassifiedMethods.removeIf(cm ->
+                    ((ClassOrInterfaceDeclaration) cm.getParentNode().get()).getFullyQualifiedName().get().equals(classResult.getClassFullyQualifiedName())
+                            && classResult.getClassifiedMethods().contains(cm)
+            );
             Set<MethodDeclaration> intersection = new LinkedHashSet<>(otherClassifiedMethods);
-            intersection.retainAll(calledMethods);
+            intersection.retainAll(classResult.getCalledMethods());
             intersection.forEach(md -> classesAccessingClassifiedAttributes.put(classResult.getClassOrInterfaceDeclaration(), md));
         }
         return classesAccessingClassifiedAttributes;

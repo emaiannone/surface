@@ -38,7 +38,6 @@ public class HeadRevisionSelector extends RevisionSelector {
             // HEAD of the target branch
             head = getTargetBranch(git).getObjectId();
         }
-        System.out.println(head);
         try (RevWalk walk = new RevWalk(git.getRepository())) {
             commits.add(walk.parseCommit(head));
         }
