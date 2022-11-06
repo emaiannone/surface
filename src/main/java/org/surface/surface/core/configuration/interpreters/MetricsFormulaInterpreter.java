@@ -9,7 +9,7 @@ public class MetricsFormulaInterpreter implements InputStringInterpreter<Metrics
     private static final String[] SEPS = {","};
 
     public MetricsManager interpret(String[] inputArray) {
-        return interpret(String.join(SEPS[0], inputArray));
+        return inputArray != null ? interpret(String.join(SEPS[0], inputArray)) : interpret("");
     }
 
     public MetricsManager interpret(String inputString) {

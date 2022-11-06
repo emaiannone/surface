@@ -58,7 +58,8 @@ Requirements:
 - Maven
 
 First, clone this repository into your local working directory. Then, move inside the projects' root directory and
-run `mvn package` (make sure you have `maven` installed). This command will generate the JAR with all the dependencies
+run `mvn package` (make sure you have `maven` installed). This command will generate the JAR with all the
+dependencies (`surface-jar-with-dependencies.jar`)
 inside the `target` directory, which can be freely renamed if desired.
 
 # How to Run Surface
@@ -98,7 +99,7 @@ Surface accepts the following options:
   - `-at <arg>` analyzes only the revision `<arg>`.
   - `-from <arg>` analyzes all revisions starting from `<arg>` until HEAD of the target branch.
   - `-to <arg>` analyzes all revisions from the beginning to `<arg>`.
-    - `-range <arg>` analyzes the revision range `<arg>`, that must follow the syntax `<from-sha>..<to-sha>`.
+  - `-range <arg>` analyzes the revision range `<arg>`, that must follow the syntax `<from-sha>..<to-sha>`.
 - (Optional) `-excludeWorkTree` disables the analysis of uncommitted local changes for `git` projects.
 - (Optional) `-includeTests` allows the analysis of test classes (i.e., those having @Test-like annotations).
 - (Optional) `-help` displays the description of all command-line options accepted.
@@ -168,3 +169,5 @@ uncommitted change will not be done (`-excludeWorkTree`).
 Run Surface following the configuration provided in `config.yml`, using `/tmp` as the working directory where the
 projects will be copied or cloned before analyzing them, and exporting the results in `/tmp/results.json`.
 If not specified differently in the YAML file, the complete history of all `git` projects will be analyzed (`-all`).
+
+An additional example can be found [here](https://github.com/emaiannone/surface-scenario).
