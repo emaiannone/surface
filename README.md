@@ -6,7 +6,7 @@ over the history of Java projects using a fully-automated static code analysis.
 Surface supports **all security metrics** in the hierarchical model defined by Alshammari et
 al. (https://doi.org/10.1109/QSIC.2011.31), also at different granularity levels, whenever possible:
 
-- Data-flow Metrics
+- [x] Data-flow Metrics
   - [x] CAT - Classified Attributes Total (Class, Project)
   - [x] CMT - Classified Methods Total (Class, Project)
   - [x] CCT - Critical Classes Total (Project)
@@ -32,7 +32,7 @@ al. (https://doi.org/10.1109/QSIC.2011.31), also at different granularity levels
   - [x] CSI - Critical Superclass Inheritance (Project)
   - [x] CMI - Classified Methods Inheritance (Project)
   - [x] CAI - Classified Attributes Inheritance (Project)
-- Readability and Writability Metrics
+- [x] Readability and Writability Metrics
   - [x] RCA - Readability of Classified Attributes
   - [x] WCA - Writability of Classified Attributes
   - [x] RCM - Readability via Classified Methods
@@ -40,7 +40,7 @@ al. (https://doi.org/10.1109/QSIC.2011.31), also at different granularity levels
   - [x] RCC - Readability via Critical Classes
   - [x] WCC - Writability via Critical Classes
   - [x] SAM - Security Absolute Measurements
-- Security Design Principle Metrics
+- [x] Security Design Principle Metrics
   - [x] PLP - Grant Least Privilege
   - [x] PRAS - Reduce Attack Surface
   - [x] PSWL - Secure the Weakest Link
@@ -58,7 +58,7 @@ Requirements:
 - Maven
 
 First, clone this repository into your local working directory. Then, move inside the projects' root directory and
-run `mvn package` (make sure you have `maven` installed). This command will generate the JAR with all the
+run `mvn clean package` (make sure you have `maven` installed). This command will generate the JAR with all the
 dependencies (`surface-jar-with-dependencies.jar`)
 inside the `target` directory, which can be freely renamed if desired.
 
