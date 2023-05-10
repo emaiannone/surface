@@ -99,29 +99,30 @@ class ClassInspector extends Inspector {
                             nodesToVisit.addAll(new ArrayList<>(((NodeList<Expression>) invokeResult)));
                         }
                         for (Node nodeToVisit : nodesToVisit) {
-                            if (nodeToVisit != null) {
-                                Set<NodeWithSimpleName<?>> usageNodes = new LinkedHashSet<>();
-                                usageNodes.addAll(nodeToVisit.findAll(NameExpr.class));
-                                usageNodes.addAll(nodeToVisit.findAll(FieldAccessExpr.class));
-                                // Verification phase: which attributes does this method use?
-                                for (NodeWithSimpleName<?> usageNode : usageNodes) {
-                                    // For each attribute that matched with the name
-                                    Set<VariableDeclarator> matchedAttributes = attributes.stream()
-                                            .filter(attr -> attr.getNameAsString().equals(usageNode.getNameAsString()))
-                                            .collect(Collectors.toCollection(LinkedHashSet::new));
-                                    for (VariableDeclarator matchedAttribute : matchedAttributes) {
-                                        try {
-                                            // FIXME This works, but it seems a bad solution... I would like a list of object that are both NodeWithSimpleName and Resolvable<ResolvedValueDeclaration>
-                                            // Ensure that the name can be resolve into a field, i.e., is it really referring to that attribute?
-                                            if (usageNode instanceof Resolvable) {
-                                                if (((Resolvable<ResolvedValueDeclaration>) usageNode).resolve().isField()) {
-                                                    usageMethods.get(matchedAttribute).add(method);
-                                                }
+                            if (nodeToVisit == null) {
+                                continue;
+                            }
+                            Set<NodeWithSimpleName<?>> usageNodes = new LinkedHashSet<>();
+                            usageNodes.addAll(nodeToVisit.findAll(NameExpr.class));
+                            usageNodes.addAll(nodeToVisit.findAll(FieldAccessExpr.class));
+                            // Verification phase: which attributes does this method use?
+                            for (NodeWithSimpleName<?> usageNode : usageNodes) {
+                                // For each attribute that matched with the name
+                                Set<VariableDeclarator> matchedAttributes = attributes.stream()
+                                        .filter(attr -> attr.getNameAsString().equals(usageNode.getNameAsString()))
+                                        .collect(Collectors.toCollection(LinkedHashSet::new));
+                                for (VariableDeclarator matchedAttribute : matchedAttributes) {
+                                    try {
+                                        // FIXME This works, but it seems a bad solution... I would like a list of object that are both NodeWithSimpleName and Resolvable<ResolvedValueDeclaration>
+                                        // Ensure that the name can be resolve into a field, i.e., is it really referring to that attribute?
+                                        if (usageNode instanceof Resolvable) {
+                                            if (((Resolvable<ResolvedValueDeclaration>) usageNode).resolve().isField()) {
+                                                usageMethods.get(matchedAttribute).add(method);
                                             }
-                                        } catch (RuntimeException | StackOverflowError ignored) {
-                                            //TODO Improve with logging ERROR. In any case, any raised exception should ignore this usageNode
-                                            // resolve() raises a number of issues: UnsupportedOperationException, UnsolvedSymbolException, a pure RuntimeException, StackOverflowError
                                         }
+                                    } catch (RuntimeException | StackOverflowError ignored) {
+                                        //TODO Improve with logging ERROR. In any case, any raised exception should ignore this usageNode
+                                        // resolve() raises a number of issues: UnsupportedOperationException, UnsolvedSymbolException, a pure RuntimeException, StackOverflowError
                                     }
                                 }
                             }
