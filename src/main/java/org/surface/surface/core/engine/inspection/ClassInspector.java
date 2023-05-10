@@ -99,6 +99,9 @@ class ClassInspector extends Inspector {
                             nodesToVisit.addAll(new ArrayList<>(((NodeList<Expression>) invokeResult)));
                         }
                         for (Node nodeToVisit : nodesToVisit) {
+                            if (nodeToVisit == null) {
+                                continue;
+                            }
                             Set<NodeWithSimpleName<?>> usageNodes = new LinkedHashSet<>();
                             usageNodes.addAll(nodeToVisit.findAll(NameExpr.class));
                             usageNodes.addAll(nodeToVisit.findAll(FieldAccessExpr.class));
