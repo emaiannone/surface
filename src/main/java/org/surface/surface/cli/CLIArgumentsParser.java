@@ -4,6 +4,7 @@ import org.apache.commons.cli.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.surface.surface.core.Utils;
+import org.surface.surface.core.configuration.interpreters.ClassifiedPatternsInterpreter;
 import org.surface.surface.core.configuration.interpreters.MetricsFormulaInterpreter;
 import org.surface.surface.core.configuration.interpreters.OutFileInterpreter;
 import org.surface.surface.core.configuration.interpreters.RevisionGroupInterpreter;
@@ -13,8 +14,10 @@ import org.surface.surface.core.engine.analysis.selectors.RevisionSelector;
 import org.surface.surface.core.engine.metrics.api.MetricsManager;
 import org.surface.surface.core.exporters.RunResultsExporter;
 
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -61,6 +64,26 @@ class CLIArgumentsParser {
             throw new IllegalArgumentException("The supplied output file path must point to a file of one of the supported type.", e);
         }
         LOGGER.info("* Going to export results in file: " + outFileValue);
+
+        // Interpret classified pattern file
+        Set<Pattern> classifiedPatterns;
+        String fileUsed = commandLine.getOptionValue(CLIOptions.CLASSIFIED_PATTERNS);
+        try {
+            classifiedPatterns = new ClassifiedPatternsInterpreter().interpret(fileUsed);
+        } catch (IllegalArgumentException e) {
+            LOGGER.info("* {} Using the built-in set of patterns.", e.getMessage());
+            URL resource = CLIArgumentsParser.class.getClassLoader().getResource("defaultPatterns.txt");
+            if (resource == null) {
+                throw new RuntimeException("The default pattern file cannot be found. Please, use a custom file to circumvent this issue.");
+            }
+            fileUsed = resource.getPath();
+            try {
+                classifiedPatterns = new ClassifiedPatternsInterpreter().interpret(fileUsed);
+            } catch (IllegalArgumentException e2) {
+                throw new RuntimeException("The default pattern file cannot be read. Please, use a custom file to circumvent this issue.");
+            }
+        }
+        LOGGER.info("* Going to detect classified patterns using file: {}", fileUsed);
 
         // Interpret Metrics
         MetricsManager metricsManager;
@@ -138,7 +161,7 @@ class CLIArgumentsParser {
         }
 
         // Create the appropriate RunningMode
-        RunningMode runningMode = RunningModeFactory.newRunningMode(target, workDirPath, runResultsExporter, metricsManager, filesRegex, revisionSelector, includeTests, excludeWorkTree);
+        RunningMode runningMode = RunningModeFactory.newRunningMode(target, workDirPath, runResultsExporter, classifiedPatterns, metricsManager, filesRegex, revisionSelector, includeTests, excludeWorkTree);
         LOGGER.info("* Going to run in mode: {}", runningMode.getCodeName());
         return runningMode;
     }

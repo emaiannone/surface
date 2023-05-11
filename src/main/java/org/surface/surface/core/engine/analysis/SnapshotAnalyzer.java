@@ -9,19 +9,21 @@ import org.surface.surface.core.engine.metrics.results.ProjectMetricsResults;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 public class SnapshotAnalyzer extends Analyzer {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final Path projectDirPath;
 
-    public SnapshotAnalyzer(Path projectDirPath, String filesRegex, MetricsManager metricsManager, boolean includeTests) {
-        super(filesRegex, metricsManager, includeTests);
+    public SnapshotAnalyzer(Path projectDirPath, String filesRegex, Set<Pattern> classifiedPatterns, MetricsManager metricsManager, boolean includeTests) {
+        super(filesRegex, classifiedPatterns, metricsManager, includeTests);
         this.projectDirPath = projectDirPath;
     }
 
     public SnapshotAnalysisResults analyze() throws IOException {
-        ProjectMetricsCalculator projectMetricsCalculator = new ProjectMetricsCalculator(projectDirPath, getFilesRegex(), isIncludeTests());
+        ProjectMetricsCalculator projectMetricsCalculator = new ProjectMetricsCalculator(projectDirPath, getFilesRegex(), getClassifiedPatterns(), isIncludeTests());
         LOGGER.debug("* Metrics computation started");
         ProjectMetricsResults projectMetricsResults = projectMetricsCalculator.calculate(getMetricsManager());
         LOGGER.debug("* Metrics computation ended");

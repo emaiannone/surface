@@ -23,6 +23,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 public class HistoryAnalyzer extends Analyzer {
     public static final String WORK_TREE = "WORK_TREE";
@@ -33,8 +35,8 @@ public class HistoryAnalyzer extends Analyzer {
     private final RevisionSelector revisionSelector;
     private final SetupEnvironmentAction setupEnvironmentAction;
 
-    public HistoryAnalyzer(String projectName, String repoLocation, String filesRegex, MetricsManager metricsManager, boolean includeTests, boolean excludeWorkTree, RevisionSelector revisionSelector, SetupEnvironmentAction setupEnvironmentAction) {
-        super(filesRegex, metricsManager, includeTests);
+    public HistoryAnalyzer(String projectName, String repoLocation, String filesRegex, Set<Pattern> classifiedPatterns, MetricsManager metricsManager, boolean includeTests, boolean excludeWorkTree, RevisionSelector revisionSelector, SetupEnvironmentAction setupEnvironmentAction) {
+        super(filesRegex, classifiedPatterns, metricsManager, includeTests);
         this.projectName = projectName;
         this.repoLocation = repoLocation;
         this.excludeWorkTree = excludeWorkTree;
@@ -114,7 +116,7 @@ public class HistoryAnalyzer extends Analyzer {
     }
 
     private SnapshotAnalysisResults runSnapshotAnalysis(Path projectDirPath) throws IOException {
-        return new SnapshotAnalyzer(projectDirPath, getFilesRegex(), getMetricsManager(), isIncludeTests()).analyze();
+        return new SnapshotAnalyzer(projectDirPath, getFilesRegex(), getClassifiedPatterns(), getMetricsManager(), isIncludeTests()).analyze();
     }
 
     private static class SigIntHandler extends Thread {

@@ -43,16 +43,16 @@ class ClassInspector extends Inspector {
     }
 
     private final ClassOrInterfaceDeclaration classDeclaration;
+    private final Set<Pattern> classifiedPatterns;
     // TODO filepath and projectResults and just forwarded to ClassInspectorResults: does this make sense? Could ProjectInspector pass them directly?
     private final Path filepath;
     private final ProjectInspectorResults projectResults;
-    private final List<Pattern> patterns;
 
-    public ClassInspector(ClassOrInterfaceDeclaration classDeclaration, Path filepath, ProjectInspectorResults projectResults) {
+    public ClassInspector(ClassOrInterfaceDeclaration classDeclaration, Set<Pattern> classifiedPatterns, Path filepath, ProjectInspectorResults projectResults) {
         this.classDeclaration = classDeclaration;
+        this.classifiedPatterns = classifiedPatterns;
         this.filepath = filepath;
         this.projectResults = projectResults;
-        this.patterns = ClassifiedPatterns.getInstance().getPatterns();
     }
 
     public ClassInspectorResults inspect() {
@@ -139,8 +139,8 @@ class ClassInspector extends Inspector {
     }
 
     private boolean isClassified(NodeWithSimpleName<?> node) {
-        return patterns.stream()
-                .anyMatch(p -> p.matcher(node.getNameAsString()).matches());
+        return classifiedPatterns.stream()
+                .anyMatch(p -> p.matcher(node.getNameAsString()).find());
     }
 
     private boolean isImportingReflection() {

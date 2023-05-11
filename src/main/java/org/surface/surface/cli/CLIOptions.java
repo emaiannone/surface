@@ -9,6 +9,7 @@ public class CLIOptions extends Options {
     public static final String TARGET = "target";
     public static final String WORK_DIR = "workDir";
     public static final String OUT_FILE = "outFile";
+    public static final String CLASSIFIED_PATTERNS = "classifiedPatterns";
     public static final String METRICS = "metrics";
     public static final String BRANCH = "branch";
     public static final String RANGE = RangeRevisionSelector.CODE.toLowerCase();
@@ -38,6 +39,11 @@ public class CLIOptions extends Options {
         Option outFileOpt = Option.builder(OUT_FILE)
                 .hasArg(true)
                 .desc("Path to a file where to store the results. If the file already exists, its content will be overwritten. The output format is determined by the extension of the supplied filename. Currently, SURFACE only supports JSON files (with .json extension).")
+                .build();
+
+        Option classifiedPatterns = Option.builder(CLASSIFIED_PATTERNS)
+                .hasArg(true)
+                .desc("Path to a file containing the patterns to use for detecting the classified attributes. The file is expected to be a text file having a pattern on each line, ignoring empty lines. If not supplied, not existing, not readable, or empty, a built-in set of patterns will be used.")
                 .build();
 
         Option metricsOpt = Option.builder(METRICS)
@@ -112,6 +118,7 @@ public class CLIOptions extends Options {
 
         addOption(targetOpt);
         addOption(workDirOpt);
+        addOption(classifiedPatterns);
         addOption(metricsOpt);
         addOption(outFileOpt);
         addOption(branchOpt);

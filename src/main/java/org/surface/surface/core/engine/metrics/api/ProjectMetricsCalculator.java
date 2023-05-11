@@ -11,14 +11,16 @@ import org.surface.surface.core.engine.metrics.results.ProjectMetricsResults;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 public class ProjectMetricsCalculator {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final ProjectInspector projectInspector;
 
-    public ProjectMetricsCalculator(Path projectAbsolutePath, String filesRegex, boolean includeTests) {
-        this.projectInspector = new ProjectInspector(projectAbsolutePath, filesRegex, includeTests);
+    public ProjectMetricsCalculator(Path projectAbsolutePath, String filesRegex, Set<Pattern> classifiedPatterns, boolean includeTests) {
+        this.projectInspector = new ProjectInspector(projectAbsolutePath, filesRegex, classifiedPatterns, includeTests);
     }
 
     public ProjectMetricsResults calculate(MetricsManager metricsManager) throws IOException {

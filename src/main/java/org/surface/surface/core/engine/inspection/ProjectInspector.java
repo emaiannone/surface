@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ProjectInspector extends Inspector {
@@ -28,14 +30,16 @@ public class ProjectInspector extends Inspector {
 
     private final ProjectRoot projectRoot;
     private final String filesRegex;
+    private final Set<Pattern> classifiedPatterns;
     private final boolean includeTests;
 
-    public ProjectInspector(Path projectAbsolutePath, String filesRegex, boolean includeTests) {
+    public ProjectInspector(Path projectAbsolutePath, String filesRegex, Set<Pattern> classifiedPatterns, boolean includeTests) {
         SymbolSolverCollectionStrategy strategy = new SymbolSolverCollectionStrategy();
         strategy.getParserConfiguration().setStoreTokens(false);
         strategy.getParserConfiguration().setAttributeComments(false);
         this.projectRoot = strategy.collect(projectAbsolutePath);
         this.filesRegex = filesRegex;
+        this.classifiedPatterns = classifiedPatterns;
         this.includeTests = includeTests;
     }
 
@@ -88,7 +92,7 @@ public class ProjectInspector extends Inspector {
                                     continue;
                                 }
                             }
-                            ClassInspector classInspector = new ClassInspector(classOrInterfaceDecl, compilationUnit.getStorage().get().getPath(), projectResults);
+                            ClassInspector classInspector = new ClassInspector(classOrInterfaceDecl, classifiedPatterns, compilationUnit.getStorage().get().getPath(), projectResults);
                             ClassInspectorResults classResults = classInspector.inspect();
                             projectResults.addClassResult(classResults);
                         }

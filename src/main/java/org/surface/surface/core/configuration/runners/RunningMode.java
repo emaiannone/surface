@@ -8,10 +8,13 @@ import org.surface.surface.core.engine.metrics.api.MetricsManager;
 import org.surface.surface.core.exporters.RunResultsExporter;
 
 import java.io.IOException;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 public abstract class RunningMode {
     private static final Logger LOGGER = LogManager.getLogger();
 
+    private final Set<Pattern> classifiedPatterns;
     private final MetricsManager metricsManager;
     private final RunResultsExporter runResultsExporter;
     private final String filesRegex;
@@ -19,15 +22,20 @@ public abstract class RunningMode {
     private final RunResults runResults;
     private String codeName;
 
-    RunningMode(RunResultsExporter runResultsExporter, MetricsManager metricsManager, String filesRegex, boolean includeTests) {
+    RunningMode(RunResultsExporter runResultsExporter, Set<Pattern> classifiedPatterns, MetricsManager metricsManager, String filesRegex, boolean includeTests) {
         if (runResultsExporter == null) {
             throw new IllegalArgumentException("The writer to an output file must not be null.");
         }
+        this.classifiedPatterns = classifiedPatterns;
         this.metricsManager = metricsManager;
         this.runResultsExporter = runResultsExporter;
         this.filesRegex = filesRegex;
         this.includeTests = includeTests;
         this.runResults = new RunResults();
+    }
+
+    public Set<Pattern> getClassifiedPatterns() {
+        return classifiedPatterns;
     }
 
     public MetricsManager getMetricsManager() {

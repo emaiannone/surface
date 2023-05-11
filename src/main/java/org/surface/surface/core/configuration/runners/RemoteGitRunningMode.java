@@ -8,12 +8,14 @@ import org.surface.surface.core.exporters.RunResultsExporter;
 import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 public class RemoteGitRunningMode extends GitRunningMode {
     private static final String CODE_NAME = "REMOTE_GIT";
 
-    public RemoteGitRunningMode(URI repoUrl, Path workDirPath, RunResultsExporter runResultsExporter, MetricsManager metricsManager, RevisionSelector revisionSelector, String filesRegex, boolean includeTests) {
-        super(workDirPath, runResultsExporter, metricsManager, filesRegex, includeTests, revisionSelector, true);
+    public RemoteGitRunningMode(URI repoUrl, Path workDirPath, RunResultsExporter runResultsExporter, Set<Pattern> classifiedPatterns, MetricsManager metricsManager, RevisionSelector revisionSelector, String filesRegex, boolean includeTests) {
+        super(workDirPath, runResultsExporter, classifiedPatterns, metricsManager, filesRegex, includeTests, revisionSelector, true);
         if (repoUrl == null) {
             throw new IllegalArgumentException("The URL to the target repository must not be null.");
         }

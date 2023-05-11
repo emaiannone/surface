@@ -10,6 +10,7 @@ import org.apache.commons.validator.routines.UrlValidator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.surface.surface.core.Utils;
+import org.surface.surface.core.configuration.interpreters.ClassifiedPatternsInterpreter;
 import org.surface.surface.core.configuration.interpreters.MetricsFormulaInterpreter;
 import org.surface.surface.core.configuration.interpreters.RevisionGroupInterpreter;
 import org.surface.surface.core.engine.analysis.Analyzer;
@@ -42,8 +43,8 @@ public class FlexibleRunningMode extends RunningMode {
     private final boolean defaultExcludeWorkTree;
     private final RevisionSelector defaultRevisionSelector;
 
-    public FlexibleRunningMode(Path configFilePath, Path workDirPath, RunResultsExporter runResultsExporter, MetricsManager defaultMetricsManager, RevisionSelector defaultRevisionSelector, String defaultFilesRegex, boolean defaultIncludeTests, boolean defaultExcludeWorkTree) {
-        super(runResultsExporter, defaultMetricsManager, defaultFilesRegex, defaultIncludeTests);
+    public FlexibleRunningMode(Path configFilePath, Path workDirPath, RunResultsExporter runResultsExporter, Set<Pattern> classifiedPatterns, MetricsManager defaultMetricsManager, RevisionSelector defaultRevisionSelector, String defaultFilesRegex, boolean defaultIncludeTests, boolean defaultExcludeWorkTree) {
+        super(runResultsExporter, classifiedPatterns, defaultMetricsManager, defaultFilesRegex, defaultIncludeTests);
         if (configFilePath == null) {
             throw new IllegalArgumentException("The path to the configuration file must not be null.");
         }
@@ -134,6 +135,20 @@ public class FlexibleRunningMode extends RunningMode {
                     LOGGER.warn("* Project \"{}\": The supplied location is not attributable to any supported run mode. Ignoring project.", projectId);
                     continue;
                 }
+            }
+
+            // Interpret the classified patterns
+            Set<Pattern> classifiedPatterns;
+            try {
+                classifiedPatterns = new ClassifiedPatternsInterpreter().interpret(project.classifiedPatterns);
+            } catch (IllegalArgumentException e) {
+                classifiedPatterns = getClassifiedPatterns();
+                LOGGER.info("* Project \"{}\": The supplied classified pattern file cannot be found. Going to use the default option.", projectId);
+            }
+            if (classifiedPatterns == null || classifiedPatterns.isEmpty()) {
+                ignoredProjects.add(projectId);
+                LOGGER.warn("* Project \"{}\": No patterns for detecting classified attributes. Ignoring project.", projectId);
+                continue;
             }
 
             // Interpret Metrics
@@ -232,9 +247,9 @@ public class FlexibleRunningMode extends RunningMode {
             // Instantiate the appropriate analyzer
             Analyzer analyzer;
             if (isSnapshot) {
-                analyzer = new SnapshotAnalyzer(path, filesRegex, metricsManager, includeTests);
+                analyzer = new SnapshotAnalyzer(path, filesRegex, classifiedPatterns, metricsManager, includeTests);
             } else {
-                analyzer = new HistoryAnalyzer(projectId, project.location, filesRegex, metricsManager, includeTests, excludeWorkTree, revisionSelector, setupEnvironmentAction);
+                analyzer = new HistoryAnalyzer(projectId, project.location, filesRegex, classifiedPatterns, metricsManager, includeTests, excludeWorkTree, revisionSelector, setupEnvironmentAction);
             }
             analyzers.put(projectId, analyzer);
         }
@@ -269,6 +284,7 @@ public class FlexibleRunningMode extends RunningMode {
     private static class ProjectConfiguration {
         public String id;
         public String location;
+        public String classifiedPatterns;
         public String metrics;
         public String files;
         public Boolean includeTests;

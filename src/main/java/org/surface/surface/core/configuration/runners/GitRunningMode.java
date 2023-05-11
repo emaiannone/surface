@@ -9,6 +9,8 @@ import org.surface.surface.core.engine.metrics.api.MetricsManager;
 import org.surface.surface.core.exporters.RunResultsExporter;
 
 import java.nio.file.Path;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 public abstract class GitRunningMode extends SingleProjectRunningMode {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -17,8 +19,8 @@ public abstract class GitRunningMode extends SingleProjectRunningMode {
     private final boolean excludeWorkTree;
     private String repoLocation;
 
-    GitRunningMode(Path workDirPath, RunResultsExporter runResultsExporter, MetricsManager metricsManager, String filesRegex, boolean includeTests, RevisionSelector revisionSelector, boolean excludeWorkTree) {
-        super(workDirPath, runResultsExporter, metricsManager, filesRegex, includeTests);
+    GitRunningMode(Path workDirPath, RunResultsExporter runResultsExporter, Set<Pattern> classifiedPatterns, MetricsManager metricsManager, String filesRegex, boolean includeTests, RevisionSelector revisionSelector, boolean excludeWorkTree) {
+        super(workDirPath, runResultsExporter, classifiedPatterns, metricsManager, filesRegex, includeTests);
         if (revisionSelector == null) {
             throw new IllegalArgumentException("The revision selector must not be null.");
         }
@@ -37,7 +39,7 @@ public abstract class GitRunningMode extends SingleProjectRunningMode {
     @Override
     public void run() throws Exception {
         HistoryAnalyzer historyAnalyzer = new HistoryAnalyzer(getProjectName(), getRepoLocation(), getFilesRegex(),
-                getMetricsManager(), isIncludeTests(), excludeWorkTree, revisionSelector, getSetupEnvironmentAction());
+                getClassifiedPatterns(), getMetricsManager(), isIncludeTests(), excludeWorkTree, revisionSelector, getSetupEnvironmentAction());
         HistoryAnalysisResults analysisResults = historyAnalyzer.analyze();
         addAnalysisResults(getProjectName(), analysisResults);
         exportResults();

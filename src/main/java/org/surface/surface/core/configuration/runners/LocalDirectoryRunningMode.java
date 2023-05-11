@@ -10,6 +10,8 @@ import org.surface.surface.core.exporters.RunResultsExporter;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 public class LocalDirectoryRunningMode extends SingleProjectRunningMode {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -17,8 +19,8 @@ public class LocalDirectoryRunningMode extends SingleProjectRunningMode {
 
     private final Path localDirPath;
 
-    public LocalDirectoryRunningMode(Path localDirPath, Path workDirPath, RunResultsExporter runResultsExporter, MetricsManager metricsManager, String filesRegex, boolean includeTests) {
-        super(workDirPath, runResultsExporter, metricsManager, filesRegex, includeTests);
+    public LocalDirectoryRunningMode(Path localDirPath, Path workDirPath, RunResultsExporter runResultsExporter, Set<Pattern> classifiedPatterns, MetricsManager metricsManager, String filesRegex, boolean includeTests) {
+        super(workDirPath, runResultsExporter, classifiedPatterns, metricsManager, filesRegex, includeTests);
         if (localDirPath == null) {
             throw new IllegalArgumentException("The path to the target directory must not be null.");
         }
@@ -36,7 +38,7 @@ public class LocalDirectoryRunningMode extends SingleProjectRunningMode {
         if (!localDirPath.toFile().isDirectory()) {
             throw new IllegalStateException("The target directory does not exist or is not a directory.");
         }
-        SnapshotAnalyzer snapshotAnalyzer = new SnapshotAnalyzer(localDirPath, getFilesRegex(), getMetricsManager(), isIncludeTests());
+        SnapshotAnalyzer snapshotAnalyzer = new SnapshotAnalyzer(localDirPath, getFilesRegex(), getClassifiedPatterns(), getMetricsManager(), isIncludeTests());
         SnapshotAnalysisResults analysisResults = snapshotAnalyzer.analyze();
         addAnalysisResults(getProjectName(), analysisResults);
         exportResults();

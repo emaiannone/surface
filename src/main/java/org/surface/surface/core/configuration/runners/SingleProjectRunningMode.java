@@ -5,14 +5,16 @@ import org.surface.surface.core.engine.metrics.api.MetricsManager;
 import org.surface.surface.core.exporters.RunResultsExporter;
 
 import java.nio.file.Path;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 public abstract class SingleProjectRunningMode extends RunningMode {
     private final Path workDirPath;
     private String projectName;
     private SetupEnvironmentAction setupEnvironmentAction;
 
-    SingleProjectRunningMode(Path workDirPath, RunResultsExporter runResultsExporter, MetricsManager metricsManager, String filesRegex, boolean includeTests) {
-        super(runResultsExporter, metricsManager, filesRegex, includeTests);
+    SingleProjectRunningMode(Path workDirPath, RunResultsExporter runResultsExporter, Set<Pattern> classifiedPatterns, MetricsManager metricsManager, String filesRegex, boolean includeTests) {
+        super(runResultsExporter, classifiedPatterns, metricsManager, filesRegex, includeTests);
         if (workDirPath == null) {
             throw new IllegalArgumentException("The working directory must not be null.");
         }
