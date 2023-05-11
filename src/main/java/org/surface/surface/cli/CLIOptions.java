@@ -28,7 +28,7 @@ public class CLIOptions extends Options {
     private CLIOptions() {
         Option targetOpt = Option.builder(TARGET)
                 .hasArg(true)
-                .desc("Path to either (i) a local non-git directory (LOCAL_DIR), (ii) a local git directory (LOCAL_GIT), (iii) a remote URL to a remote git repository (REMOTE_GIT), or (iv) a local path to a YAML file (FLEXIBLE). SURFACE behaves differently depending on the type of target: (LOCAL_DIR) it scans the specified directory recursively to search for .java files to analyze; (LOCAL_GIT) it behaves like in LOCAL but allows the selection of specific revisions; (REMOTE_GIT) it clones the remote git repository inside the directory indicated by the -" + WORK_DIR + " option and runs the analysis on it, also allowing the selection of specific revisions; (FLEXIBLE) parses the YAML that dictates how SURFACE must operate. The specification of the YAML file for FLEXIBLE mode are reported in the README at https://github.com/emaiannone/surface. All the directories cloned during the execution of SURFACE will be deleted at the end (either successful or erroneous).")
+                .desc("Path to either (i) a local non-git directory (LOCAL_DIR), (ii) a local git directory (LOCAL_GIT), (iii) a remote URL to a remote git repository (REMOTE_GIT), or (iv) a local path to a YAML file (FLEXIBLE). Surface behaves differently depending on the type of target: (LOCAL_DIR) it scans the specified directory recursively to search for .java files to analyze; (LOCAL_GIT) it behaves like in LOCAL but allows the selection of specific revisions; (REMOTE_GIT) it clones the remote git repository inside the directory indicated by the -" + WORK_DIR + " option and runs the analysis on it, also allowing the selection of specific revisions; (FLEXIBLE) parses the YAML that dictates how Surface must operate. The specification of the YAML file for FLEXIBLE mode are reported in the README at https://github.com/emaiannone/surface. All the directories cloned during the execution of Surface will be deleted at the end (either successful or erroneous).")
                 .build();
 
         Option workDirOpt = Option.builder(WORK_DIR)
@@ -38,7 +38,7 @@ public class CLIOptions extends Options {
 
         Option outFileOpt = Option.builder(OUT_FILE)
                 .hasArg(true)
-                .desc("Path to a file where to store the results. If the file already exists, its content will be overwritten. The output format is determined by the extension of the supplied filename. Currently, SURFACE only supports JSON files (with .json extension).")
+                .desc("Path to a file where to store the results. If the file already exists, its content will be overwritten. The output format is determined by the extension of the supplied filename. Currently, Surface only supports JSON files (with .json extension).")
                 .build();
 
         Option classifiedPatterns = Option.builder(CLASSIFIED_PATTERNS)
@@ -50,12 +50,12 @@ public class CLIOptions extends Options {
                 .hasArg(true)
                 .numberOfArgs(Option.UNLIMITED_VALUES)
                 .valueSeparator(',')
-                .desc("List of metrics to return or not with SURFACE. The list must be expressed as a comma-separate list of metrics codes, e.g., \"CAT,CMT,CIDA\" (no spaces between elements). The special argument \"ALL\" enables the execution of all metrics, shadowing all other codes in the list. If a code is preceded by a minus symbol (-), then the associated metric is excluded from the final report. If the format is invalid an error is raised. Any unrecognized code will be ignored. If there are not valid metrics to compute an error is raised.")
+                .desc("List of metrics to return or not with Surface. The list must be expressed as a comma-separate list of metrics codes, e.g., \"CAT,CMT,CIDA\" (no spaces between elements). The special argument \"ALL\" enables the execution of all metrics, shadowing all other codes in the list. If a code is preceded by a minus symbol (-), then the associated metric is excluded from the final report. If the format is invalid an error is raised. Any unrecognized code will be ignored. If there are not valid metrics to compute an error is raised.")
                 .build();
 
         Option filesOpt = Option.builder(FILES)
                 .hasArg(true)
-                .desc("Regular expression to select the .java files on which SURFACE will operate. If not specified, all the parsable .java files in the target project will be considered. In FLEXIBLE mode this option represents default regular expression used when not specified differently in the YAML file. Note that the regular expression matches the entire string, as it is surrounded by \".*\", and ")
+                .desc("Regular expression to select the .java files on which Surface will operate. If not specified, all the parsable .java files in the target project will be considered. In FLEXIBLE mode this option represents default regular expression used when not specified differently in the YAML file. Note that the regular expression matches the entire string, as it is surrounded by \".*\", and ")
                 .build();
 
         Option range = Option.builder(RANGE)

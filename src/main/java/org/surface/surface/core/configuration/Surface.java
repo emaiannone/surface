@@ -14,8 +14,8 @@ public class Surface {
     }
 
     public void run() throws Exception {
-        LOGGER.info("* Launching SURFACE");
+        LOGGER.info("* Launching Surface");
         runningMode.run();
-        LOGGER.info("* Exiting SURFACE");
+        LOGGER.info("* Exiting Surface");
     }
 }
