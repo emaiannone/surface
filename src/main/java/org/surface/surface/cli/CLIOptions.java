@@ -28,63 +28,63 @@ public class CLIOptions extends Options {
     private CLIOptions() {
         Option targetOpt = Option.builder(TARGET)
                 .hasArg(true)
-                .desc("Path to either (i) a local non-git directory (LOCAL_DIR), (ii) a local git directory (LOCAL_GIT), (iii) a remote URL to a remote git repository (REMOTE_GIT), or (iv) a local path to a YAML file (FLEXIBLE). Surface behaves differently depending on the type of target: (LOCAL_DIR) it scans the specified directory recursively to search for .java files to analyze; (LOCAL_GIT) it behaves like in LOCAL but allows the selection of specific revisions; (REMOTE_GIT) it clones the remote git repository inside the directory indicated by the -" + WORK_DIR + " option and runs the analysis on it, also allowing the selection of specific revisions; (FLEXIBLE) parses the YAML that dictates how Surface must operate. The specification of the YAML file for FLEXIBLE mode are reported in the README at https://github.com/emaiannone/surface. All the directories cloned during the execution of Surface will be deleted at the end (either successful or erroneous).")
+                .desc("Path to either (i) a local non-git directory (LOCAL_DIR), (ii) a local git directory (LOCAL_GIT), (iii) a remote URL to a remote git repository (REMOTE_GIT), or (iv) a local path to a YAML file (FLEXIBLE). Surface behaves differently depending on the type of target: (LOCAL_DIR) it scans the specified directory recursively to search for .java files to analyze; (LOCAL_GIT) it behaves like LOCAL_DIR but allows the selection of specific revisions; (REMOTE_GIT) it clones the remote git repository inside the directory indicated by the -" + WORK_DIR + " option and runs the analysis on it, also allowing the selection of specific revisions; (FLEXIBLE) parses the YAML file that indicates how Surface must operate. The specification of this YAML file are reported in the README at https://github.com/emaiannone/surface. All the repositories cloned during the execution will be deleted at the end (either successful or erroneous).")
                 .build();
 
         Option workDirOpt = Option.builder(WORK_DIR)
                 .hasArg(true)
-                .desc("Path to a local directory where repositories will be copied (LOCAL_GIT or FLEXIBLE) or cloned (REMOTE_GIT or FLEXIBLE). Not evaluated in LOCAL_DIR mode. In FLEXIBLE mode this option represents the default directory where all remote repositories are cloned when not specified differently in the YAML file.")
+                .desc("Path to a local directory where git repositories will be copied (LOCAL_GIT or FLEXIBLE) or cloned (REMOTE_GIT or FLEXIBLE). This option is ignored in LOCAL_DIR mode. In FLEXIBLE mode, this option represents the default directory where all remote repositories are cloned when not specified differently in the YAML file.")
                 .build();
 
         Option outFileOpt = Option.builder(OUT_FILE)
                 .hasArg(true)
-                .desc("Path to a file where to store the results. If the file already exists, its content will be overwritten. The output format is determined by the extension of the supplied filename. Currently, Surface only supports JSON files (with .json extension).")
+                .desc("Path to a file where to store the results. If the path points to an existing file, its content will be overwritten. The output format is determined by the extension of the supplied filename. Currently, Surface only supports JSON (with .json extension) and plain text (with .txt extension).")
                 .build();
 
         Option classifiedPatterns = Option.builder(CLASSIFIED_PATTERNS)
                 .hasArg(true)
-                .desc("Path to a file containing the patterns to use for detecting the classified attributes. The file is expected to be a text file having a pattern on each line, ignoring empty lines. If not supplied, not existing, not readable, or empty, a built-in set of patterns will be used.")
+                .desc("Path to a file containing the patterns to use for detecting the classified attributes. The file is interpreted as a text file with a pattern on each non-empty line. If this option is not supplied, or the path points to a non existing, unreadable, or empty file, a built-in set of patterns will be used.")
                 .build();
 
         Option metricsOpt = Option.builder(METRICS)
                 .hasArg(true)
                 .numberOfArgs(Option.UNLIMITED_VALUES)
                 .valueSeparator(',')
-                .desc("List of metrics to return or not with Surface. The list must be expressed as a comma-separate list of metrics codes, e.g., \"CAT,CMT,CIDA\" (no spaces between elements). The special argument \"ALL\" enables the execution of all metrics, shadowing all other codes in the list. If a code is preceded by a minus symbol (-), then the associated metric is excluded from the final report. If the format is invalid an error is raised. Any unrecognized code will be ignored. If there are not valid metrics to compute an error is raised.")
+                .desc("List of metrics Surface must and must not compute. The list is expressed as a comma-separate list of codes, e.g., \"CAT,CMT,CIDA\", without any space between elements. The special code \"ALL\" requests for the computation of all the supported metrics, shadowing all other codes in the list. If a code is preceded by a minus symbol (-), then the metric with that code will not be computed. If the format of this list is invalid an error is raised. Any unrecognized code will be ignored. After processing, there is no valid metric to compute, the analysis will not start at all. In FLEXIBLE mode, this option is considered when when not specified differently in the YAML file. ")
                 .build();
 
         Option filesOpt = Option.builder(FILES)
                 .hasArg(true)
-                .desc("Regular expression to select the .java files on which Surface will operate. If not specified, all the parsable .java files in the target project will be considered. In FLEXIBLE mode this option represents default regular expression used when not specified differently in the YAML file. Note that the regular expression matches the entire string, as it is surrounded by \".*\", and ")
+                .desc("Pattern for selecting the .java files on which Surface will operate. If not specified, all the parsable .java files in the target project will be considered. The pattern looks for a match in any part of the file's absolute path. In FLEXIBLE mode, this option is considered when not specified differently in the YAML file.")
                 .build();
 
         Option range = Option.builder(RANGE)
                 .hasArg(true)
-                .desc("Revisions (commits) range to analyze. Format: \"<START-SHA>..<END-SHA>\", where <START-SHA> must be reachable from <END-SHA> (i.e., is in its ancestor path), following a similar syntax to git log. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + FROM + ", -" + TO + ", -" + ALLOW + ", -" + DENY + ", -" + ALL + ", -" + AT + " options. If none is specified, the analyses will be run on the repository's HEAD.")
+                .desc("Revisions (commits) range to analyze. Format: \"<START-SHA>..<END-SHA>\", where <START-SHA> must be reachable from <END-SHA> (i.e., is in its ancestor path), following a similar syntax to git log. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + FROM + ", -" + TO + ", -" + ALLOW + ", -" + DENY + ", -" + ALL + ", -" + AT + " options. If none is specified, the analysis will be run on the repository's HEAD.")
                 .build();
         Option from = Option.builder(FROM)
                 .hasArg(true)
-                .desc("Revision (commit) from which select the commits to analyze (inclusive). Format: \"<SHA>\", where <SHA> is the hash of the first revision to analyze. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + ", -" + TO + ", -" + ALLOW + ", -" + DENY + ", -" + ALL + ", -" + AT + " options. If none is specified, the analyses will be run on the repository's HEAD.")
+                .desc("Revision (commit) from which select the commits to analyze (inclusive). Format: \"<SHA>\", where <SHA> is the hash of the first revision to analyze. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + ", -" + TO + ", -" + ALLOW + ", -" + DENY + ", -" + ALL + ", -" + AT + " options. If none is specified, the analysis will be run on the repository's HEAD.")
                 .build();
         Option to = Option.builder(TO)
                 .hasArg(true)
-                .desc("Revision (commit) up to which select the commits to analyze (inclusive). Format: \"<SHA>\", where <SHA> is the hash of the last revision to analyze. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + ", -" + FROM + ", -" + ALLOW + ", -" + DENY + ", -" + ALL + ", -" + AT + " options. If none is specified, the analyses will be run on the repository's HEAD.")
+                .desc("Revision (commit) up to which select the commits to analyze (inclusive). Format: \"<SHA>\", where <SHA> is the hash of the last revision to analyze. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + ", -" + FROM + ", -" + ALLOW + ", -" + DENY + ", -" + ALL + ", -" + AT + " options. If none is specified, the analysis will be run on the repository's HEAD.")
                 .build();
         Option allow = Option.builder(ALLOW)
                 .hasArg(true)
-                .desc("Path to a file containing a list of revisions (commits) to analyze. The file must have one revision per line. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + ", -" + FROM + ", -" + TO + ", -" + DENY + ", -" + ALL + ", -" + AT + " options. If none is specified, the analyses will be run on the repository's HEAD.")
+                .desc("Path to a file containing a list of revisions (commits) to analyze. The file must have one revision per line. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + ", -" + FROM + ", -" + TO + ", -" + DENY + ", -" + ALL + ", -" + AT + " options. If none is specified, the analysis will be run on the repository's HEAD.")
                 .build();
         Option deny = Option.builder(DENY)
                 .hasArg(true)
-                .desc("Path to a file containing a list of revisions (commits) NOT to analyze. The file must have one revision per line. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + ", -" + FROM + ", -" + TO + ", -" + ALLOW + ", -" + ALL + ", -" + AT + " options. If none is specified, the analyses will be run on the repository's HEAD.")
+                .desc("Path to a file containing a list of revisions (commits) NOT to analyze. The file must have one revision per line. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + ", -" + FROM + ", -" + TO + ", -" + ALLOW + ", -" + ALL + ", -" + AT + " options. If none is specified, the analysis will be run on the repository's HEAD.")
                 .build();
         Option all = Option.builder(ALL)
                 .hasArg(false)
-                .desc("Flag enabling the analysis of the entire project's history. Format: \"<START-SHA>..<END-SHA>\", where <START-SHA> must be reachable from <END-SHA> (i.e., is in its ancestor path). Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + ", -" + FROM + ", -" + TO + ", -" + ALLOW + ", -" + DENY + ", -" + AT + " options. If none is specified, the analyses will be run on the repository's HEAD.")
+                .desc("Flag enabling the analysis of the entire project's history. Format: \"<START-SHA>..<END-SHA>\", where <START-SHA> must be reachable from <END-SHA> (i.e., is in its ancestor path). Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + ", -" + FROM + ", -" + TO + ", -" + ALLOW + ", -" + DENY + ", -" + AT + " options. If none is specified, the analysis will be run on the repository's HEAD.")
                 .build();
         Option at = Option.builder(AT)
                 .hasArg(true)
-                .desc("Revision (commit) to analyze. Format: \"<SHA>\", where <SHA> is the hash of the target revision. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + ", -" + FROM + ", -" + TO + ", -" + ALLOW + ", -" + DENY + ", -" + ALL + " options. If none is specified, the analyses will be run on the repository's HEAD.")
+                .desc("Revision (commit) to analyze. Format: \"<SHA>\", where <SHA> is the hash of the target revision. Evaluated only in LOCAL_GIT and REMOTE_GIT modes. Mutually exclusive with -" + RANGE + ", -" + FROM + ", -" + TO + ", -" + ALLOW + ", -" + DENY + ", -" + ALL + " options. If none is specified, the analysis will be run on the repository's HEAD.")
                 .build();
         OptionGroup revisionGroup = new OptionGroup()
                 .addOption(range)
@@ -98,22 +98,22 @@ public class CLIOptions extends Options {
 
         Option branchOpt = Option.builder(BRANCH)
                 .hasArg(true)
-                .desc("Name of the branch to analyze. Format: short reference name (\"<NAME>\") or complete reference name (\"refs/.../<NAME>\"). If not specified, all branches are taken into account when selecting the revisions to analyze and the HEAD is set to the default branch.")
+                .desc("Name of the branch to analyze. Both short (\"<BRANCH-NAME>\") and complete (\"refs/.../<BRANCH-NAME>\") reference names are accepted. If not specified, all branches are taken into account when selecting the revisions to analyze and the HEAD is placed on the repository's default branch.")
                 .build();
 
         Option includeTestsOpt = Option.builder(INCLUDE_TESTS)
                 .hasArg(false)
-                .desc("Flag admitting test files (i.e., classes with \"Test\"-like annotations, e.g. @Test or @ParameterizedTest. Disabled by default.")
+                .desc("Flag for involving test files in the analysis, that is, classes with \"Test\"-like annotations, e.g., @Test or @ParameterizedTest. Disabled by default.")
                 .build();
 
         Option excludeWorkTreeOpt = Option.builder(EXCLUDE_WORK_TREE)
                 .hasArg(false)
-                .desc("Flag excluding the changed files in the work tree. Enabled by default.")
+                .desc("Flag for excluding the files changed locally (that is, in the work tree) from the analysis. Disabled by default.")
                 .build();
 
         Option helpOpt = Option.builder(HELP)
                 .hasArg(false)
-                .desc("Show the options available. Invalidates all other options if used.")
+                .desc("Show the options available. Has the precedence over all the other options.")
                 .build();
 
         addOption(targetOpt);
