@@ -1,6 +1,7 @@
 package org.surface.surface.cli;
 
 import org.apache.commons.cli.*;
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.surface.surface.core.Utils;
@@ -14,7 +15,9 @@ import org.surface.surface.core.engine.analysis.selectors.RevisionSelector;
 import org.surface.surface.core.engine.metrics.api.MetricsManager;
 import org.surface.surface.core.exporters.RunResultsExporter;
 
-import java.net.URL;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Set;
@@ -72,15 +75,16 @@ class CLIArgumentsParser {
             classifiedPatterns = new ClassifiedPatternsInterpreter().interpret(fileUsed);
         } catch (IllegalArgumentException e) {
             LOGGER.info("* {} Using the built-in set of patterns.", e.getMessage());
-            URL resource = CLIArgumentsParser.class.getClassLoader().getResource("defaultPatterns.txt");
-            if (resource == null) {
+            try (InputStream patternStream = CLIArgumentsParser.class.getClassLoader().getResourceAsStream("defaultPatterns.txt")) {
+                if (patternStream == null) {
+                    throw new RuntimeException("The default pattern file cannot be found. Please, use a custom file to circumvent this issue.");
+                }
+                Path tempFilePath = Files.createTempFile(null, null);
+                FileUtils.copyInputStreamToFile(patternStream, tempFilePath.toFile());
+                classifiedPatterns = new ClassifiedPatternsInterpreter().interpret(tempFilePath.toString());
+                tempFilePath.toFile().delete();
+            } catch (IOException ex) {
                 throw new RuntimeException("The default pattern file cannot be found. Please, use a custom file to circumvent this issue.");
-            }
-            fileUsed = resource.getPath();
-            try {
-                classifiedPatterns = new ClassifiedPatternsInterpreter().interpret(fileUsed);
-            } catch (IllegalArgumentException e2) {
-                throw new RuntimeException("The default pattern file cannot be read. Please, use a custom file to circumvent this issue.");
             }
         }
         LOGGER.info("* Going to detect classified patterns using file: {}", fileUsed);
